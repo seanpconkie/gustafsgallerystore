@@ -8,10 +8,19 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="2.1.3" />
+    <PackageReference Include="Sendgrid" Version="9.9.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Models\ViewModels\" />
+    <Folder Include="Models\DataModels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\GustafsGallerySPtore\Product.cs">
+      <Link>Models\DataModels\Product.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

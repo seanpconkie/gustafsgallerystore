@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using GustafsGalleryStore.Areas.Identity.Data;
 
 [assembly: HostingStartup(typeof(GustafsGalleryStore.Areas.Identity.IdentityHostingStartup))]
 namespace GustafsGalleryStore.Areas.Identity
@@ -19,8 +20,8 @@ namespace GustafsGalleryStore.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("GustafsGalleryStoreContextConnection")));
 
-                services.AddDefaultIdentity<IdentityUser>()
-                    .AddEntityFrameworkStores<GustafsGalleryStoreContext>();
+                //services.AddDefaultIdentity<User>()
+                    //.AddEntityFrameworkStores<GustafsGalleryStoreContext>();
             });
         }
     }

@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using GustafsGalleryStore.Areas.Identity.Data;
 
 namespace GustafsGalleryStore.Models
 {
-    public class GustafsGalleryStoreContext : IdentityDbContext<IdentityUser>
+    public class GustafsGalleryStoreContext : IdentityDbContext<User>
     {
+
         public GustafsGalleryStoreContext(DbContextOptions<GustafsGalleryStoreContext> options)
             : base(options)
         {
@@ -21,6 +23,7 @@ namespace GustafsGalleryStore.Models
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
+
         }
     }
 }
