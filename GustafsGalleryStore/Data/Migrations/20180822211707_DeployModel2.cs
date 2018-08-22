@@ -4,51 +4,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GustafsGalleryStore.Data.Migrations
 {
-    public partial class DeployDataModel3 : Migration
+    public partial class DeployModel2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Profiles",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Status = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Profiles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RoleDescriptions",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Brand = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RoleDescriptions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Titles",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Titles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserContacts",
+                name: "CustomerContacts",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -67,11 +28,37 @@ namespace GustafsGalleryStore.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserContacts", x => x.Id);
+                    table.PrimaryKey("PK_CustomerContacts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleTypes",
+                name: "ProductBrands",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Brand = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductBrands", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Titles",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Value = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Titles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderHistories",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -82,17 +69,17 @@ namespace GustafsGalleryStore.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleTypes", x => x.Id);
+                    table.PrimaryKey("PK_OrderHistories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoleTypes_Profiles_OrderStatusId",
+                        name: "FK_OrderHistories_ProductBrands_OrderStatusId",
                         column: x => x.OrderStatusId,
-                        principalTable: "Profiles",
+                        principalTable: "ProductBrands",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserMessages",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -106,17 +93,17 @@ namespace GustafsGalleryStore.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserMessages", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserMessages_Profiles_OrderStatusId",
+                        name: "FK_Orders_ProductBrands_OrderStatusId",
                         column: x => x.OrderStatusId,
-                        principalTable: "Profiles",
+                        principalTable: "ProductBrands",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleType",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -131,17 +118,17 @@ namespace GustafsGalleryStore.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleType", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RoleType_RoleDescriptions_ProductBrandId",
+                        name: "FK_Products_ProductBrands_ProductBrandId",
                         column: x => x.ProductBrandId,
-                        principalTable: "RoleDescriptions",
+                        principalTable: "ProductBrands",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Subscriptions",
+                name: "ProductColours",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -151,17 +138,17 @@ namespace GustafsGalleryStore.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subscriptions", x => x.Id);
+                    table.PrimaryKey("PK_ProductColours", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Subscriptions_RoleType_ProductId",
+                        name: "FK_ProductColours_Products_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "RoleType",
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubscriptionTypes",
+                name: "ProductSizes",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -171,17 +158,17 @@ namespace GustafsGalleryStore.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SubscriptionTypes", x => x.Id);
+                    table.PrimaryKey("PK_ProductSizes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubscriptionTypes_RoleType_ProductId",
+                        name: "FK_ProductSizes_Products_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "RoleType",
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserDetails",
+                name: "OrderItems",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -194,110 +181,107 @@ namespace GustafsGalleryStore.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserDetails", x => x.Id);
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserDetails_Subscriptions_ColourId",
+                        name: "FK_OrderItems_ProductColours_ColourId",
                         column: x => x.ColourId,
-                        principalTable: "Subscriptions",
+                        principalTable: "ProductColours",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserDetails_UserMessages_OrderId",
+                        name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "UserMessages",
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserDetails_RoleType_ProductId",
+                        name: "FK_OrderItems_Products_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "RoleType",
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserDetails_SubscriptionTypes_SizeId",
+                        name: "FK_OrderItems_ProductSizes_SizeId",
                         column: x => x.SizeId,
-                        principalTable: "SubscriptionTypes",
+                        principalTable: "ProductSizes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleType_ProductBrandId",
-                table: "RoleType",
-                column: "ProductBrandId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RoleTypes_OrderStatusId",
-                table: "RoleTypes",
+                name: "IX_OrderHistories_OrderStatusId",
+                table: "OrderHistories",
                 column: "OrderStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subscriptions_ProductId",
-                table: "Subscriptions",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SubscriptionTypes_ProductId",
-                table: "SubscriptionTypes",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserDetails_ColourId",
-                table: "UserDetails",
+                name: "IX_OrderItems_ColourId",
+                table: "OrderItems",
                 column: "ColourId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserDetails_OrderId",
-                table: "UserDetails",
+                name: "IX_OrderItems_OrderId",
+                table: "OrderItems",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserDetails_ProductId",
-                table: "UserDetails",
+                name: "IX_OrderItems_ProductId",
+                table: "OrderItems",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserDetails_SizeId",
-                table: "UserDetails",
+                name: "IX_OrderItems_SizeId",
+                table: "OrderItems",
                 column: "SizeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserMessages_OrderStatusId",
-                table: "UserMessages",
+                name: "IX_Orders_OrderStatusId",
+                table: "Orders",
                 column: "OrderStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductColours_ProductId",
+                table: "ProductColours",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_ProductBrandId",
+                table: "Products",
+                column: "ProductBrandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductSizes_ProductId",
+                table: "ProductSizes",
+                column: "ProductId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "RoleTypes");
+                name: "CustomerContacts");
+
+            migrationBuilder.DropTable(
+                name: "OrderHistories");
+
+            migrationBuilder.DropTable(
+                name: "OrderItems");
 
             migrationBuilder.DropTable(
                 name: "Titles");
 
             migrationBuilder.DropTable(
-                name: "UserContacts");
+                name: "ProductColours");
 
             migrationBuilder.DropTable(
-                name: "UserDetails");
+                name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Subscriptions");
+                name: "ProductSizes");
 
             migrationBuilder.DropTable(
-                name: "UserMessages");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "SubscriptionTypes");
-
-            migrationBuilder.DropTable(
-                name: "Profiles");
-
-            migrationBuilder.DropTable(
-                name: "RoleType");
-
-            migrationBuilder.DropTable(
-                name: "RoleDescriptions");
+                name: "ProductBrands");
         }
     }
 }

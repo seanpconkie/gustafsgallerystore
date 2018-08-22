@@ -49,7 +49,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserContacts");
+                    b.ToTable("CustomerContacts");
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.CustomerTitle", b =>
@@ -87,7 +87,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
                     b.HasIndex("OrderStatusId");
 
-                    b.ToTable("UserMessages");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.OrderHistory", b =>
@@ -106,7 +106,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
                     b.HasIndex("OrderStatusId");
 
-                    b.ToTable("RoleTypes");
+                    b.ToTable("OrderHistories");
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.OrderItem", b =>
@@ -135,20 +135,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("UserDetails");
-                });
-
-            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.OrderStatus", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Status");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Profiles");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.Product", b =>
@@ -175,7 +162,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
                     b.HasIndex("ProductBrandId");
 
-                    b.ToTable("RoleType");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.ProductBrand", b =>
@@ -188,7 +175,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoleDescriptions");
+                    b.ToTable("ProductBrands");
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.ProductColour", b =>
@@ -205,7 +192,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("ProductColours");
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.ProductSize", b =>
@@ -222,7 +209,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("SubscriptionTypes");
+                    b.ToTable("ProductSizes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -388,7 +375,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.Order", b =>
                 {
-                    b.HasOne("GustafsGalleryStore.Models.DataModels.OrderStatus", "OrderStatus")
+                    b.HasOne("GustafsGalleryStore.Models.DataModels.ProductBrand", "OrderStatus")
                         .WithMany()
                         .HasForeignKey("OrderStatusId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -396,7 +383,7 @@ namespace GustafsGalleryStore.Data.Migrations
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.OrderHistory", b =>
                 {
-                    b.HasOne("GustafsGalleryStore.Models.DataModels.OrderStatus", "OrderStatus")
+                    b.HasOne("GustafsGalleryStore.Models.DataModels.ProductBrand", "OrderStatus")
                         .WithMany()
                         .HasForeignKey("OrderStatusId")
                         .OnDelete(DeleteBehavior.Cascade);
