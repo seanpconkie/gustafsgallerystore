@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace GustafsGalleryStore
+namespace GustafsGalleryStore.Models.DataModels
 {
     public class CustomerTitle
     {

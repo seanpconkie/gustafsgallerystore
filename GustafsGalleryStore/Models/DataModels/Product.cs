@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace GustafsGalleryStore
+namespace GustafsGalleryStore.Models.DataModels
 {
     public class Product
     {

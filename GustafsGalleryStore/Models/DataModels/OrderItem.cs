@@ -1,8 +1,9 @@
 ﻿using System;
-namespace GustafsGalleryStore
+namespace GustafsGalleryStore.Models.DataModels
 {
     public class OrderItem
     {
+        public long Id { get; set; }
         public long OrderId { get; set; }
         public long Quantity { get; set; }
 
