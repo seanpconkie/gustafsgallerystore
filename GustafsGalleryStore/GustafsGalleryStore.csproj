@@ -18,9 +18,4 @@
     <Folder Include="Models\DataModels\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\GustafsGallerySPtore\Product.cs">
-      <Link>Models\DataModels\Product.cs</Link>
-    </Compile>
-  </ItemGroup>
 </Project>

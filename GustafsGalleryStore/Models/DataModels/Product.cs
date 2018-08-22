@@ -19,6 +19,5 @@ namespace GustafsGalleryStore
         public List<ProductSize> ProductSizes { get; set; }
         //Colour
         public List<ProductColour> ProductColours { get; set; }
-
     }
 }
