@@ -118,15 +118,6 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    // first we create Admin rool    
-                    var role = new IdentityRole
-                    {
-                        Name = "IsStaff"
-                    };
-                    await _roleManager.CreateAsync(role);
-
-                    result = await _userManager.AddToRoleAsync(user, "IsStaff");
-
                     return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)

@@ -52,8 +52,8 @@ namespace GustafsGalleryStore.Migrations
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
-            migrationBuilder.Sql("insert into AspNetUsers (Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnabled,AccessFailedCount,PasswordHash)" +
-                                 "values ('318e08a0-59eb-4a1a-8a66-28b2137556df','seanpconkie@yahoo.com','SEANPCONKIE@YAHOO.COM','seanpconkie@yahoo.com','SEANPCONKIE@YAHOO.COM','TRUE','FALSE','FALSE','FALSE',0,'AQAAAAEAACcQAAAAEFXikfRNyD+n59fF5HCp/M7IPhw9jnzrYnF7n7oschTUgZliRVQzudAlDELSTtH4bQ==')");
+            migrationBuilder.Sql("insert into AspNetUsers (Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnabled,AccessFailedCount,PasswordHash,SecurityStamp,ConcurrencyStamp)" +
+                                 "values ('318e08a0-59eb-4a1a-8a66-28b2137556df','seanpconkie@yahoo.com','SEANPCONKIE@YAHOO.COM','seanpconkie@yahoo.com','SEANPCONKIE@YAHOO.COM','TRUE','FALSE','FALSE','FALSE',0,'AQAAAAEAACcQAAAAEFXikfRNyD+n59fF5HCp/M7IPhw9jnzrYnF7n7oschTUgZliRVQzudAlDELSTtH4bQ==','L7TN2SDXQZCYATA7PV3FUEBDQV7C74ZK','b3dee0fb-0f1b-498c-8a54-91b451d5867b')");
 
             migrationBuilder.CreateTable(
                 name: "CustomerContacts",
