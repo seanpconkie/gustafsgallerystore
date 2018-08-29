@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 namespace GustafsGalleryStore.Models.DataModels
 {
@@ -7,6 +8,7 @@ namespace GustafsGalleryStore.Models.DataModels
     {
         public long Id { get; set; }
         public string Brand { get; set; }
+        public string BrandCode { get; set; }
 
         #region Public Methods
         public static List<SelectListItem> GetBrands(List<ProductBrand> resultList)

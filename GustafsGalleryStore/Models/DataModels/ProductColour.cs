@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 namespace GustafsGalleryStore.Models.DataModels
 {
     public class ProductColour
     {
-
         public long Id { get; set; }
         public string Colour { get; set; }
 

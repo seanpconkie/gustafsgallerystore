@@ -1,14 +1,18 @@
-﻿@inject SignInManager<IdentityUser> SignInManager
+﻿@using Microsoft.AspNetCore.Identity
+@using GustafsGalleryStore.Areas.Identity.Data;
+
+
+@inject SignInManager<ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
-<ul class="nav nav-pills nav-stacked">
-    <li class="@ManageNavPages.IndexNavClass(ViewContext)"><a asp-page="./Index">Profile</a></li>
-    <li class="@ManageNavPages.ChangePasswordNavClass(ViewContext)"><a id="change-password" asp-page="./ChangePassword">Password</a></li>
+<div class="w3-row w3-row-padding">
+    <span class="@ManageNavPages.IndexNavClass(ViewContext)"><a asp-page="./Index" class="w3-button w3-bar-item w3-light-grey">Profile</a></span>
+    <span class="@ManageNavPages.ChangePasswordNavClass(ViewContext)"><a id="change-password" asp-page="./ChangePassword" class="w3-button w3-bar-item w3-light-grey">Password</a></span>
     @if (hasExternalLogins)
     {
-        <li class="@ManageNavPages.ExternalLoginsNavClass(ViewContext)"><a id="external-login" asp-page="./ExternalLogins">External logins</a></li>
+        <span class="@ManageNavPages.ExternalLoginsNavClass(ViewContext)"><a id="external-login" asp-page="./ExternalLogins" class="w3-button w3-bar-item w3-light-grey">External logins</a></span>
     }
-    <li class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="@ManageNavPages.PersonalDataNavClass(ViewContext)"><a asp-page="./PersonalData">Personal data</a></li>
-</ul>
+    <span class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-page="./TwoFactorAuthentication" class="w3-button w3-bar-item w3-light-grey">Two-factor authentication</a></span>
+    <span class="@ManageNavPages.PersonalDataNavClass(ViewContext)"><a asp-page="./PersonalData" class="w3-button w3-bar-item w3-light-grey">Personal data</a></span>
+</div>

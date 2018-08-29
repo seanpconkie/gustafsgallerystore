@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GustafsGalleryStore.Areas.Identity.Data
 {
-	public class User : IdentityUser
+	public class ApplicationUser : IdentityUser
     {
 
         [PersonalData]

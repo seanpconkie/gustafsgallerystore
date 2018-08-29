@@ -1,0 +1,73 @@
+﻿<!-- nav bar -->
+<style>
+    .notification {
+        color: white;
+        text-decoration: none;
+        position: relative;
+        display: inline-block;
+    }
+
+    .notification:hover {
+        background: red;
+    }
+
+    .notification .badge {
+        position: absolute;
+        top: -0px;
+        right: -0px;
+        padding: 5px 10px;
+        color: white;
+    }
+</style>
+
+<div class="w3-top">
+    <div class="w3-bar">
+        <a href="https://gustafsgallery.co.uk">
+            <img class="w3-bar-item w3-hide-small" src="https://farm5.staticflickr.com/4785/40120170224_da73670e8d_o.png" alt="GustafStudio_fullLogo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" id="headerLogo">
+        </a>
+        <form asp-area="Home" asp-page="/Index" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="get" id="shopHomeForm">
+            <div class="w3-dropdown-hover w3-hide-small">
+                <button class="dropbtn" type="submit">Shop by Designer&nbsp;<i class="fa fa-caret-down"></i></button>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey">
+                    <a href="https://gustafsgallery.co.uk/animal_fayre_designs.html" class="w3-bar-item w3-button w3-padding-large">Animal Fayre Designs</a>
+                    <a href="https://gustafsgallery.co.uk/jack_conkie_illustration.html" class="w3-bar-item w3-button w3-padding-large">Jack Conkie Illustrations</a>
+                    <a href="https://gustafsgallery.co.uk/silver_bough_jewellery.html" class="w3-bar-item w3-button w3-padding-large">Silver Bough Jewellery</a>
+                    <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large">See all ...</a>
+                </div>
+            </div>
+        </form>
+
+
+        <form asp-area="Home" asp-page="/Index" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="get" id="shopHomeForm">
+            <div class="w3-dropdown-hover w3-hide-small">
+                <button class="dropbtn" type="submit">Shop by Department&nbsp;<i class="fa fa-caret-down"></i></button>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey">
+                    <a href="/Index" class="w3-bar-item w3-button w3-padding-large">Gifts</a>
+                    <a href="/Index" class="w3-bar-item w3-button w3-padding-large">Jewellery</a>
+                    <a href="/Index" class="w3-bar-item w3-button w3-padding-large">Tapestry Kits</a>
+                    <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large">See all ...</a>
+                </div>
+            </div>
+        </form>
+
+        <a href="https://gustafsgallery.co.uk#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Contact Us"><i class="fa fa-envelope w3-xlarge "></i></a>
+        <a href="#home" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Top the top"><i class="fa fa-arrow-up w3-xlarge"></i></a>
+        <a href="#home" class="notification w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Top the top">
+            <i class="fas fa-shopping-basket w3-xlarge"></i>
+            <span class="badge">3</span>
+        </a>
+        <partial name="_LoginPartial.cshtml" />
+
+    </div>
+    <!-- small screen navbar -->
+    <div>
+        <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleFunction()" title="Toggle Navigation Menu">
+            <i class="fa fa-bars"></i>
+        </a>
+        <div id="navDemo" class="w3-bar-block w3-hide w3-hide-large w3-hide-medium">
+            <a href="https://gustafsgallery.co.uk" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-home w3-margin-right"></i>HOME</a>
+            <a href="https://gustafsgallery.co.uk#about" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-info w3-margin-right"></i>ABOUT</a>
+            <a href="https://gustafsgallery.co.uk#contact" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-envelope w3-margin-right"></i>CONTACT</a>
+        </div>
+    </div>
+</div>

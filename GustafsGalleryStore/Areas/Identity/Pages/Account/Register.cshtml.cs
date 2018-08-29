@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using GustafsGalleryStore.Areas.Identity.Data;
+using GustafsGalleryStore.Models;
+using GustafsGalleryStore.Models.DataModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using GustafsGalleryStore.Areas.Identity.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 
 namespace GustafsGalleryStore.Areas.Identity.Pages.Account
@@ -18,21 +19,27 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly GustafsGalleryStoreContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            GustafsGalleryStoreContext context,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -77,7 +84,7 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
 
             Input = new InputModel
             {
-                Titles = new List<SelectListItem>()
+                Titles = CustomerTitle.GetTitles(_context.Titles.Where(c => c.Id > 0).OrderBy(x => x.Value).ToList())
             };
             ReturnUrl = returnUrl;
         }
@@ -87,7 +94,7 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new User { 
+                var user = new ApplicationUser { 
                     UserName = Input.Email, 
                     Email = Input.Email,
                     Forename = Input.Forename,
@@ -110,6 +117,16 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    // first we create Admin rool    
+                    var role = new IdentityRole
+                    {
+                        Name = "IsStaff"
+                    };
+                    await _roleManager.CreateAsync(role);
+
+                    result = await _userManager.AddToRoleAsync(user, "IsStaff");
+
                     return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)

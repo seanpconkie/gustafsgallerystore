@@ -4,29 +4,34 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using GustafsGalleryStore.Areas.Identity.Data;
+using GustafsGalleryStore.Models.DataModels;
+using GustafsGalleryStore.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using GustafsGalleryStore.Areas.Identity.Data;
+using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 
 namespace GustafsGalleryStore.Areas.Identity.Pages.Account.Manage
 {
     public partial class IndexModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly GustafsGalleryStoreContext _context;
 
         public IndexModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
-            IEmailSender emailSender)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IEmailSender emailSender,
+            GustafsGalleryStoreContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -61,6 +66,8 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account.Manage
             public string Title { get; set; }
 
             public List<SelectListItem> Titles { get; set; }
+
+            public string StatusMessage { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -81,10 +88,11 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account.Manage
             {
                 Email = email,
                 PhoneNumber = phoneNumber,
+                StatusMessage = StatusMessage,
                 Forename = user.Forename,
                 Surname = user.Surname,
                 Title = user.Title,
-                Titles = new List<SelectListItem>()
+                Titles = CustomerTitle.GetTitles(_context.Titles.Where(c => c.Id > 0).OrderBy(x => x.Value).ToList())
             };
 
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);

@@ -3,32 +3,31 @@
 @{
     ViewData["Title"] = "Delete Personal Data";
     ViewData["ActivePage"] = ManageNavPages.DeletePersonalData;
+    Layout = "/Areas/Identity/Pages/Account/Manage/_Layout.cshtml";
 }
-
 <h4>@ViewData["Title"]</h4>
-
 <div class="alert alert-warning" role="alert">
     <p>
         <span class="glyphicon glyphicon-warning-sign"></span>
         <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
     </p>
 </div>
-
-<div>
+<div class="w3-half">
     <form id="delete-user" method="post" class="form-group">
         <div asp-validation-summary="All" class="text-danger"></div>
         @if (Model.RequirePassword)
         {
-        <div class="form-group">
-            <label asp-for="Input.Password"></label>
-            <input asp-for="Input.Password" class="form-control" />
-            <span asp-validation-for="Input.Password" class="text-danger"></span>
-        </div>
+            <div class="form-group">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="w3-input" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
         }
-        <button class="btn btn-danger" type="submit">Delete data and close my account</button>
+        <p>
+            <button class="w3-button w3-block w3-round w3-light-grey" type="submit">Delete data and close my account</button>
+        </p>
     </form>
 </div>
-
 @section Scripts {
-<partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -6,11 +6,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using GustafsGalleryStore.Areas.Identity.Data;
+using GustafsGalleryStore.Models.DataModels;
 
-namespace GustafsGalleryStore.Models
+namespace GustafsGalleryStore.Areas.Identity.Data
 {
-    public class GustafsGalleryStoreContext : IdentityDbContext<User>
+    public class GustafsGalleryStoreContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<CustomerTitle> Titles { get; set; }
+        public DbSet<CustomerContact> CustomerContacts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderHistory> OrderHistories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductBrand> ProductBrands { get; set; }
+        public DbSet<ProductColour> ProductColours { get; set; }
+        public DbSet<ProductSize> ProductSizes { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
 
         public GustafsGalleryStoreContext(DbContextOptions<GustafsGalleryStoreContext> options)
             : base(options)

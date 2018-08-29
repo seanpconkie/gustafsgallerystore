@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using GustafsGalleryStore.Areas.Identity.Data;
 using GustafsGalleryStore.Services;
+using GustafsGalleryStore.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 
 namespace GustafsGalleryStore
@@ -37,13 +39,14 @@ namespace GustafsGalleryStore
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<GustafsGalleryStoreContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("GustafsGalleryStoreContextConnection")));
 
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
             //services.AddDefaultIdentity<User>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<GustafsGalleryStoreContext>()
+                .AddDefaultTokenProviders();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddRazorPagesOptions(options =>
@@ -58,6 +61,13 @@ namespace GustafsGalleryStore
                 options.LoginPath = $"/Identity/Account/Login";
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+                options.Cookie.Name = "GustafsGalleryAuth";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                // ReturnUrlParameter requires 
+                //using Microsoft.AspNetCore.Authentication.Cookies;
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = true;
             });
 
              //using Microsoft.AspNetCore.Identity.UI.Services;

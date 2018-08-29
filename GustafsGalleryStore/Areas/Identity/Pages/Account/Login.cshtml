@@ -1,63 +1,129 @@
 ﻿@page
 @model LoginModel
-
 @{
     ViewData["Title"] = "Log in";
 }
+<style>
+    * {
+        box-sizing: border-box
+    }
 
-<h2>@ViewData["Title"]</h2>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form method="post">
-                <h4>Use a local account to log in.</h4>
-                <hr />
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe">
-                            <input asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-default">Log in</button>
-                </div>
-                <div class="form-group">
-                    <p>
-                        <a asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h4>Use another service to log in.</h4>
-            <hr />
+    /* style the container */
+    .container {
+        position: relative;
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px 0 30px 0;
+    }
+
+    /* style inputs and link buttons */
+    input,
+    .btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        margin: 5px 0;
+        opacity: 0.85;
+        display: inline-block;
+        font-size: 17px;
+        line-height: 20px;
+        text-decoration: none; /* remove underline from anchors */
+    }
+
+        input:hover,
+        .btn:hover {
+            opacity: 1;
+        }
+
+    /* add appropriate colors to fb, twitter and google buttons */
+    .fb {
+        background-color: #3B5998;
+        color: white;
+    }
+
+    .twitter {
+        background-color: #55ACEE;
+        color: white;
+    }
+
+    .google {
+        background-color: #dd4b39;
+        color: white;
+    }
+
+    /* style the submit button */
+    input[type=submit] {
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+    /* Two-column layout */
+    .col {
+        float: left;
+        width: 50%;
+        margin: auto;
+        padding: 0 50px;
+        margin-top: 6px;
+    }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+    /* vertical line */
+    .vl {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        border: 2px solid #ddd;
+        height: 175px;
+    }
+
+    /* text inside the vertical line */
+    .inner {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #f1f1f1;
+        border: 1px solid #ccc;
+        border-radius: 50%;
+        padding: 8px 10px;
+    }
+
+    /* hide some text on medium and large screens */
+    .hide-md-lg {
+        display: none;
+    }
+
+    /* bottom container */
+    .bottom-container {
+        text-align: center;
+        background-color: #666;
+        border-radius: 0px 0px 4px 4px;
+    }
+</style>
+
+<p></p>
+
+<div class="w3-container w3-light-grey w3-round">
+    <form method="post">
+        <div class="w3-row w3-row-padding">
+            <h2 style="text-align:center">Login with Social Media or use Email and Password</h2>
+            <div class="vl">
+                <span class="inner">or</span>
+            </div>
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
-                        </p>
-                    </div>
                 }
                 else
                 {
@@ -73,8 +139,62 @@
                     </form>
                 }
             }
-        </section>
-    </div>
+
+            <div class="col">
+                <a href="#" class="fb btn">
+                    <i class="fab fa-facebook fa-fw"></i> Login with Facebook
+                </a>
+                <a href="#" class="twitter btn">
+                    <i class="fab fa-twitter fa-fw"></i> Login with Twitter
+                </a>
+                <a href="#" class="google btn">
+                    <i class="fab fa-google fa-fw"></i> Login with Google+
+                </a>
+            </div>
+
+            <div class="col">
+                <div class="w3-hide-medium w3-hide-large">
+                    <p>Or sign in manually:</p>
+                </div>
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" class="w3-input" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password"></label>
+                    <input asp-for="Input.Password" class="w3-input" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label asp-for="Input.RememberMe">
+                            <input asp-for="Input.RememberMe" />
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="w3-button w3-round w3-block w3-white">Log in</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="w3-container w3-light-grey w3-round w3-center w3-padding-large">
+            <div class="w3-row">
+                <div class="w3-half">
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                </div>
+                <div class="w3-half">
+                    <a asp-page="./ForgotPassword">Forgot your password?</a>
+                </div>
+            </div>
+            <br />
+        </div>
+    </form>
 </div>
 
 @section Scripts {

@@ -11,13 +11,19 @@ namespace GustafsGalleryStore.Models.DataModels
         public long Stock { get; set; }
         public float Price { get; set; }
         public float PostagePrice { get; set; }
+        public string ProductCode { get; set; }
 
         //brand
         public ProductBrand ProductBrand { get; set; }
-        public long BrandId { get; set; }
+        public long ProductBrandId { get; set; }
         //Size
         public List<ProductSize> ProductSizes { get; set; }
         //Colour
         public List<ProductColour> ProductColours { get; set; }
+        //Image
+        public List<ProductImage> ProductImages { get; set; }
+        //Department
+        public long DepartmentId { get; set; }
+        public Department Department { get; set; }
     }
 }

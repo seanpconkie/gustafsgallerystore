@@ -29,7 +29,7 @@ namespace GustafsGalleryStore.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("info@sbt-solutions.co.uk", "SBT Solutions"),
+                From = new EmailAddress("noreply@gustafsstudioandgallery.co.uk", "Gustafs Studio & Gallery"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message

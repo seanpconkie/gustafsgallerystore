@@ -6,8 +6,8 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<div class="row">
-    <div class="col-md-4">
+<div class="">
+    <div class="w3-half">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h4>Create a new account.</h4>
             <hr />
@@ -22,30 +22,32 @@
             </div>
             <div class="form-group">
                 <label asp-for="Input.Forename"></label>
-                <input asp-for="Input.Forename" class="form-control" />
+                <input asp-for="Input.Forename" class="w3-input" />
                 <span asp-validation-for="Input.Forename" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Surname"></label>
-                <input asp-for="Input.Surname" class="form-control" />
+                <input asp-for="Input.Surname" class="w3-input" />
                 <span asp-validation-for="Input.Surname" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
+                <input asp-for="Input.Email" class="w3-input" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" />
+                <input asp-for="Input.Password" class="w3-input" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
+                <input asp-for="Input.ConfirmPassword" class="w3-input" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-default">Register</button>
+            <p>
+                <button type="submit" class="w3-button w3-round w3-block w3-light-grey">Register</button>
+            </p>
         </form>
     </div>
 </div>

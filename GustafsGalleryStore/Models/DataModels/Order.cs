@@ -21,5 +21,15 @@ namespace GustafsGalleryStore.Models.DataModels
         [Display(Name = "Order Status")]
         public long OrderStatusId { get; set; }
 
+        public long CustomerContactId { get; set; }
+        public CustomerContact CustomerContact { get; set; }
+
+        public long DeliveryTypeId { get; set; }
+        public DeliveryType DeliveryType { get; set; }
+
+        public string PackageReference { get; set; }
+
+
+
     }
 }

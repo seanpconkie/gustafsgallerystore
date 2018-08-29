@@ -2,8 +2,8 @@
 @model TwoFactorAuthenticationModel
 @{
     ViewData["Title"] = "Two-factor authentication (2FA)";
+    Layout = "/Areas/Identity/Pages/Account/Manage/_Layout.cshtml";
 }
-
 @Html.Partial("_StatusMessage", Model.StatusMessage)
 <h4>@ViewData["Title"]</h4>
 @if (Model.Is2faEnabled)
@@ -39,7 +39,6 @@
     <a asp-page="./Disable2fa" class="btn btn-default">Disable 2FA</a>
     <a asp-page="./GenerateRecoveryCodes" class="btn btn-default">Reset recovery codes</a>
 }
-
 <h5>Authenticator app</h5>
 @if (!Model.HasAuthenticator)
 {
@@ -50,7 +49,6 @@ else
     <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-default">Setup authenticator app</a>
     <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-default">Reset authenticator app</a>
 }
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

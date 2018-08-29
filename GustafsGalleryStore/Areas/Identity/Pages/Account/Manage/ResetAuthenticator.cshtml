@@ -3,8 +3,8 @@
 @{
     ViewData["Title"] = "Reset authenticator key";
     ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+    Layout = "/Areas/Identity/Pages/Account/Manage/_Layout.cshtml";
 }
-
 @Html.Partial("_StatusMessage", Model.StatusMessage)
 <h4>@ViewData["Title"]</h4>
 <div class="alert alert-warning" role="alert">
@@ -17,8 +17,8 @@
         If you do not complete your authenticator app configuration you may lose access to your account.
     </p>
 </div>
-<div>
+<div class="w3-half">
     <form id="reset-authenticator-form" method="post" class="form-group">
-        <button id="reset-authenticator-button" class="btn btn-danger" type="submit">Reset authenticator key</button>
+        <button id="reset-authenticator-button" class="w3-button w3-block w3-round w3-light-grey" type="submit">Reset authenticator key</button>
     </form>
 </div>

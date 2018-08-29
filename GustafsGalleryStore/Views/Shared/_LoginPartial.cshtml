@@ -1,26 +1,41 @@
 @using Microsoft.AspNetCore.Identity
 @using GustafsGalleryStore.Areas.Identity.Data;
 
-@inject SignInManager<User> SignInManager
-@inject UserManager<User> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
+<style>
+    /* Dropdown Button */
+    .dropbtn {
+        background-color: rgb(110, 16, 68);
+        color: white;
+        padding: 16px;
+        border: none;
+    }
+</style>
+
+@{var user = await UserManager.GetUserAsync(User);}
+<!--UserManager.GetUserName(User)-->
 @if (SignInManager.IsSignedIn(User))
 {
-    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-            </li>
-            <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
-            </li>
-        </ul>
-    </form>
+<form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="w3-right">
+    <div class="w3-dropdown-hover w3-hide-small">
+        <button class="dropbtn" type="submit">Hello&nbsp;@user.Forename!&nbsp;<i class="fa fa-caret-down"></i></button>
+        <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey">
+            <button type="submit" class="w3-bar-item w3-button w3-padding-large">Not @user.Forename? Logout.</button>
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="w3-bar-item w3-button w3-padding-large">Manage Account</a>
+            <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large">Your Orders</a>
+            <hr />
+            <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large">Manage Orders</a>
+            <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large">Manage Site</a>
+        </div>
+    </div>
+</form>
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
-        <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
-    </ul>
+    <div>
+        @*<li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>*@
+        <a asp-area="Identity" asp-page="/Account/Login" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right"><i class="fa fa-sign-in-alt"></i> Login</a>
+    </div>
 }
