@@ -1,0 +1,38 @@
+﻿@model GustafsGalleryStore.Models.ViewModels.ProductListViewModel
+@{
+    ViewData["Title"] = "Products";
+}
+<div>
+    <div class="w3-bar w3-padding">
+        <div asp-validation-summary="All" class="text-danger w3-bar-item"></div>
+        <a href="/ManageProducts/AddProduct" class="w3-bar-item w3-button w3-light-grey w3-right"><i class="fas fa-plus fa-fw"></i></a>
+    </div>
+    <table id="products">
+        <thead>
+            <tr>
+                <th></th>
+                <th>By</th>
+                <th>Department</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in Model.Products)
+            {
+                <tr>
+                    <td class="w3-center" style="max-width: 200px;">
+                        <a href="/Products/Product?id=@member.Id" class="edit" data-message-id="@member.Id">@member.Title</a>
+                        <a href="/Products/Product?id=@member.Id" class="edit" data-message-id="@member.Id"><img class="w3-hover-opacity-off w3-opacity" style="max-width: 200px;" src="@member.ProductImages[0].Uri" /></a>
+                    </td>
+                    <td class="w3-center">@member.ProductBrand.Brand</td>
+                    <td class="w3-center">@member.Department.DepartmentName</td>
+                    <td class="w3-center" style="width: 100px">
+                        <b>£@member.Price</b>
+                        <a class="delete w3-bar-item w3-button w3-round w3-light-grey" href="javascript:void(0);" data-user-id="@member.Id"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>$("#products").DataTable();</script>

@@ -122,7 +122,20 @@ namespace GustafsGalleryStore.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Department");
+                    b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.Colour", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Colours");
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.CustomerContact", b =>
@@ -349,6 +362,19 @@ namespace GustafsGalleryStore.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductSizes");
+                });
+
+            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.Size", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

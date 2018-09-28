@@ -14,26 +14,28 @@
     }
 </style>
 
-@{var user = await UserManager.GetUserAsync(User);
-    var isStaff = await UserManager.IsInRoleAsync(user, "IsStaff");
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var isSignedIn = SignInManager.IsSignedIn(User);
 }
-<!--UserManager.GetUserName(User)-->
-@isStaff
-@if (SignInManager.IsSignedIn(User))
+@if (isSignedIn)
 {
+    var isStaff = await UserManager.IsInRoleAsync(user, "IsStaff");
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="w3-right">
         <div class="w3-dropdown-hover w3-hide-small">
             <button class="dropbtn" type="submit">Hello&nbsp;@user.Forename!&nbsp;<i class="fa fa-caret-down"></i></button>
             <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey">
                 <button type="submit" class="w3-bar-item w3-button w3-padding-large">Not @user.Forename? Logout.</button>
-                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="w3-bar-item w3-button w3-padding-large"><i class="fas fa-user w3-margin-right"></i>Your Account</a>
-                <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large"><i class="fas fa-shopping-bag w3-margin-right"></i>Your Orders</a>
-                @if (await UserManager.IsInRoleAsync(user, "IsStaff"))
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-user fa-fw w3-margin-right"></i>Your Account</a>
+                <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-shopping-bag fa-fw w3-margin-right"></i>Your Orders</a>
+                @if (isStaff)
                 {
                     <hr />
-                    <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large"><i class="fas fa-shipping-fast w3-margin-right"></i>Manage Orders</a>
-                    <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large"><i class="fas fa-sitemap w3-margin-right"></i>Manage Site</a>
-                    <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large"><i class="fas fa-users-cog w3-margin-right"></i>Manage Staff</a>
+                    <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-shipping-fast fa-fw w3-margin-right"></i>Manage Orders</a>
+                    <a href="/ManageProducts" title="Manage Staff" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-cube fa-fw w3-margin-right"></i>Manage Products</a>
+                    <a href="/ManageSite" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-sitemap fa-fw w3-margin-right"></i>Manage Site</a>
+                    <a href="/ManageStaff" title="Manage Staff" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-users-cog fa-fw w3-margin-right"></i>Manage Staff</a>
+                    <a href="/ManageProducts/Stock" title="Manage Stock" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-cubes fa-fw w3-margin-right"></i>Manage Stock</a>
                 }
             </div>
         </div>

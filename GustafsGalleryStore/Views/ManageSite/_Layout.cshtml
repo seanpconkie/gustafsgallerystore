@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <partial name="_ManageSite" />
+</div>
+<div id="main">
+    <h2>Manage your site</h2>
+    <div class="w3-container">
+        <hr />
+        <div class="w3-section">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+
+}

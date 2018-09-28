@@ -18,6 +18,7 @@ using GustafsGalleryStore.Services;
 using GustafsGalleryStore.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
+using GustafsGalleryStore.Helpers;
 
 namespace GustafsGalleryStore
 {
@@ -48,13 +49,20 @@ namespace GustafsGalleryStore
                 .AddEntityFrameworkStores<GustafsGalleryStoreContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddMvc(config => config.Filters.Add(new ValidateModelAttribute())).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddRazorPagesOptions(options =>
                 {
                     options.AllowAreas = true;
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
                 });
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressConsumesConstraintForFormFileParameters = true;
+                options.SuppressInferBindingSourcesForParameters = true;
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             services.ConfigureApplicationCookie(options =>
             {

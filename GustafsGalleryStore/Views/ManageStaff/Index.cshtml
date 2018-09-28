@@ -1,0 +1,47 @@
+﻿@model GustafsGalleryStore.Models.ViewModels.StaffListViewModel
+@{
+    ViewData["Title"] = "Manage Staff";
+}
+
+<div>
+    <div class="w3-bar w3-padding">
+        <div asp-validation-summary="All" class="text-danger w3-bar-item"></div>
+        <a href="/ManageStaff/AddStaff" class="w3-bar-item w3-button w3-light-grey w3-right"><i class="fas fa-user-plus fa-fw"></i></a>
+    </div>
+    <table id="staff">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in Model.Staff)
+            {
+                <tr>
+                    <td class="w3-center"><a href="javascript:void(0);" class="edit" data-message-id="@member.Id">@member.Forename&nbsp;@member.Surname</a></td>
+                    <td class="w3-center">@member.Email</td>
+                    <td class="w3-center" style="width: 100px">
+                        <a class="delete w3-bar-item w3-button w3-round w3-light-grey" href="javascript:void(0);" data-user-id="@member.Id"><i class="far fa-trash-alt w3-margin-right"></i>Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>$("#staff").DataTable();</script>
+<script>
+    $(document).ready(function () {
+        $("#staff").on("click", ".delete", function() {
+            var button = $(this);
+
+            if (confirm ("Are you sure you want to delete this user?")) {
+                window.location.href="/ManageStaff/DeleteStaff/?id=" + button.attr("data-user-id");
+            }
+    
+        })
+    
+    });
+</script>
+

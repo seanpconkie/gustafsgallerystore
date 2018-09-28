@@ -11,7 +11,7 @@ namespace GustafsGalleryStore.Models.DataModels
 
 
         #region Public Methods
-        public static List<SelectListItem> GetSizes(List<ProductSize> resultList)
+        public static List<SelectListItem> GetList(List<ProductSize> resultList)
         {
 
             List<SelectListItem> sizes = new List<SelectListItem>();

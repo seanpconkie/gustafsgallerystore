@@ -7,11 +7,15 @@ namespace GustafsGalleryStore.Models.DataModels
     public class ProductBrand
     {
         public long Id { get; set; }
+
+        [Required]
+        [StringLength(250)]
         public string Brand { get; set; }
+        [Required]
         public string BrandCode { get; set; }
 
         #region Public Methods
-        public static List<SelectListItem> GetBrands(List<ProductBrand> resultList)
+        public static List<SelectListItem> GetList(List<ProductBrand> resultList)
         {
 
             List<SelectListItem> brands = new List<SelectListItem>();

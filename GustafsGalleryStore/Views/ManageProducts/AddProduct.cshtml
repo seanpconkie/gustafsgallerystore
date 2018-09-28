@@ -1,0 +1,172 @@
+﻿@model GustafsGalleryStore.Models.ViewModels.NewEditProductViewModel
+@{
+    ViewData["Title"] = "Add New Product";
+}
+
+<!-- Page content -->
+<div class="w3-padding-large w3-margin-top w3-margin-bottom">
+    <div class="w3-content">
+        <h2>Add New Product</h2>
+        
+        @await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
+        <div class="w3-section">
+            <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" enctype="multipart/form-data">
+                <div class="w3-row w3-margin-bottom">
+                    <div class="w3-half">
+                        <div class="form-group">
+                            <label asp-for="Product.Title">Product Title</label>
+                            <input asp-for="Product.Title" class="w3-input" />
+                        </div>
+                    </div>
+                </div>
+                <div class="w3-row w3-margin-bottom">
+                    <div class="w3-quarter w3-row-padding">
+                        <div class="form-group">
+                            <label asp-for="Product.Price">Price</label>
+                            <input asp-for="Product.Price" class="w3-input" type="number" min="0.01" step="0.01" />
+                        </div>
+                    </div>
+                    <div class="w3-quarter w3-row-padding">
+                        <div class="form-group">
+                            <label asp-for="Product.Stock">Stock</label>
+                            <input asp-for="Product.Stock" class="w3-input" type="number" />
+                        </div>
+                    </div>
+                    <div class="w3-half">
+                        <div class="form-group">
+                            <label asp-for="Product.Description">Description</label>
+                            <textarea asp-for="Product.Description" class="w3-input" style="height: 45px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="w3-row w3-margin-bottom">
+                    <div class="w3-half w3-row-padding">
+                        <div class="form-group">
+                            <label asp-for="Brand">Brand</label>
+                            <select asp-for="Brand" size="6" class="w3-input" id="Brand">
+                                @foreach (var brand in Model.Brands)
+                                {
+                                    <option>@brand.Text</option>
+                                }
+                            </select>
+                            <div class="w3-bar">
+                                <i class="w3-light-grey w3-bar-item w3-button w3-right w3-border-bottom fa-fw fas fa-plus" onclick="addBrand()"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w3-half w3-row-padding">
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select asp-for="Department" size="6" class="w3-input" id="Department">
+                                @foreach (var dept in Model.Departments)
+                                {
+                                    <option>@dept.Text</option>
+                                }
+                            </select>
+                            <div class="w3-bar">
+                                <i class="w3-light-grey w3-bar-item w3-button w3-right w3-border-bottom fa-fw fas fa-plus" onclick="addDept()"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w3-half w3-row-padding">
+                        <div class="form-group">
+                            <label>Sizes</label>
+                            <select asp-for="Size" size="6" class="w3-input" id="Size" multiple>
+                                @foreach (var size in Model.Sizes)
+                                {
+                                    <option>@size.Text</option>
+                                }
+                            </select>
+                            <div class="w3-bar">
+                                <i class="w3-light-grey w3-bar-item w3-button w3-right w3-border-bottom fa-fw fas fa-plus" onclick="addSize()"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w3-half w3-row-padding">
+                        <div class="form-group">
+                            <label>Colours</label>
+                            <select asp-for="Colour" size="6" class="w3-input" id="Colour" multiple>
+                                @foreach (var colour in Model.Colours)
+                                {
+                                    <option>@colour.Text</option>
+                                }
+                            </select>
+                            <div class="w3-bar">
+                                <i class="w3-light-grey w3-bar-item w3-button w3-right w3-border-bottom fa-fw fas fa-plus" onclick="addColour()"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w3-row-padding">
+                        <em style="font-size: small">Hold Ctrl (Cmd &#8984; on Mac) to select multiple.  Selected items will be included in product listing.</em>
+                    </div>
+
+                    <div class="w3-row">
+                        <div class="w3-half w3-row-padding">
+                            <label>Upload New Images</label>
+                            <div class="w3-row">
+                                <input asp-for="ImageFiles" class="w3-input" type="file" multiple />
+
+                            </div>
+                        </div>
+                        <div class="w3-half w3-row-padding">
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="w3-row">
+                    <div class="w3-half w3-row-padding">
+                        <button class="w3-button w3-light-grey w3-block w3-round" type="reset"><i class="fas fa-sync-alt w3-margin-right"></i>Reset</button>
+                    </div>
+                    <div class="w3-half w3-row-padding">
+                        <button class="w3-button w3-dark-grey w3-block w3-round" type="submit" onclick="openModal('spin')"><i class="fas fa-save w3-margin-right"></i>Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<partial name="_AddItem" />
+<script>
+    $(document).ready(function () {
+        $("#upload").click(function () {
+            var formData = new FormData();
+            var totalFiles = document.getElementById("filePassport").files.length;
+
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("filePassport").files[i];
+                formData.append("FileUpload", file);
+
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '/api/UploadFile/',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    for (var i = 0; i < totalFiles; i++) {
+                            var file = document.getElementById("filePassport").files[i];
+                            var fileList = document.getElementById("fileList");
+                            var newFile = document.createElement("option");
+
+                            newFile.value = file;
+                            newFile.text = file;
+                            newFile.selected;
+
+                            fileList.appendChild(newFile);
+
+                        }
+                },
+
+                error: function (error) {
+                    alert("error");
+                }
+            });
+        });
+    });
+
+</script>

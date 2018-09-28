@@ -1,0 +1,54 @@
+﻿@model GustafsGalleryStore.Models.ViewModels.InputViewModel
+@{
+    ViewData["Title"] = "Add Staff";
+}
+
+<div>
+    <div class="w3-half">
+        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+            <h4>Create a new staff member.</h4>
+            <hr />
+            <div class="form-group">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <label asp-for="Title"></label>
+
+                <div class="custom-select" style="width:100%;">
+                    @Html.DropDownListFor(m => m.Title, Model.Titles, "Select Title", new { @class = "w3-input", required = "" })
+                </div>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Forename"></label>
+                <input asp-for="Forename" class="w3-input" />
+                <span asp-validation-for="Forename" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname"></label>
+                <input asp-for="Surname" class="w3-input" />
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="w3-input" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="w3-input" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" class="w3-input" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <p>
+                <button type="submit" class="w3-button w3-round w3-block w3-light-grey" onclick="openModal('spin')">Register</button>
+            </p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

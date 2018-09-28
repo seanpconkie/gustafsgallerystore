@@ -1,0 +1,327 @@
+﻿<!-- Modal that pops up when you click on "+" -->
+<div id="idPopup" class="w3-modal" style="z-index:4">
+    <div class="w3-modal-content w3-animate-zoom">
+        <div class="w3-container w3-padding w3-card-4">
+            <span onclick="document.getElementById('idPopup').style.display='none'"
+                  class="w3-button w3-right"><i class="fas fa-times"></i></span>
+            <h2 id="addHeader"></h2>
+            <div id="message" style="display: none">
+                <span onclick="document.getElementById('message').style.display='none'"
+                      class="w3-button w3-right"><i class="fas fa-times"></i></span>
+            </div>
+            <hr />
+            <div id="popContainerId" class="w3-container">
+                <div id="currentValue" class="w3-half w3-row-padding">
+                    <h4 id="listHeader"></h4>
+                </div>
+                <div class="w3-half w3-row-padding">
+                    <h4>Add New</h4>
+                    <input id="newValue" class="w3-input w3-margin-bottom" />
+                    <div id="submitValue" class="w3-button w3-round w3-dark-grey w3-block"><i class="fas fa-save w3-margin-right"></i>Save</div>
+                </div>
+            </div>
+            <br />
+        </div>
+    </div>
+</div>
+<script>
+
+    function addCurrentItems(type) {
+
+        var currentList = document.getElementById('currentValue');
+
+        //remove children
+        while (currentList.hasChildNodes()) {
+            currentList.removeChild(currentList.firstChild);
+        }
+
+        //add new children
+        var newSelect = document.createElement("select");
+        newSelect.setAttribute('Size',"5");
+        newSelect.className = "w3-input";
+        newSelect.setAttribute('Id','current');
+
+        //add options from original
+        var oldSelect = document.getElementById(type);
+        var options = oldSelect.children;
+
+        for (var i = 0; i < options.length; i ++)
+        {
+            var newOption = document.createElement("option");
+            newOption.text = options[i].text;
+            newSelect.appendChild(newOption);
+        }
+
+        var currentListHeader = document.createElement('h4');
+        currentListHeader.innerText = "Existing Options";
+        currentList.appendChild(currentListHeader)
+        currentList.appendChild(newSelect);
+
+
+    }
+
+    function updateMessage(value) {
+
+        var messageContainer = document.getElementById('message');
+
+        messageContainer.innerText = value;
+        messageContainer.style.display = 'block';
+
+    }
+
+    function clearMessage(){
+
+        var messageContainer = document.getElementById('message');
+
+        messageContainer.innerText = "";
+        messageContainer.style.display = 'none';
+
+    }
+
+    function addBrand(){
+
+        clearMessage();
+
+        document.getElementById('idPopup').style.display='block';
+
+        addCurrentItems('Brand')
+        var modalHeader = document.getElementById('addHeader');
+        modalHeader.innerText = "Add New Brand";
+
+        var button = document.getElementById('submitValue');
+        button.setAttribute('onClick',"submitBrand()");
+
+    }
+
+    function addColour(){
+
+        clearMessage();
+
+        document.getElementById('idPopup').style.display='block';
+
+        addCurrentItems('Colour')
+        var modalHeader = document.getElementById('addHeader');
+        modalHeader.innerText = "Add New Colour";
+
+        var button = document.getElementById('submitValue');
+        button.setAttribute('onClick',"submitColour()");
+
+    }
+
+    function addDept(){
+
+        clearMessage();
+
+        document.getElementById('idPopup').style.display='block';
+
+        addCurrentItems('Department')
+        var modalHeader = document.getElementById('addHeader');
+        modalHeader.innerText = "Add New Department";
+
+        var button = document.getElementById('submitValue');
+        button.setAttribute('onClick',"submitDepartment()");
+
+    }
+
+    function addSize(){
+
+        document.getElementById('idPopup').style.display='block';
+
+        addCurrentItems('Size')
+        var modalHeader = document.getElementById('addHeader');
+        modalHeader.innerText = "Add New Size";
+
+        var button = document.getElementById('submitValue');
+        button.setAttribute('onClick',"submitSize()");
+
+    }
+
+
+    function submitBrand(){
+
+        var input = document.getElementById('newValue');
+        var newValue = input.value;
+
+        if(confirm("Are you sure you want to add '" + newValue + "'?")) {
+
+            openModal('spin');
+
+            var jsonPacket = {};
+
+            var columnName = 'Brand';
+            jsonPacket[columnName] = newValue;
+
+            $.ajax({
+                    url: "/ManageProducts/UpdateBrand",
+                    method: "POST",
+                    data: JSON.stringify(jsonPacket),
+                    contentType: "application/json; charset=utf-8",
+                    success: function() {
+                        updateMessage("'" + newValue + "' added successfully.");
+
+                        var newOption = document.createElement("option");
+                        newOption.text = newValue;
+
+                        var currentList = document.getElementById('current');
+                        currentList.appendChild(newOption);
+
+                        var newOption = document.createElement("option");
+                        newOption.text = newValue;
+
+                        var brandList = document.getElementById('Brand');
+                        brandList.appendChild(newOption);
+                    },
+                    error: function(error){
+                        updateMessage("'" + newValue + "' not added successfully, please try again. (" + error + ")" );
+                    }
+                });
+
+            input.value = '';
+
+        };
+
+        closeModal('spin');
+    }
+
+    function submitColour(){
+
+        var input = document.getElementById('newValue');
+        var newValue = input.value;
+
+        if(confirm("Are you sure you want to add '" + newValue + "'?")) {
+
+            openModal('spin');
+
+            var jsonPacket = {};
+
+            var columnName = 'Colour';
+            jsonPacket[columnName] = newValue;
+
+            $.ajax({
+                    url: "/ManageProducts/UpdateColour",
+                    method: "POST",
+                    data: JSON.stringify(jsonPacket),
+                    contentType: "application/json; charset=utf-8",
+                    success: function() {
+                        updateMessage("'" + newValue + "' added successfully.");
+
+                        var newOption = document.createElement("option");
+                        newOption.text = newValue;
+
+                        var currentList = document.getElementById('current');
+                        currentList.appendChild(newOption);
+
+                        var newOption = document.createElement("option");
+                        newOption.text = newValue;
+
+                        var brandList = document.getElementById('Colour');
+                        brandList.appendChild(newOption);
+                    },
+                    error: function(error){
+                        updateMessage("'" + newValue + "' not added successfully, please try again. (" + error + ")" );
+                    }
+                });
+
+            input.value = '';
+
+        };
+
+        closeModal('spin');
+    }
+
+    function submitDepartment(){
+
+        var input = document.getElementById('newValue');
+        var newValue = input.value;
+
+        if(confirm("Are you sure you want to add '" + newValue + "'?")) {
+
+            openModal('spin');
+
+            var jsonPacket = {};
+
+            var columnName = 'DepartmentName';
+            jsonPacket[columnName] = newValue;
+
+            console.log(JSON.stringify(jsonPacket));
+
+            $.ajax({
+                    url: "/ManageProducts/UpdateDepartment",
+                    method: "POST",
+                    data: JSON.stringify(jsonPacket),
+                    contentType: "application/json; charset=utf-8",
+                    success: function() {
+                        updateMessage("'" + newValue + "' added successfully.");
+
+                        var newOption = document.createElement("option");
+                        newOption.text = newValue;
+
+                        var currentList = document.getElementById('current');
+                        currentList.appendChild(newOption);
+
+                        var newOption = document.createElement("option");
+                        newOption.text = newValue;
+
+                        var brandList = document.getElementById('Department');
+                        brandList.appendChild(newOption);
+                    },
+                    error: function(error){
+                        debugger;
+                        updateMessage("'" + newValue + "' not added successfully, please try again. (" + error.responseText + ")" );
+                    }
+                });
+
+            input.value = '';
+
+        };
+
+        closeModal('spin');
+    }
+
+    function submitSize(){
+
+        var input = document.getElementById('newValue');
+        var newValue = input.value;
+
+        if(confirm("Are you sure you want to add '" + newValue + "'?")) {
+
+            openModal('spin');
+
+            var jsonPacket = {};
+
+            var columnName = 'Size';
+            jsonPacket[columnName] = newValue;
+
+            $.ajax({
+                    url: "/ManageProducts/UpdateSize",
+                    method: "POST",
+                    data: JSON.stringify(jsonPacket),
+                    contentType: "application/json; charset=utf-8",
+                    success: function() {
+                        updateMessage("'" + newValue + "' added successfully.");
+
+                        var newOption = document.createElement("option");
+                        newOption.text = newValue;
+
+                        var currentList = document.getElementById('current');
+                        currentList.appendChild(newOption);
+
+                        var newOption = document.createElement("option");
+                        newOption.text = newValue;
+
+                        var brandList = document.getElementById('Size');
+                        brandList.appendChild(newOption);
+                    },
+                    error: function(error){
+                        updateMessage("'" + newValue + "' not added successfully, please try again. (" + error + ")" );
+                    }
+                });
+
+            input.value = '';
+
+        };
+
+        closeModal('spin');
+    }
+
+</script>

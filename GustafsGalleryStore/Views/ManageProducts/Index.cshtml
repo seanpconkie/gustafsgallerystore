@@ -1,0 +1,38 @@
+﻿@model GustafsGalleryStore.Models.ViewModels.ProductListViewModel
+@{
+    ViewData["Title"] = "Manage Products";
+}
+<div>
+    <div class="w3-bar w3-padding">
+        <div asp-validation-summary="All" class="text-danger w3-bar-item"></div>
+        <a href="/ManageProducts/AddProduct" class="w3-bar-item w3-button w3-light-grey w3-right"><i class="fas fa-plus fa-fw"></i></a>
+    </div>
+    <table id="products">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Brand</th>
+                <th>Department</th>
+                <th>Stock</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in Model.Products)
+            {
+                <tr>
+                    <td class="w3-center"><a href="/ManageProducts/EditProduct?id=@member.Id" onclick="openModal('spin')">@member.Title</a></td>
+                    <td class="w3-center">@member.ProductBrand.Brand</td>
+                    <td class="w3-center">@member.Department.DepartmentName</td>
+                    <td class="w3-center">@member.Stock</td>
+                    <td class="w3-center">@member.Price</td>
+                    <td class="w3-center" style="width: 100px">
+                        <a class="w3-bar-item w3-button w3-round w3-light-grey" href="/ManageProducts/EditProduct?id=@member.Id" onclick="openModal('spin')"><i class="fas fa-edit w3-margin-right"></i>Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>$("#products").DataTable();</script>

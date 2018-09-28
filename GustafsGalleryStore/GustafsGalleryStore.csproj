@@ -12,15 +12,33 @@
     <PackageReference Include="Sendgrid" Version="9.9.0" />
     <PackageReference Include="Microsoft.AspNet.Identity.EntityFramework" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNet.Web.Helpers.Mvc" Version="2.0.20710" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.21.1" />
+    <PackageReference Include="AWSSDK.Core" Version="3.3.25.1" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.6" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.6" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
     <Folder Include="Models\ViewModels\" />
     <Folder Include="Models\DataModels\" />
+    <Folder Include="Views\ManageStaff\" />
+    <Folder Include="Views\Products\" />
+    <Folder Include="Views\ManageProducts\" />
+    <Folder Include="Views\ManageSite\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Areas\Identity\IdentityHostingStartup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\js\xzoom.js" />
+    <Content Remove="wwwroot\css\xzoom.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\js\xzoom.js" />
+    <None Include="wwwroot\css\xzoom.css" />
   </ItemGroup>
 </Project>

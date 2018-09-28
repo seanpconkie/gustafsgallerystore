@@ -1,0 +1,24 @@
+﻿@model GustafsGalleryStore.Models.ViewModels.BrandViewModel
+@{
+    ViewData["Title"] = "Add New Brand";
+}
+
+@await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
+<div class="w3-row">
+    <div class="w3-half w3-row-padding">
+        <label>Brand</label>
+        <select size="6" class="w3-input" id="Brand" disabled>
+            @foreach (var brand in Model.Brands)
+            {
+                <option>@brand.Brand</option>
+            }
+        </select>
+    </div>
+    <div class="w3-half w3-row-padding">
+        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+            <label asp-for="Brand"></label>
+            <input asp-for="Brand" class="w3-input" />
+            <button type="submit" class="w3-button w3-round w3-light-grey w3-block w3-margin-top" onclick="openModal('spin')"><i class="fas fa-save w3-margin-right"></i>Save</button>
+        </form>
+    </div>
+</div>

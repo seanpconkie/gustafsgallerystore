@@ -11,7 +11,7 @@ namespace GustafsGalleryStore.Models.DataModels
 
 
         #region Public Methods
-        public static List<SelectListItem> GetColours(List<ProductColour> resultList)
+        public static List<SelectListItem> GetList(List<ProductColour> resultList)
         {
 
             List<SelectListItem> colours = new List<SelectListItem>();
