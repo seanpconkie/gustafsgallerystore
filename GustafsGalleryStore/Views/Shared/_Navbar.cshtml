@@ -25,37 +25,36 @@
         <a href="https://gustafsgallery.co.uk">
             <img class="w3-bar-item w3-hide-small" src="https://farm5.staticflickr.com/4785/40120170224_da73670e8d_o.png" alt="GustafStudio_fullLogo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" id="headerLogo">
         </a>
-        <form asp-area="Home" asp-page="/" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="get" id="shopHomeForm" onclick="openModal('spin')">
+        <form action="/#about">
             <div class="w3-dropdown-hover w3-hide-small">
-                <button class="dropbtn" type="submit">Shop by Designer&nbsp;<i class="fa fa-caret-down"></i></button>
+                <button class="dropbtn" type="submit"><i class="fas fa-info w3-margin-right"></i>About</button>
+            </div>
+        </form>
+        <form action="/#designers">
+            <div class="w3-dropdown-hover w3-hide-small">
+                <button class="dropbtn" type="submit"><i class="fas fa-user w3-margin-right"></i>Designers&nbsp;<i class="fa fa-caret-down"></i></button>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey">
                     <a href="https://gustafsgallery.co.uk/animal_fayre_designs.html" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Animal Fayre Designs</a>
                     <a href="https://gustafsgallery.co.uk/jack_conkie_illustration.html" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Jack Conkie Illustrations</a>
                     <a href="https://gustafsgallery.co.uk/silver_bough_jewellery.html" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Silver Bough Jewellery</a>
-                    <a href="/" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">See all ...</a>
                 </div>
             </div>
         </form>
-
-
-        <form asp-area="Home" asp-page="/" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="get" id="shopHomeForm" onclick="openModal('spin')">
+        <form action="/#products">
             <div class="w3-dropdown-hover w3-hide-small">
-                <button class="dropbtn" type="submit">Shop by Department&nbsp;<i class="fa fa-caret-down"></i></button>
-                <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey">
-                    <a href="/" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Gifts</a>
-                    <a href="/" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Jewellery</a>
-                    <a href="/" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Tapestry Kits</a>
-                    <a href="/" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">See all ...</a>
-                </div>
+                <button class="dropbtn" type="submit"><i class="fa fa-cubes w3-margin-right"></i>Products</button>
             </div>
         </form>
-
+        <form action="/Products">
+            <div class="w3-dropdown-hover w3-hide-small">
+                <button class="dropbtn" type="submit"><i class="fas fa-store w3-margin-right"></i>Store</button>
+            </div>
+        </form>
         <a href="/">
-       @*     <img class="w3-bar-item w3-hide-small" src="https://farm2.staticflickr.com/1934/44250128564_9efea90043_o.png" height="100%" alt="GustafStudio_madeInPeebles" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" id="madeInPeebles"/>*@
+            @*     <img class="w3-bar-item w3-hide-small" src="https://farm2.staticflickr.com/1934/44250128564_9efea90043_o.png" height="100%" alt="GustafStudio_madeInPeebles" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" id="madeInPeebles"/>*@
         </a>
 
-        <a href="https://gustafsgallery.co.uk#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Contact Us"><i class="fa fa-envelope w3-xlarge "></i></a>
-        <a href="#home" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Top the top"><i class="fa fa-arrow-up w3-xlarge"></i></a>
+        <a href="/Home/Contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Contact Us"><i class="fa fa-envelope w3-xlarge "></i></a>
         <a href="#home" class="notification w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Top the top">
             <i class="fas fa-shopping-basket w3-xlarge"></i>
             <span id="badge" class="badge"></span>
@@ -69,9 +68,9 @@
             <i class="fa fa-bars"></i>
         </a>
         <div id="navDemo" class="w3-bar-block w3-hide w3-hide-large w3-hide-medium">
-            <a href="https://gustafsgallery.co.uk" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-home w3-margin-right"></i>HOME</a>
-            <a href="https://gustafsgallery.co.uk#about" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-info w3-margin-right"></i>ABOUT</a>
-            <a href="https://gustafsgallery.co.uk#contact" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-envelope w3-margin-right"></i>CONTACT</a>
+            <a href="/Index" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-home w3-margin-right"></i>HOME</a>
+            <partial name="_LoginPartial.cshtml" />
+            <a href="/Home/Contact" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-envelope w3-margin-right"></i>CONTACT</a>
         </div>
     </div>
 </div>

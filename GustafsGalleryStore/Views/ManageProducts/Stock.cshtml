@@ -2,125 +2,148 @@
 @{
     ViewData["Title"] = "Edit Stock";
 }
-<style>
-    .ht_clone_top{z-index: -1!important}
-</style>
-<script src="https://cdn.jsdelivr.net/npm/handsontable@5.0.2/dist/handsontable.full.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/handsontable@5.0.2/dist/handsontable.full.min.css" rel="stylesheet" media="screen">
-<div class="w3-container">
-    <div class="w3-container">
-        <div class="w3-row w3-margin-bottom">
-            <div class="w3-half">
-                <div class="w3-half w3-row-padding">
-                    <a href="/ManageProducts/Stock" class="w3-button w3-block w3-light-grey w3-round" onclick="openModal('spin')"><i class="fas fa-sync-alt w3-margin-right"></i>Refresh</a>
+        <style>
+            .ht_clone_top{z-index: -1!important}
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/handsontable@5.0.2/dist/handsontable.full.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/handsontable@5.0.2/dist/handsontable.full.min.css" rel="stylesheet" media="screen">
+        <div class="w3-container">
+            <div class="w3-container">
+                <div class="w3-row w3-margin-bottom">
+                    <div class="w3-half">
+                        <div class="w3-half w3-row-padding">
+                            <a href="/ManageProducts/Stock" class="w3-button w3-block w3-light-grey w3-round" onclick="openModal('spin')"><i class="fas fa-sync-alt w3-margin-right"></i>Refresh</a>
+                        </div>
+                        <div class="w3-half w3-row-padding">
+                            <div class="w3-button w3-block w3-dark-grey w3-round" onclick="saveChanges();"><i class="fas fa-save w3-margin-right"></i>Save</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="w3-half w3-row-padding">
-                    <div class="w3-button w3-block w3-dark-grey w3-round" onclick="openModal('spin');saveChanges();"><i class="fas fa-save w3-margin-right"></i>Save</div>
+                <div id="message" style="display: none">
+                    <span onclick="document.getElementById('message').style.display='none'"
+                          class="w3-button w3-right"><i class="fas fa-times"></i></span>
                 </div>
             </div>
+            <div id="stock"></div>
         </div>
-    </div>
-    <div id="stock"></div>
-</div>
 
-<script type="text/javascript">
+        <script type="text/javascript">
 
-    var data = [];
+            var data = [];
 
-    var container = document.getElementById('stock');
-    window.hot = new Handsontable(container, {
-        data: data,
-        colHeaders: ["Id","Title","Brand","Department","Stock","Price (£)"],
-        columns: [
-            {
-                data: 'Id',
-                type: 'numeric',
-                readOnly: true
-            },
-            {
-                data: 'Title',
-                type: 'text',
-                readOnly: true
-            },
-            {
-                data: 'Brand',
-                type: 'text',
-                readOnly: true
-            },
-            {
-                data: 'DepartmentName',
-                type: 'text',
-                readOnly: true
-            },
-            {
-                data: 'Stock',
-                type: 'numeric'
-            },
-            {
-                data: 'Price',
-                type: 'numeric',
-                numericFormat: {
-                    pattern: '0.00'
-                  }
-            }
-        ],
-        columnSorting: true,
-        sortIndicator: true,
-        readOnlyCellClassName: 'w3-light-grey',
-        autoColumnSize: {
-        samplingRatio: 23
-        },
-        manualRowResize: true,
-        manualColumnResize: true,
-        manualRowMove: true,
-        contextMenu: ["copy","cut","redo","undo","---------","remove_row","remove_col","clear_column","alignment"],
-        stretchH: 'all',
-        autoWrapRow: true
-    });
-
-   @foreach (var product in Model.Products)
-    {
-        @:data.push({Id:"@product.Id",Title:"@product.Title",DepartmentName:"@product.Department.DepartmentName",Brand:"@product.ProductBrand.Brand",Stock:"@product.Stock",Price:"@product.Price"})
-    }
-
-    hot.updateSettings({data: data});
-
-</script>
-<script type="text/javascript">
-    function saveChanges() {
-        var hotData = hot.getData();
-
-        if(confirm("Are you sure you want to save changes?")) {
-
-            var jsonPacket = {Products: []};
-
-            hotData.forEach(function(item, index){
-
-                var jsonData = {};
-                var columnName = 'Id';
-                jsonData[columnName] = item[0];
-                var columnName = 'Stock';
-                jsonData[columnName] = item[4];
-                var columnName = 'Price';
-                jsonData[columnName] = item[5];
-
-                jsonPacket.Products.push(jsonData);
-
-            })
-
-            $.ajax({
-                    url: "@Url.Action("UpdateStock")",
-                    method: "POST",
-                    data: JSON.stringify(jsonPacket),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    beforeSend: function (data) {
+            var container = document.getElementById('stock');
+            window.hot = new Handsontable(container, {
+                data: data,
+                colHeaders: ["Id","Title","Brand","Department","Stock","Price (£)"],
+                columns: [
+                    {
+                        data: 'Id',
+                        type: 'numeric',
+                        readOnly: true
                     },
-                    success: function(data) {
+                    {
+                        data: 'Title',
+                        type: 'text',
+                        readOnly: true
+                    },
+                    {
+                        data: 'Brand',
+                        type: 'text',
+                        readOnly: true
+                    },
+                    {
+                        data: 'DepartmentName',
+                        type: 'text',
+                        readOnly: true
+                    },
+                    {
+                        data: 'Stock',
+                        type: 'numeric'
+                    },
+                    {
+                        data: 'Price',
+                        type: 'numeric',
+                        numericFormat: {
+                            pattern: '0.00'
+                          }
                     }
-                })
+                ],
+                columnSorting: true,
+                sortIndicator: true,
+                readOnlyCellClassName: 'w3-light-grey',
+                autoColumnSize: {
+                samplingRatio: 23
+                },
+                manualRowResize: true,
+                manualColumnResize: true,
+                manualRowMove: true,
+                contextMenu: ["copy","cut","redo","undo","---------","remove_row","remove_col","clear_column","alignment"],
+                stretchH: 'all',
+                autoWrapRow: true
+            });
 
-        }
+           @foreach (var product in Model.Products)
+            {
+                @:data.push({Id:"@product.Id",Title:"@product.Title",DepartmentName:"@product.Department.DepartmentName",Brand:"@product.ProductBrand.Brand",Stock:"@product.Stock",Price:"@product.Price"})
+            }
 
-    }
-</script>
+            hot.updateSettings({data: data});
+
+        </script>
+        <script type="text/javascript">
+
+            function updateMessage(value) {
+
+                var messageContainer = document.getElementById('message');
+
+                messageContainer.innerText = value;
+                messageContainer.style.display = 'block';
+
+            }
+
+
+            function saveChanges() {
+                var hotData = hot.getData();
+
+                if(confirm("Are you sure you want to save changes?")) {
+
+                    openModal('spin');
+
+                    var jsonPacket = {Products: []};
+
+                    hotData.forEach(function(item, index){
+
+                        var jsonData = {};
+                        var columnName = 'Id';
+                        jsonData[columnName] = item[0];
+                        var columnName = 'Stock';
+                        jsonData[columnName] = item[4];
+                        var columnName = 'Price';
+                        jsonData[columnName] = item[5];
+
+                        jsonPacket.Products.push(jsonData);
+
+                    })
+
+                    $.ajax({
+                            url: "@Url.Action("UpdateStock")",
+                            method: "POST",
+                            data: JSON.stringify(jsonPacket),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            beforeSend: function (data) {
+                            },
+                            success: function(data) {
+                                updateMessage("Changes saved successfully."); 
+                            },
+                            error: function(error){
+                                updateMessage("Changes not saved, please try again. (" + error + ")" );
+                            }
+                        })
+
+                    closeModal('spin');
+
+                }
+
+            }
+        </script>

@@ -108,6 +108,8 @@ namespace GustafsGalleryStore.Controllers
                 try
                 {
                     //Prepare Product
+                    input.Product.CreateDate = DateTime.Now;
+
                     //Department
                     var department = new Department();
                     department = _context.Departments.Where(x => x.DepartmentName == input.Department).SingleOrDefault();

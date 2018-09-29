@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using GustafsGalleryStore.Models.DataModels;
 using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 using Microsoft.AspNetCore.Authorization;
+using GustafsGalleryStore.Helpers;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -61,7 +62,8 @@ namespace GustafsGalleryStore.Controllers
                 StatusMessage = StatusMessage
             };
 
-            return View(viewModel);
+            //return View(viewModel);
+            return ControllerHelper.RedirectToLocal(this,"/Home/ComingSoon");
         }
 
         // GET: /<controller>/
@@ -82,7 +84,8 @@ namespace GustafsGalleryStore.Controllers
             viewModel.Sizes = ProductSize.GetList(viewModel.Product.ProductSizes);
             viewModel.Colours = ProductColour.GetList(viewModel.Product.ProductColours);
 
-            return View(viewModel);
+            //return View(viewModel);
+            return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
         }
     }
 }

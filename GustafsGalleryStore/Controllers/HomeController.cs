@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using GustafsGalleryStore.Models;
 using GustafsGalleryStore.Helpers;
+using GustafsGalleryStore.Models.ViewModels;
 
 namespace GustafsGalleryStore.Controllers
 {
@@ -14,10 +15,29 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Index()
         {
             return View();
-            //return ControllerHelper.RedirectToLocal(this,"/Products");
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult CookiePolicy()
+        {
+            return View();
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        public IActionResult ComingSoon()
+        {
+            return View();
+        }
+
+        public IActionResult Designer(string designer)
         {
             return View();
         }

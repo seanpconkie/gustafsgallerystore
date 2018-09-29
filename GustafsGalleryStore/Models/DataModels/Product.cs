@@ -12,6 +12,7 @@ namespace GustafsGalleryStore.Models.DataModels
         public float Price { get; set; }
         public float PostagePrice { get; set; }
         public string ProductCode { get; set; }
+        public DateTime? CreateDate { get; set; }
 
         //brand
         public ProductBrand ProductBrand { get; set; }

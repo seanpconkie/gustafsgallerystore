@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Contact Gustaf";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+        <br />
+        <div class="w3-container w3-padding-64 animal-fayre-background">
+            <h2>@ViewData["Title"]</h2>
+            <div class="w3-large w3-margin-bottom">
+                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/contact.html"></div>
+            </div>
+            <!-- Add Google Maps -->
+            <div id="map" class="w3-round w3-opacity w3-hover-opacity-off"></div>   
+
+        </div>
+        <!-- google maps key -->
+        <script>
+            function initMap() {
+                var uluru = {lat: 55.651784, lng: -3.1902352};
+                var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: uluru
+                });
+                var marker = new google.maps.Marker({
+                position: uluru,
+                map: map
+                });
+            }
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOfCiFMuWl_6DzM4BsVFPYZ7ZvWmHcKR0&callback=initMap"></script>

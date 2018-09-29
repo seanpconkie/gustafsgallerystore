@@ -7,6 +7,7 @@
     <div class="w3-content">
         <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" enctype="multipart/form-data">
             <header>
+                <div w3-bar><a href="/ManageProducts" class="w3-button"><i class="fas fa-arrow-left w3-margin-right"></i>Back</a></div>
                 <h2><input asp-for="Product.Title" class="w3-input" /></h2>
                 <div class="w3-row">
                     <h4 class="w3-col s1">by</h4>
