@@ -131,13 +131,8 @@
                             data: JSON.stringify(jsonPacket),
                             contentType: "application/json; charset=utf-8",
                             dataType: "json",
-                            beforeSend: function (data) {
-                            },
-                            success: function(data) {
-                                updateMessage("Changes saved successfully."); 
-                            },
-                            error: function(error){
-                                updateMessage("Changes not saved, please try again. (" + error + ")" );
+                            success: function() {
+                                updateMessage("Change saved successfully.");
                             }
                         })
 
