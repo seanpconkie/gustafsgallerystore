@@ -6,7 +6,7 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<div class="">
+<div class="w3-content w3-container w3-padding-64">
     <div class="w3-half">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h4>Create a new account.</h4>
@@ -46,7 +46,10 @@
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             <p>
-                <button type="submit" class="w3-button w3-round w3-block w3-light-grey">Register</button>
+                <span>By regitering you are confirming you accept the <a href="/Home/TermsAndConditions" target="_blank">Terms and Conditions</a> and <a href="/Home/Privacy" target="_blank">Privacy Policy</a>.</span>
+            </p>
+            <p>
+                <button type="submit" class="w3-button w3-round w3-block w3-dark-grey">Register</button>
             </p>
         </form>
     </div>

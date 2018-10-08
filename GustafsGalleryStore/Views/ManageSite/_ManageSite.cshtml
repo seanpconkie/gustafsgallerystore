@@ -1,7 +1,20 @@
 ﻿
-<div class="w3-row w3-row-padding">
+<div class="w3-row w3-row-padding w3-hide-small">
     <span class=""><a href="/ManageSite/Brand" class="w3-button w3-bar-item w3-light-grey" onclick="openModal('spin')">Brand</a></span>
     <span class=""><a href="/ManageSite/Colour" class="w3-button w3-bar-item w3-light-grey" onclick="openModal('spin')">Colour</a></span>
     <span class=""><a href="/ManageSite/Department" class="w3-button w3-bar-item w3-light-grey" onclick="openModal('spin')">Department</a></span>
     <span class=""><a href="/ManageSite/Size" class="w3-button w3-bar-item w3-light-grey" onclick="openModal('spin')">Size</a></span>
+</div>
+
+<div class="w3-bar w3-hide-medium w3-hide-large">
+    <span id="open" class="w3-button w3-show" onclick="toggleSubMenu()"><i class="fas fa-bars w3-margin-right w3-large"></i>More</span>
+    <span id="close" class="w3-button w3-hide" onclick="toggleSubMenu()"><i class="fas fa-times w3-margin-right w3-large"></i>Close</span>
+</div>
+<div class="w3-hide-medium w3-hide-large">
+    <div id="subMenu" class="w3-bar-block w3-hide">
+        <span class=""><a href="/ManageSite/Brand" class="w3-button w3-bar-item w3-light-grey" onclick="openModal('spin')">Brand</a></span>
+        <span class=""><a href="/ManageSite/Colour" class="w3-button w3-bar-item w3-light-grey" onclick="openModal('spin')">Colour</a></span>
+        <span class=""><a href="/ManageSite/Department" class="w3-button w3-bar-item w3-light-grey" onclick="openModal('spin')">Department</a></span>
+        <span class=""><a href="/ManageSite/Size" class="w3-button w3-bar-item w3-light-grey" onclick="openModal('spin')">Size</a></span>
+    </div>
 </div>

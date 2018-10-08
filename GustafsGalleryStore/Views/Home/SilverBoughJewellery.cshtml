@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Silver Bough Jewellery";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+        <!-- lightboxes -->
+        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg1.js?Authorization"></script>
+        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg1.css?Authorization" />
+        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg2.js?Authorization"></script>
+        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg2.css?Authorization" />
+        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg3.js?Authorization"></script>
+        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg3.css?Authorization" />
+        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg4.js?Authorization"></script>
+        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg4.css?Authorization" />
+        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg5.js?Authorization"></script>
+        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg5.css?Authorization" />
+        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg6.js?Authorization"></script>
+        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg6.css?Authorization" />
+        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg7.js?Authorization"></script>
+        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg7.css?Authorization" />
+        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg8.js?Authorization"></script>
+        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/lightboxImg8.css?Authorization" />
+        
+        <!-- lightbox modals -->
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imgModal1.html?Authorization"></div>
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imgModal2.html?Authorization"></div>
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imgModal3.html?Authorization"></div>
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imgModal4.html?Authorization"></div>
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imgModal5.html?Authorization"></div>
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imgModal6.html?Authorization"></div>
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imgModal7.html?Authorization"></div>
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imgModal8.html?Authorization"></div>
+
+        <!-- Header -->
+        <header class="w3-display-container w3-content w3-center w3-hide-small" style="max-width:1500px" id="home">
+            <img class="w3-image w3-opacity" src="https://farm2.staticflickr.com/1765/42855924802_840cf60892_o.jpg" alt="home" width="1500px" height="600px" id="headerImg" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+            <div class="w3-display-middle w3-padding-large w3-border w3-wide w3-text-light-grey w3-center">
+                <img src="https://farm5.staticflickr.com/4627/40293731232_694816ebe4_o.png" alt="gustaf" class="w3-hide-small w3-hide-medium" style="width: 50%" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                <h3 class="silver-bough-background">SILVER BOUGH JEWELLERY</h3>
+            </div>
+            <!-- sub title bar (placed at the bottom of the header image) -->
+            <div class="w3-bar w3-round w3-display-bottommiddle w3-hide-small gustaf silver-bough-background" style="bottom:-16px" id="smallbar">
+                <h5 class="w3-center w3-margin-right w3-margin-left"><em>by Patrick Hoye</em></h5>
+            </div>
+        </header>
+        <!-- Page content -->
+        <div class="w3-padding-large w3-margin-top">
+            <!-- about -->
+            <div class="w3-padding-large w3-padding-32 w3-margin-top silver-bough-background designer-hover" id="about">
+                <!-- Designer section -->
+                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/silver-bough-designer.html?Authorization"></div>
+            </div>
+            <!-- End About Section -->
+            <!-- Slideshow container -->
+            <div class="slideshow-container w3-margin-top">
+                <div class="ism-slider" data-play_type="loop" id="header-carousel">
+                    <ol>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Slider1.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Slider2.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Slider3.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Slider4.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Slider5.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <!-- Images (Portfolio) -->
+            <div class="w3-padding-large w3-padding-32 w3-margin-top silver-bough-background designer-hover" id="portfolio">
+                <h3 class="w3-center">PORTFOLIO</h3>
+                <p class="w3-center">
+                    <em>
+                        Natural forms, and the Art Nouveau and Rococo movements inspire the Silver Bough Jewellery collection. <br>
+                        Sculpted, 3D-printed and cast by Patrick Hoye
+                    </em>
+                </p><br>
+
+                <!-- Responsive Grid. Four columns on tablets, laptops and desktops. Will stack on mobile devices/small screens (100% width) -->
+                <div class="w3-row-padding w3-center">
+                    <div class="w3-col m3">
+                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Product1.jpg?Authorization" style="width:100%" onclick="openModal('imgModal1');currentSlide_1(1)" class="w3-hover-opacity-off w3-opacity" alt="Low Relief Forget-Me-Not Pin" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Product2.jpg?Authorization" style="width:100%" onclick="openModal('imgModal2');currentSlide_2(1)" class="w3-hover-opacity-off w3-opacity" alt="Sculpted Oak Leaf Cufflinks" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Product3.jpg?Authorization" style="width:100%" onclick="openModal('imgModal3');currentSlide_3(1)" class="w3-hover-opacity-off w3-opacity" alt="Sculpted Oak Leaf Cufflinks" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Product4.jpg?Authorization" style="width:100%" onclick="openModal('imgModal4');currentSlide_4(1)" class="w3-hover-opacity-off w3-opacity" alt="Sculpted Scrollwork Ring" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+                </div>
+
+                <div class="w3-row-padding w3-center w3-section">
+                    <div class="w3-col m3">
+                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Product5.jpg?Authorization" style="width:100%" onclick="openModal('imgModal5');currentSlide_5(1)" class="w3-hover-opacity-off w3-opacity" alt="Oak Leaf and Acorn Pin" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Product6.jpg?Authorization" style="width:100%" onclick="openModal('imgModal6');currentSlide_6(1)" class="w3-hover-opacity-off w3-opacity" alt="Sculpted Scrollwork Cufflinks" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Product7.jpg?Authorization" style="width:100%" onclick="openModal('imgModal7');currentSlide_7(1)" class="w3-hover-opacity-off w3-opacity" alt="Sculpted Low Relief Sterling Silver Scroll Stud Earrings" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_SilverBough_Product8.jpg?Authorization" style="width:100%" onclick="openModal('imgModal8');currentSlide_8(1)" class="w3-hover-opacity-off w3-opacity" alt="Sculpted Scrollwork Ring" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+                </div>
+                <div class="w3-section w3-center">
+                </div>
+            </div>
+            <!-- Contact -->
+            <div class="w3-padding-large w3-padding-32 w3-margin-top silver-bough-background designer-hover" id="contact">
+                <h3 class="w3-center">Contact</h3>
+                <hr>
+                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/silver-bough-contact.html?Authorization"></div>
+                <br>
+            </div>
+            <br>
+            <!-- End page content -->
+        </div>

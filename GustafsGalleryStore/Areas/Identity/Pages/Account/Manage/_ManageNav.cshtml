@@ -6,7 +6,7 @@
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
-<div class="w3-row w3-row-padding">
+<div class="w3-row w3-row-padding w3-hide-small">
     <span class="@ManageNavPages.IndexNavClass(ViewContext)"><a asp-page="./Index" class="w3-button w3-bar-item w3-light-grey">Profile</a></span>
     <span class="@ManageNavPages.ChangePasswordNavClass(ViewContext)"><a id="change-password" asp-page="./ChangePassword" class="w3-button w3-bar-item w3-light-grey">Password</a></span>
     @if (hasExternalLogins)
@@ -15,4 +15,20 @@
     }
     <span class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-page="./TwoFactorAuthentication" class="w3-button w3-bar-item w3-light-grey">Two-factor authentication</a></span>
     <span class="@ManageNavPages.PersonalDataNavClass(ViewContext)"><a asp-page="./PersonalData" class="w3-button w3-bar-item w3-light-grey">Personal data</a></span>
+</div>
+<div class="w3-bar w3-hide-medium w3-hide-large">
+    <span id="open" class="w3-button w3-show" onclick="toggleSubMenu()"><i class="fas fa-bars w3-margin-right w3-large"></i>More</span>
+    <span id="close" class="w3-button w3-hide" onclick="toggleSubMenu()"><i class="fas fa-times w3-margin-right w3-large"></i>Close</span>
+</div>
+<div class="w3-hide-medium w3-hide-large">
+    <div id="subMenu" class="w3-bar-block w3-hide">
+        <span class="@ManageNavPages.IndexNavClass(ViewContext)"><a asp-page="./Index" class="w3-button w3-bar-item w3-light-grey">Profile</a></span>
+        <span class="@ManageNavPages.ChangePasswordNavClass(ViewContext)"><a id="change-password" asp-page="./ChangePassword" class="w3-button w3-bar-item w3-light-grey">Password</a></span>
+        @if (hasExternalLogins)
+        {
+            <span class="@ManageNavPages.ExternalLoginsNavClass(ViewContext)"><a id="external-login" asp-page="./ExternalLogins" class="w3-button w3-bar-item w3-light-grey">External logins</a></span>
+        }
+        <span class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-page="./TwoFactorAuthentication" class="w3-button w3-bar-item w3-light-grey">Two-factor authentication</a></span>
+        <span class="@ManageNavPages.PersonalDataNavClass(ViewContext)"><a asp-page="./PersonalData" class="w3-button w3-bar-item w3-light-grey">Personal data</a></span>
+    </div>
 </div>

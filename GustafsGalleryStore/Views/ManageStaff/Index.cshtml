@@ -12,7 +12,7 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Email</th>
+                <th class="w3-hide-small">Email</th>
                 <th></th>
             </tr>
         </thead>
@@ -21,7 +21,7 @@
             {
                 <tr>
                     <td class="w3-center"><a href="javascript:void(0);" class="edit" data-message-id="@member.Id">@member.Forename&nbsp;@member.Surname</a></td>
-                    <td class="w3-center">@member.Email</td>
+                    <td class="w3-center w3-hide-small">@member.Email</td>
                     <td class="w3-center" style="width: 100px">
                         <a class="delete w3-bar-item w3-button w3-round w3-light-grey" href="javascript:void(0);" data-user-id="@member.Id"><i class="far fa-trash-alt w3-margin-right"></i>Delete</a>
                     </td>

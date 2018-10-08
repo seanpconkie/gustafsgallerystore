@@ -39,14 +39,21 @@
         <partial name="_Navbar" />
 
         @*<partial name="_CookieConsentPartial" />*@    
-        @RenderBody()
+        <div>
+            <div id="sidenav" class="w3-hide">
+                <partial name="_Sidenav" />
+            </div>
+            <div id="content" class="w3-show">
+                @RenderBody()
+            </div>
+        </div>
         <footer>
             <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/footer.html?Authorization"></div>
         </footer>
         @RenderSection("Scripts", required: false)
 
         <div class="w3-modal w3-center" id="spin"><i class="fas fa-spinner fa-spin fa-3x fa-fw"></i></div>
-
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/image-modal.html?Authorization"></div>
         <!-- cookie message popup -->
         <div class="w3-bottom" id="cookie-message">
             <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/CookieMessage.html?Authorization"></div>

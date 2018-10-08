@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 namespace GustafsGalleryStore.Models.DataModels
 {
@@ -9,8 +10,10 @@ namespace GustafsGalleryStore.Models.DataModels
         public string Title { get; set; }
         public string Description { get; set; }
         public long Stock { get; set; }
-        public float Price { get; set; }
-        public float PostagePrice { get; set; }
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        public decimal Price { get; set; }
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        public decimal PostagePrice { get; set; }
         public string ProductCode { get; set; }
         public DateTime? CreateDate { get; set; }
 

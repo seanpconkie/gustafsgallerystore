@@ -93,7 +93,7 @@ namespace GustafsGalleryStore.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             bool modelValid = true;
-            float priceComparison = 0;
+            decimal priceComparison = 0;
 
             if (string.IsNullOrWhiteSpace(input.Product.Title) ||
                 input.Product.Price == priceComparison ||
@@ -242,7 +242,7 @@ namespace GustafsGalleryStore.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             bool modelValid = true;
-            float priceComparison = 0;
+            decimal priceComparison = 0;
 
 
             if (string.IsNullOrWhiteSpace(input.Product.Title) ||

@@ -1,51 +1,36 @@
 ﻿<!-- nav bar -->
 <style>
-    .notification {
-        color: white;
-        text-decoration: none;
-        position: relative;
-        display: inline-block;
-    }
-
-    .notification:hover {
-        background: red;
-    }
-
-    .notification .badge {
-        position: absolute;
-        top: -0px;
-        right: -0px;
-        padding: 5px 10px;
-        color: white;
-    }
+    .notification {color: white;text-decoration: none;position: relative;display: inline-block;}
+    .notification:hover {background: red;}
+    .notification .badge {position: absolute;top: -0px;right: -0px;padding: 5px 10px;color: white;}
 </style>
 
 <div class="w3-top">
     <div class="w3-bar">
-        <a href="https://gustafsgallery.co.uk">
-            <img class="w3-bar-item w3-hide-small" src="https://farm5.staticflickr.com/4785/40120170224_da73670e8d_o.png" alt="GustafStudio_fullLogo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" id="headerLogo">
+        <a href="/">
+            <img class="w3-bar-item w3-hide-small" style="width: 180px" src="https://farm5.staticflickr.com/4785/40120170224_da73670e8d_o.png" alt="GustafStudio_fullLogo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" id="headerLogo">
         </a>
-        <form action="/#about">
-            <div class="w3-dropdown-hover w3-hide-small">
+        <form action="/#about" onclick="openModal('spin')">
+            <div class="w3-dropdown-hover w3-hide-small w3-hide-medium">
                 <button class="dropbtn" type="submit"><i class="fas fa-info w3-margin-right"></i>About</button>
             </div>
         </form>
-        <form action="/#designers">
+        <form action="/#designers" onclick="openModal('spin')">
             <div class="w3-dropdown-hover w3-hide-small">
-                <button class="dropbtn" type="submit"><i class="fas fa-user w3-margin-right"></i>Designers&nbsp;<i class="fa fa-caret-down"></i></button>
+                <button class="dropbtn" type="submit"><i class="fas fa-users w3-margin-right"></i>Designers&nbsp;<i class="fa fa-caret-down"></i></button>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey">
-                    <a href="https://gustafsgallery.co.uk/animal_fayre_designs.html" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Animal Fayre Designs</a>
-                    <a href="https://gustafsgallery.co.uk/jack_conkie_illustration.html" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Jack Conkie Illustrations</a>
-                    <a href="https://gustafsgallery.co.uk/silver_bough_jewellery.html" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Silver Bough Jewellery</a>
+                    <a href="/Home/AnimalFayreDesigns" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Animal Fayre Designs</a>
+                    <a href="/Home/JackConkieIllustrations" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Jack Conkie Illustration</a>
+                    <a href="/Home/SilverBoughJewellery" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')">Silver Bough Jewellery</a>
                 </div>
             </div>
         </form>
-        <form action="/#products">
-            <div class="w3-dropdown-hover w3-hide-small">
+        <form action="/#products" onclick="openModal('spin')">
+            <div class="w3-dropdown-hover w3-hide-small w3-hide-medium">
                 <button class="dropbtn" type="submit"><i class="fa fa-cubes w3-margin-right"></i>Products</button>
             </div>
         </form>
-        <form action="/Products">
+        <form action="/Products" onclick="openModal('spin')">
             <div class="w3-dropdown-hover w3-hide-small">
                 <button class="dropbtn" type="submit"><i class="fas fa-store w3-margin-right"></i>Store</button>
             </div>
@@ -54,23 +39,18 @@
             @*     <img class="w3-bar-item w3-hide-small" src="https://farm2.staticflickr.com/1934/44250128564_9efea90043_o.png" height="100%" alt="GustafStudio_madeInPeebles" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" id="madeInPeebles"/>*@
         </a>
 
-        <a href="/Home/Contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Contact Us"><i class="fa fa-envelope w3-xlarge "></i></a>
-        <a href="#home" class="notification w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Top the top">
+        <a href="/Home/Contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Contact Us" onclick="openModal('spin')"><i class="fa fa-envelope w3-xlarge "></i></a>
+        <a href="#home" class="notification w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="View Basket" onclick="openModal('spin')">
             <i class="fas fa-shopping-basket w3-xlarge"></i>
             <span id="badge" class="badge"></span>
         </a>
-        <partial name="_LoginPartial.cshtml" />
+        <div class="w3-hide-small">
+            <partial name="_LoginPartial.cshtml" />
+        </div>
 
-    </div>
-    <!-- small screen navbar -->
-    <div>
-        <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleFunction()" title="Toggle Navigation Menu">
+
+        <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleSmallScreenNav()" title="Toggle Navigation Menu">
             <i class="fa fa-bars"></i>
         </a>
-        <div id="navDemo" class="w3-bar-block w3-hide w3-hide-large w3-hide-medium">
-            <a href="/Index" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-home w3-margin-right"></i>HOME</a>
-            <partial name="_LoginPartial.cshtml" />
-            <a href="/Home/Contact" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-envelope w3-margin-right"></i>CONTACT</a>
-        </div>
     </div>
 </div>

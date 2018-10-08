@@ -15,22 +15,22 @@
                 <th>Department</th>
                 <th>Stock</th>
                 <th>Price</th>
-                <th></th>
+                <th class="w3-hide-small"></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var member in Model.Products)
             {
-                <tr>
-                    <td class="w3-center"><a href="/ManageProducts/EditProduct?id=@member.Id" onclick="openModal('spin')">@member.Title</a></td>
-                    <td class="w3-center">@member.ProductBrand.Brand</td>
-                    <td class="w3-center">@member.Department.DepartmentName</td>
-                    <td class="w3-center">@member.Stock</td>
-                    <td class="w3-center">@member.Price</td>
-                    <td class="w3-center" style="width: 100px">
-                        <a class="w3-bar-item w3-button w3-round w3-light-grey" href="/ManageProducts/EditProduct?id=@member.Id" onclick="openModal('spin')"><i class="fas fa-edit w3-margin-right"></i>Edit</a>
-                    </td>
-                </tr>
+            <tr>
+                <td class="w3-center"><a href="/ManageProducts/EditProduct?id=@member.Id" onclick="openModal('spin')">@member.Title</a></td>
+                <td class="w3-center">@member.ProductBrand.Brand</td>
+                <td class="w3-center">@member.Department.DepartmentName</td>
+                <td class="w3-center">@member.Stock</td>
+                <td class="w3-center">@member.Price</td>
+                <td class="w3-center w3-hide-small" style="width: 100px">
+                    <a class="w3-bar-item w3-button w3-round w3-light-grey" href="/ManageProducts/EditProduct?id=@member.Id" onclick="openModal('spin')"><i class="fas fa-edit w3-margin-right"></i>Edit</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

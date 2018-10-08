@@ -1,0 +1,18 @@
+﻿
+        <div class="header-spacer w3-hide-small w3-hide-medium" style="height: 60px"></div>
+        <div class="header-spacer w3-hide-small w3-hide-large" style="height: 50px"></div>
+        <div class="header-spacer w3-hide-large w3-hide-medium" style="height: 35px"></div>
+        <!-- small screen navbar -->
+
+        <div class="w3-hide-large w3-hide-medium w3-collapse w3-dark-grey w3-bar-block">
+            <a href="/" class="w3-bar-item w3-button" onclick="openModal('spin');toggleFunction()"><i class="fa fa-home w3-margin-right fa-fw"></i>Home</a>
+            <partial name="_LoginPartial.cshtml" />
+            <a href="javascript:void(0);" class="w3-bar-item w3-button" onclick="mobileDropdown()" title="designers"><i class="fas fa-users w3-margin-right fa-fw"></i>Designers<i class="fa fa-caret-down fa-fw w3-margin-left"></i></a>
+            <div class="w3-hide w3-black" id="mobileDropdownId">
+                <a href="/Home/AnimalFayreDesigns" class="w3-bar-item w3-button w3-margin-left" onclick="openModal('spin');">Animal Fayre Designs</a>
+                <a href="/Home/JackConkieIllustrations" class="w3-bar-item w3-button w3-margin-left" onclick="openModal('spin');">Jack Conkie Illustration</a>
+                <a href="/Home/SilverBoughJewellery" class="w3-bar-item w3-button w3-margin-left" onclick="openModal('spin');">Silver Bough Jewellery</a>
+            </div>
+            <a href="/Products" class="w3-bar-item w3-button" onclick="openModal('spin');toggleFunction()"><i class="fa fa-store w3-margin-right fa-fw"></i>Store</a>
+            <a href="/Home/Contact" class="w3-bar-item w3-button" onclick="openModal('spin');toggleFunction()"><i class="fa fa-envelope w3-margin-right fa-fw"></i>Contact</a>
+        </div>

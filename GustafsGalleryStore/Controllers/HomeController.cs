@@ -27,6 +27,10 @@ namespace GustafsGalleryStore.Controllers
             return View();
         }
 
+        public IActionResult TermsAndConditions()
+        {
+            return View();
+        }
         public IActionResult Contact()
         {
             return View();
@@ -37,11 +41,20 @@ namespace GustafsGalleryStore.Controllers
             return View();
         }
 
-        public IActionResult Designer(string designer)
+        public IActionResult AnimalFayreDesigns()
         {
             return View();
         }
 
+        public IActionResult SilverBoughJewellery()
+        {
+            return View();
+        }
+
+        public IActionResult JackConkieIllustrations()
+        {
+            return View();
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

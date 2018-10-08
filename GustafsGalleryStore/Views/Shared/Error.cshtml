@@ -2,10 +2,8 @@
 @{
     ViewData["Title"] = "Error";
 }
-
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
-
 @if (Model.ShowRequestId)
 {
     <p>
@@ -13,10 +11,10 @@
     </p>
 }
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
-</p>
+<div class="bg-img-err w3-display-container w3-opacity-min" id="home">
+    <div class="w3-display-middle" style="white-space:nowrap;">
+        <span class="w3-center w3-padding-large animal-fayre-background w3-xlarge w3-wide w3-animate-opacity w3-block">
+            <span>Oh No!<br>An Error occured, we're working hard to fix it.</span>
+        </span>
+    </div>
+</div>

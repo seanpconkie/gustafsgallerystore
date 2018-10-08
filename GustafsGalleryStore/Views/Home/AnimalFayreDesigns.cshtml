@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewData["Title"] = "Animal Fayre Designs";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+        <!-- Header -->
+        <header class="w3-display-container w3-content w3-center w3-hide-small" style="max-width:1500px" id="home">
+            <img class="w3-image w3-opacity" src="https://farm2.staticflickr.com/1765/42855924802_840cf60892_o.jpg" alt="home" width="1500px" height="600px" id="headerImg" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+            <div class="w3-display-middle w3-padding-large w3-border w3-wide w3-text-light-grey w3-center">
+                <img src="https://farm5.staticflickr.com/4745/40292955842_473f588295_o.png" alt="gustaf" class="w3-hide-small w3-hide-medium" style="width: 50%" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                <h3 class="animal-fayre-background">ANIMAL FAYRE DESIGNS</h3>
+            </div>
+            <!-- sub title bar (placed at the bottom of the header image) -->
+            <div class="w3-bar w3-round w3-display-bottommiddle w3-hide-small gustaf animal-fayre-background" style="bottom:-16px" id="smallbar">
+                <h5 class="w3-center w3-margin-right w3-margin-left"><em>by Carol Anne Long</em></h5>
+            </div>
+        </header>
+
+        <!-- Page content -->
+        <div class="w3-padding-large w3-margin-top">
+            <!-- about -->
+            <div class="w3-padding-large w3-padding-32 w3-margin-top animal-fayre-background designer-hover" id="about">
+                <!-- Designer section -->
+                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/animal-fayre-designer.html?Authorization"></div>
+                <!-- End About Section -->
+            </div>
+            <div class="slideshow-container w3-margin-top">
+                <div class="ism-slider" data-play_type="loop" id="header-carousel">
+                    <ol>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_AnimalFayre_Slider1.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_AnimalFayre_Slider2.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_AnimalFayre_Slider3.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_AnimalFayre_Slider4.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_AnimalFayre_Slider5.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <!-- Images (Portfolio) -->
+            <div class="w3-padding-large w3-padding-32 w3-margin-top animal-fayre-background designer-hover" id="portfolio">
+                <h3 class="w3-center">PORTFOLIO</h3>
+                <p class="w3-center"><em>Here are some of the latest pieces from Animal Fayre Designs.<br> Click on the images to make them bigger</em></p><br>
+
+                <!-- Responsive Grid. Four columns on tablets, laptops and desktops. Will stack on mobile devices/small screens (100% width) -->
+                <div class="w3-row-padding w3-center">
+                    <div class="w3-col m3">
+                        <img src="https://img.etsystatic.com/il/314beb/1379461916/il_570xN.1379461916_f5fd.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="Needle Cord Bag" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://img.etsystatic.com/il/5aad3c/1475854415/il_570xN.1475854415_4xlk.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="Pansy Tile Cross stitch Tapestry Kit" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://img.etsystatic.com/il/e2dbb1/1426735851/il_570xN.1426735851_iq37.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="Selection of Handmade Bags" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://farm5.staticflickr.com/4710/39638180605_4eea5f77f1_o.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="Blue Heart Cross stitch Tapestry Kit" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+                </div>
+
+                <div class="w3-row-padding w3-center w3-section">
+                    <div class="w3-col m3">
+                        <img src="https://farm5.staticflickr.com/4709/26484622758_232b7fbb56_o.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://farm5.staticflickr.com/4677/26484628188_ce4c873ca4_o.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://farm5.staticflickr.com/4602/39458423475_e3b4993208_o.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://farm5.staticflickr.com/4663/40310273342_3fd79ab62a_o.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+                </div>
+                <div class="w3-section w3-center">
+                </div>
+            </div>
+            <!-- Modal for full size images on click-->
+            <div id="modal01" class="w3-modal" onclick="this.style.display='none'">
+                <span class="w3-button w3-large w3-display-topright" title="Close Modal Image"><i class="fa fa-remove"></i></span>
+                <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
+                    <img id="img01" class="w3-image">
+                    <p id="caption" class="w3-opacity w3-large w3-text-white"></p>
+                </div>
+            </div>
+            <!-- Contact -->
+            <div class="w3-padding-large w3-padding-32 w3-margin-top animal-fayre-background designer-hover" id="contact">
+                <h3 class="w3-center">Contact</h3>
+                <hr>
+                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/animal-fayre-contact.html?Authorization"></div>
+                <br>
+            </div>
+            <br>
+        </div>

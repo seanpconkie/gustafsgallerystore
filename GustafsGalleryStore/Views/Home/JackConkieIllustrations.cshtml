@@ -1,0 +1,109 @@
+﻿@{
+    ViewData["Title"] = " Jack Conkie Illustrations";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+        <!-- Header -->
+        <header class="w3-display-container w3-content w3-center w3-hide-small" style="max-width:1500px" id="home">
+            <img class="w3-image w3-opacity" src="https://farm2.staticflickr.com/1765/42855924802_840cf60892_o.jpg" alt="home" width="1500px" height="600px" id="headerImg" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+            <div class="w3-display-middle w3-padding-large w3-border w3-wide w3-text-light-grey w3-center">
+                <img src="https://img.etsystatic.com/isla/56318a/31261141/isla_500x500.31261141_homb75rb.jpg?version=0" alt="gustaf" class="w3-hide-small w3-hide-medium w3-circle" style="width: 50%" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                <h3 class="jackalope-background">&nbsp;JACK CONKIE ILLUSTRATION</h3>
+            </div>
+            <!-- sub title bar (placed at the bottom of the header image) -->
+            <div class="w3-bar w3-round w3-display-bottommiddle w3-hide-small gustaf jackalope-background" style="bottom:-16px" id="smallbar">
+                <h5 class="w3-center w3-margin-right w3-margin-left"><em>by Jack Conkie</em></h5>
+            </div>
+        </header>
+        <!-- Page content -->
+        <div class="w3-padding-large w3-margin-top">
+            <!-- about -->
+            <div class="w3-padding-large w3-padding-32 w3-margin-top jackalope-background designer-hover" id="about">
+                <!-- Designer section -->
+                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/jack-conkie-designer.html?Authorization"></div>
+                <!-- End About Section -->
+            </div>
+            <div class="slideshow-container w3-margin-top">
+                <div class="ism-slider" data-play_type="loop" id="header-carousel">
+                    <ol>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_JackConkie_Slider1.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_JackConkie_Slider2.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_JackConkie_Slider3.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_JackConkie_Slider4.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                        <li>
+                            <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_JackConkie_Slider5.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <!-- Images (Portfolio) -->
+            <div class="w3-padding-large w3-padding-32 w3-margin-top jackalope-background designer-hover" id="portfolio">
+                <h3 class="w3-center">PORTFOLIO</h3>
+                <p class="w3-center"><em>Here are some of the latest pieces from Jack Conkie Illustration.<br> Click on the images to make them bigger</em></p><br>
+
+                <!-- Responsive Grid. Four columns on tablets, laptops and desktops. Will stack on mobile devices/small screens (100% width) -->
+                <div class="w3-row-padding w3-center">
+                    <div class="w3-col m3">
+                        <img src="https://i.etsystatic.com/17519484/d/il/a1e6df/1526274267/il_340x270.1526274267_8py0.jpg?version=0" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="Jacues Pass" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://i.etsystatic.com/17519484/d/il/190ec7/1478791714/il_340x270.1478791714_3m46.jpg?version=0" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="The Ballad of the Unicorn Hunt" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://i.etsystatic.com/17519484/d/il/04e5eb/1526262053/il_340x270.1526262053_cfdd.jpg?version=0" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="The Good Doctor" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://i.etsystatic.com/17519484/d/il/d71f6d/1478768144/il_340x270.1478768144_l4tq.jpg?version=0" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="An Outraygeous Great Payre of Hose - adventures in crime and costume" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+                </div>
+
+                <div class="w3-row-padding w3-center w3-section">
+                    <div class="w3-col m3">
+                        <img src="https://img.etsystatic.com/il/f2f602/755951977/il_570xN.755951977_p31l.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="Coloured Wasp Pendant" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://img.etsystatic.com/il/eec992/755937305/il_570xN.755937305_daku.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="Feather Earrings" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://img.etsystatic.com/il/a7398c/755942875/il_570xN.755942875_pvp9.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="Wasp Earrings Purple" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                    <div class="w3-col m3">
+                        <img src="https://img.etsystatic.com/il/a7a43a/755952059/il_570xN.755952059_q5il.jpg" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity-off w3-opacity" alt="" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    </div>
+
+                </div>
+                <div class="w3-center w3-section">
+                </div>
+            </div>
+            <!-- Modal for full size images on click-->
+            <div id="modal01" class="w3-modal" onclick="this.style.display='none'">
+                <span class="w3-button w3-large w3-display-topright" title="Close Modal Image"><i class="fa fa-remove"></i></span>
+                <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
+                    <img id="img01" class="w3-image">
+                    <p id="caption" class="w3-opacity w3-large w3-text-white"></p>
+                </div>
+            </div>
+            <!-- Contact -->
+            <div class="w3-padding-large w3-padding-32 w3-margin-top jackalope-background designer-hover" id="contact">
+                <h3 class="w3-center">Contact</h3>
+                <hr>
+                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/jack-conkie-contact.html?Authorization"></div>
+                <br>
+            </div>
+            <br>
+            <!-- End page content -->
+        </div>

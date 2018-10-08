@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using GustafsGalleryStore.Areas.Identity.Data;
+using GustafsGalleryStore.Helpers;
 
 namespace GustafsGalleryStore.Areas.Identity.Pages.Account
 {
@@ -37,7 +38,8 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
             }
             else
             {
-                return Page();
+                return LocalRedirect("/");
+                //return Page();
             }
         }
     }

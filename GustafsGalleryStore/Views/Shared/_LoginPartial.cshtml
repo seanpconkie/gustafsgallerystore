@@ -6,12 +6,9 @@
 
 <style>
     /* Dropdown Button */
-    .dropbtn {
-        background-color: rgb(110, 16, 68);
-        color: white;
-        padding: 16px;
-        border: none;
-    }
+    .dropbtn {background-color: rgb(110, 16, 68);color: white;padding: 16px;border: none;}
+
+    @@media (max-height: 500px) {.menu{overflow-y:auto; max-height: 200px}}
 </style>
 
 @{
@@ -21,11 +18,13 @@
 @if (isSignedIn)
 {
     var isStaff = await UserManager.IsInRoleAsync(user, "IsStaff");
-    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="w3-right">
-        <div class="w3-dropdown-hover w3-hide-small">
-            <button class="dropbtn" type="submit">Hello&nbsp;@user.Forename!&nbsp;<i class="fa fa-caret-down"></i></button>
-            <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey">
-                <button type="submit" class="w3-bar-item w3-button w3-padding-large">Not @user.Forename? Logout.</button>
+    <div class="w3-hide-small">
+        <div class="w3-dropdown-hover w3-hide-small w3-right">
+            <button class="dropbtn">Hello&nbsp;@user.Forename!&nbsp;<i class="fa fa-caret-down"></i></button>
+            <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey menu">
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="w3-bar-block">
+                    <button type="submit" class="w3-bar-item w3-button w3-padding-large"><i class="fas fa-sign-out-alt fa-fw w3-margin-right"></i>Not @user.Forename? Logout.</button>
+                </form>
                 <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-user fa-fw w3-margin-right"></i>Your Account</a>
                 <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-shopping-bag fa-fw w3-margin-right"></i>Your Orders</a>
                 @if (isStaff)
@@ -39,12 +38,37 @@
                 }
             </div>
         </div>
-    </form>
+    </div>
+
+    @*small page login*@
+    <div class="w3-hide-large w3-hide-medium">
+        <a asp-area="Identity" asp-page="/Account/Manage/Index" class="w3-bar-item w3-button" onclick="openModal('spin');"><i class="fa fa-user fa-fw w3-margin-right"></i>Hello&nbsp;@user.Forename!&nbsp;</a>
+        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="w3-bar-block">
+            <button type="submit" class="w3-bar-item w3-button w3-padding-large"><i class="fas fa-sign-out-alt fa-fw w3-margin-right"></i>Not @user.Forename? Logout.</button>
+        </form>
+        <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-user fa-fw w3-margin-right"></i>Your Account</a>
+        <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-shopping-bag fa-fw w3-margin-right"></i>Your Orders</a>
+        @if (isStaff)
+        {
+            <hr />
+            <a href="javascript:void(0);" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-shipping-fast fa-fw w3-margin-right"></i>Manage Orders</a>
+            <a href="/ManageProducts" title="Manage Staff" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-cube fa-fw w3-margin-right"></i>Manage Products</a>
+            <a href="/ManageSite" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-sitemap fa-fw w3-margin-right"></i>Manage Site</a>
+            <a href="/ManageStaff" title="Manage Staff" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-users-cog fa-fw w3-margin-right"></i>Manage Staff</a>
+            <hr />
+        }
+    </div>
 }
 else
 {
-    <div>
-        @*<li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>*@
-        <a asp-area="Identity" asp-page="/Account/Login" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right"><i class="fa fa-sign-in-alt"></i> Login</a>
+    <div class="w3-hide-small">
+        <form asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="w3-bar-block w3-right">
+            <div class="w3-dropdown-hover">
+                <button class="dropbtn" type="submit"><i class="fa fa-sign-in-alt w3-margin-right"></i>Login</button>
+            </div>
+        </form>
+    </div>
+    <div class="w3-hide-large w3-hide-medium">
+        <a asp-area="Identity" asp-page="/Account/Login" class="w3-bar-item w3-button"><i class="fa fa-sign-in-alt fa-fw w3-margin-right"></i>Login</a>
     </div>
 }
