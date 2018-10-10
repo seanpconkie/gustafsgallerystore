@@ -230,6 +230,7 @@ namespace GustafsGalleryStore.Controllers
             viewModel.Departments = Department.GetList(_context.Departments.OrderBy(d => d.DepartmentName).ToList());
             viewModel.Sizes = Size.GetList(_context.Sizes.OrderBy(s => s.Value).ToList());
             viewModel.Brand = viewModel.Product.ProductBrand.Brand;
+            viewModel.Department = viewModel.Product.Department.DepartmentName;
 
             return View(viewModel);
         }

@@ -36,7 +36,7 @@
                             <select asp-for="Department">
                                 @foreach (var dept in Model.Departments)
                                 {
-                                    if (dept.Text == Model.Brand)
+                                    if (dept.Text == Model.Department)
                                     {
                                         <option selected>@dept.Text</option>
                                     }

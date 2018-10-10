@@ -36,6 +36,7 @@
   <ItemGroup>
     <Content Remove="wwwroot\js\xzoom.js" />
     <Content Remove="wwwroot\css\xzoom.css" />
+    <Content Remove="wwwroot\images\43879232551_226b6f120d_o.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\js\xzoom.js" />
