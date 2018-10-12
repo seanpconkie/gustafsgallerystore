@@ -11,10 +11,8 @@ namespace GustafsGalleryStore.Models.DataModels
         public Product Product { get; set; }
 
         public long SizeId { get; set; }
-        public ProductSize Size { get; set; }
 
         public long ColourId { get; set; }
-        public ProductColour Colour { get; set; }
 
     }
 }

@@ -3,7 +3,6 @@
     ViewData["Title"] = Model.Product.Title;
 }
 
-
 <!-- Page content -->
 <div class="w3-padding-large w3-margin-top w3-margin-bottom">
     <div class="w3-content">
@@ -14,14 +13,13 @@
         <div class="w3-row">
             <div class="w3-card w3-row-padding w3-padding w3-half w3-light-grey">
                 <div class="xzoom-container">
-                    <img class="xzoom4" id="xzoom-fancy" src="@Model.Product.ProductImages[0].Uri" xoriginal="@Model.Product.ProductImages[0].Uri" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'"/>
+                    <img class="xzoom4" id="xzoom-fancy" src="@Model.Product.ProductImages[0].Uri" xoriginal="@Model.Product.ProductImages[0].Uri" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" />
                     <div class="xzoom-thumbs w3-padding">
                         <a href="@Model.Product.ProductImages[0].Uri"><img class="xzoom-gallery4" width="80" src="@Model.Product.ProductImages[0].Uri" xpreview="@Model.Product.ProductImages[0].Uri" title="@Model.Product.Title" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'"></a>
                         @for (int i = 1; i < Model.Product.ProductImages.Count; i++)
                         {
                             <a href="@Model.Product.ProductImages[i].Uri"><img class="xzoom-gallery4" width="80" src="@Model.Product.ProductImages[i].Uri" title="@Model.Product.Title" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'"></a>
                         }
-
                     </div>
                     <div class="w3-text-grey w3-center w3-small"><em>Click to enlarge</em></div>
                 </div>
@@ -30,24 +28,125 @@
                 <p class="w3-section w3-row-padding">@Model.Product.Description</p>
                 <p class="w3-section w3-row-padding">
                     <span class="w3-quarter" style="font-size: large"><b class="gustaf">£@Model.Product.Price</b></span>
-                    @if(Model.Product.Stock <= 3)
+                    @if (Model.Product.Stock <= 3)
                     {
                         <span class="w3-threequarter gustaf w3-center"><b>Low stock!!</b></span>
                     }
                 </p>
-
                 <div class="w3-row">
                     <div class="custom-select w3-half w3-row-padding">
-                        @Html.DropDownListFor(m => m.Size, Model.Sizes, "Select Size", new { @class = "w3-input", required = "" })
+                        @*@Html.DropDownListFor(m => m.Size, Model.Sizes, "Select Size", new { @id = "size", @class = "w3-input", required = "" })*@
+                                <select asp-for="Size" class="w3-input" id="size" required>
+                                    <option>Select Size</option>
+                                    @foreach (var size in Model.Product.ProductSizes)
+                                    {
+                                        <option>@size.Size</option>
+                                    }
+                                </select>
                     </div>
                     <div class="custom-select w3-half w3-row-padding">
-                        @Html.DropDownListFor(m => m.Colour, Model.Colours, "Select Colour", new { @class = "w3-input", required = "" })
+                        @Html.DropDownListFor(m => m.Colour, Model.Colours, "Select Colour", new { @id = "colour", @class = "w3-input", required = "" })
                     </div>
                 </div>
                 <p class="w3-padding">
-                    <a href="javascript:void(0);" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                    <a href="javascript:void(0);" onclick="addToBasket(@Model.Product.Id)" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
                 </p>
+                <div id="errorMessage" style="display: none" class="w3-container">
+                    <span onclick="clearErrorMessage()" class="w3-button w3-right"><i class="fas fa-times"></i></span>
+                </div>
             </div>
         </div>
     </div>
-</div>  
+</div>
+<script>
+
+    function addToBasket(id) {
+
+        openModal('spin');
+        debugger;
+        var basketCookie = readCookie('gustaf-cookie-basket');
+        var orderId = 0;
+
+        // do we have a cookie?
+        if (basketCookie != null) {
+            orderId = basketCookie
+        }
+
+        var jsonPacket = {};
+
+        jsonPacket["ProductId"] = id;
+        jsonPacket["OrderId"] = orderId;
+
+        var size = document.getElementById('size');
+        var sizeOption = size.options[size.selectedIndex];
+        var sizeValue = sizeOption.text;
+
+        if (sizeValue == "" || sizeValue == "Select Size")
+        {
+            //error message
+            updateErrorMessage("Size must be selected.");
+            closeModal('spin');
+            return;
+        }
+    
+        jsonPacket["Size"] = sizeValue;
+
+        var colour = document.getElementById('colour');
+        var colourOption = colour.options[size.selectedIndex];
+        var colourValue = colourOption.text;
+
+        if (colourValue == "" || colourValue == "Select Colour")
+        {
+            //error message
+            updateErrorMessage("Colour must be selected.");
+            closeModal('spin');
+            return;
+        }
+
+        jsonPacket["Colour"] = colourValue;
+
+        $.ajax({
+                url: "/Orders/AddToBasket",
+                method: "POST",
+                data: JSON.stringify(jsonPacket),
+                contentType: "application/json; charset=utf-8",
+                success: function() {
+
+                    // update basket counter
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/Orders/GetBasketCount?id=' + orderId,
+                        success: function (data) {
+                            var badge = document.getElementById('badge');
+                            badge.innerHTML = data;
+                        }
+                    });
+
+                },
+                error: function(error){
+                }
+            });
+
+        closeModal('spin');
+
+    }
+
+    function updateErrorMessage(value) {
+
+        var messageContainer = document.getElementById('errorMessage');
+
+        messageContainer.innerText = value;
+        messageContainer.style.display = 'block';
+
+    }
+
+    function clearErrorMessage(){
+
+        var messageContainer = document.getElementById('errorMessage');
+
+        messageContainer.innerText = "";
+        messageContainer.style.display = 'none';
+
+    }
+</script>

@@ -40,7 +40,7 @@
         </a>
 
         <a href="/Home/Contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Contact Us" onclick="openModal('spin')"><i class="fa fa-envelope w3-xlarge "></i></a>
-        <a href="#home" class="notification w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="View Basket" onclick="openModal('spin')">
+        <a id="viewBasket" href="/Orders/ViewBasket?id=0" class="notification w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="View Basket" onclick="openModal('spin')">
             <i class="fas fa-shopping-basket w3-xlarge"></i>
             <span id="badge" class="badge"></span>
         </a>
@@ -54,3 +54,47 @@
         </a>
     </div>
 </div>
+
+<script>
+
+    // do we have an id?
+    var basketCookie = readCookie('gustaf-cookie-basket');
+    var cookieExpiry = 30;
+    var cookiePath = "/";
+    var id = 0;
+
+    // do we have a cookie?
+    if (basketCookie == null) {
+
+        // get basket id
+
+        $.ajax({
+            type: "GET",
+            url: '/Orders/GetBasketId',
+            success: function (data) {
+                id = data;
+                document.cookie = createCookie('gustaf-cookie-basket',id,cookieExpiry,cookiePath);
+            }
+        });
+
+    }
+    else {
+        id = basketCookie
+    }
+
+    var button = document.getElementById('viewBasket');
+    button.removeAttribute('href');
+    button.setAttribute('href','/Orders/ViewBasket?id=' + id);
+
+    // update basket counter
+
+    $.ajax({
+        type: "GET",
+        url: '/Orders/GetBasketCount?id=' + id,
+        success: function (data) {
+            var badge = document.getElementById('badge');
+            badge.innerHTML = data;
+        }
+    });
+
+</script>

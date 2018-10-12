@@ -5,7 +5,7 @@ namespace GustafsGalleryStore
     {
         public long Id { get; set; }
         public string Type { get; set; }
-        public float Price { get; set; }
+        public decimal Price { get; set; }
         public string Time { get; set; }
         //Provider
         public long DeliveryCompanyId { get; set; }

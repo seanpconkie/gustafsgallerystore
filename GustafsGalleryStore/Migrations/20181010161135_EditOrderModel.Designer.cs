@@ -4,14 +4,16 @@ using GustafsGalleryStore.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GustafsGalleryStore.Migrations
 {
     [DbContext(typeof(GustafsGalleryStoreContext))]
-    partial class GustafsGalleryStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20181010161135_EditOrderModel")]
+    partial class EditOrderModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,7 +99,7 @@ namespace GustafsGalleryStore.Migrations
 
                     b.Property<long>("DeliveryCompanyId");
 
-                    b.Property<decimal>("Price");
+                    b.Property<float>("Price");
 
                     b.Property<string>("Time");
 
@@ -207,9 +209,9 @@ namespace GustafsGalleryStore.Migrations
 
                     b.Property<long>("OrderStatusId");
 
-                    b.Property<decimal>("OrderTotalPostagePrice");
+                    b.Property<float>("OrderTotalPostagePrice");
 
-                    b.Property<decimal>("OrderTotalPrice");
+                    b.Property<float>("OrderTotalPrice");
 
                     b.Property<string>("PackageReference");
 
@@ -263,9 +265,13 @@ namespace GustafsGalleryStore.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ColourId");
+
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("SizeId");
 
                     b.ToTable("OrderItems");
                 });
@@ -545,6 +551,11 @@ namespace GustafsGalleryStore.Migrations
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.OrderItem", b =>
                 {
+                    b.HasOne("GustafsGalleryStore.Models.DataModels.ProductColour", "Colour")
+                        .WithMany()
+                        .HasForeignKey("ColourId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("GustafsGalleryStore.Models.DataModels.Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
@@ -553,6 +564,11 @@ namespace GustafsGalleryStore.Migrations
                     b.HasOne("GustafsGalleryStore.Models.DataModels.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("GustafsGalleryStore.Models.DataModels.ProductSize", "Size")
+                        .WithMany()
+                        .HasForeignKey("SizeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

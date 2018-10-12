@@ -7,8 +7,8 @@ namespace GustafsGalleryStore.Models.DataModels
     public class Order
     {
         public long Id { get; set; }
-        public float OrderTotalPrice { get; set; }
-        public float OrderTotalPostagePrice { get; set; }
+        public decimal OrderTotalPrice { get; set; }
+        public decimal OrderTotalPostagePrice { get; set; }
 
         public DateTime? OpenedDate { get; set; }
         [Display(Name = "Order Placed Date")]
@@ -17,7 +17,7 @@ namespace GustafsGalleryStore.Models.DataModels
         public DateTime? OrderCompleteDate { get; set; }
         public List<OrderItem> OrderItems { get; set; }
 
-        public ProductBrand OrderStatus { get; set; }
+        public OrderStatus OrderStatus { get; set; }
         [Display(Name = "Order Status")]
         public long OrderStatusId { get; set; }
 
@@ -29,7 +29,7 @@ namespace GustafsGalleryStore.Models.DataModels
 
         public string PackageReference { get; set; }
 
-
+        public string UserId { get; set; }
 
     }
 }

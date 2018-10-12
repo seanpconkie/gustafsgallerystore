@@ -28,6 +28,7 @@
     <Folder Include="Views\ManageProducts\" />
     <Folder Include="Views\ManageSite\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Views\Orders\" />
   </ItemGroup>
 
   <ItemGroup>

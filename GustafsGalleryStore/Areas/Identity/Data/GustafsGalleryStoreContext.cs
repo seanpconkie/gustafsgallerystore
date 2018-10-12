@@ -17,6 +17,7 @@ namespace GustafsGalleryStore.Areas.Identity.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderHistory> OrderHistories { get; set; }
+        public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
         public DbSet<ProductColour> ProductColours { get; set; }

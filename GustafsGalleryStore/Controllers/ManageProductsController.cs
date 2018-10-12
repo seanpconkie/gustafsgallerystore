@@ -269,26 +269,13 @@ namespace GustafsGalleryStore.Controllers
                                     SingleOrDefault();
 
                     //update product
-                    if (inDb.Price != input.Product.Price)
-                    {
-                        inDb.Price = input.Product.Price;
-                    }
+                    inDb.Price = input.Product.Price;
 
-                    if (inDb.Description != input.Product.Description)
-                    {
-                        inDb.Description = input.Product.Description;
-                    }
+                    inDb.Description = input.Product.Description;
 
-                    if (inDb.Stock != input.Product.Stock)
-                    {
-                        inDb.Stock = input.Product.Stock;
-                    }
+                    inDb.Stock = input.Product.Stock;
 
-
-                    if (inDb.Title != input.Product.Title)
-                    {
-                        inDb.Title = input.Product.Title;
-                    }
+                    inDb.Title = input.Product.Title;
 
                     //Prepare Product
                     if (inDb.Department.DepartmentName != input.Department)
@@ -304,7 +291,7 @@ namespace GustafsGalleryStore.Controllers
                         //brand
                         var brand = new ProductBrand();
                         brand = _context.ProductBrands.Where(x => x.Brand == input.Brand).SingleOrDefault();
-                        input.Product.ProductBrand = brand;
+                        inDb.ProductBrand = brand;
                     }
 
                     //add sizes

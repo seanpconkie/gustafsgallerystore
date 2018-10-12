@@ -28,7 +28,7 @@
                     <td class="w3-center">@member.Department.DepartmentName</td>
                     <td class="w3-center" style="width: 100px">
                         <b>£@member.Price</b>
-                        <a class="delete w3-bar-item w3-button w3-round w3-light-grey" href="javascript:void(0);" data-user-id="@member.Id"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                        <a class="w3-bar-item w3-button w3-round w3-light-grey" href="/Products/Product?id=@member.Id" data-user-id="@member.Id"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
                     </td>
                 </tr>
             }
