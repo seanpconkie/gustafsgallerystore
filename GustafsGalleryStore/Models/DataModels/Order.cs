@@ -25,11 +25,18 @@ namespace GustafsGalleryStore.Models.DataModels
         public CustomerContact CustomerContact { get; set; }
 
         public long DeliveryTypeId { get; set; }
+        [Display(Name = "Delivery Method")]
         public DeliveryType DeliveryType { get; set; }
 
         public string PackageReference { get; set; }
 
         public string UserId { get; set; }
+
+        public string PaymentId { get; set; }
+        public string PaymentMessage { get; set; }
+        public string PaymentStatus { get; set; }
+        public string SellerMessage { get; set; }
+        public string StripeSource { get; set; }
 
     }
 }

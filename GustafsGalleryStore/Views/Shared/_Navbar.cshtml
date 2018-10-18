@@ -40,7 +40,7 @@
         </a>
 
         <a href="/Home/Contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="Contact Us" onclick="openModal('spin')"><i class="fa fa-envelope w3-xlarge "></i></a>
-        <a id="viewBasket" href="/Orders/ViewBasket?id=0" class="notification w3-button w3-padding-large w3-hide-small w3-right" data-toggle="tooltip" title="View Basket" onclick="openModal('spin')">
+        <a id="viewBasket" href="/Orders/ViewBasket?id=0" class="notification w3-button w3-padding-large w3-right" data-toggle="tooltip" title="View Basket" onclick="openModal('spin')">
             <i class="fas fa-shopping-basket w3-xlarge"></i>
             <span id="badge" class="badge"></span>
         </a>
@@ -49,7 +49,7 @@
         </div>
 
 
-        <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleSmallScreenNav()" title="Toggle Navigation Menu">
+        <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large" href="javascript:void(0);" onclick="toggleSmallScreenNav()" title="Toggle Navigation Menu">
             <i class="fa fa-bars"></i>
         </a>
     </div>
@@ -61,6 +61,7 @@
     var basketCookie = readCookie('gustaf-cookie-basket');
     var cookieExpiry = 30;
     var cookiePath = "/";
+    var basketStatus = "";
     var id = 0;
 
     // do we have a cookie?
@@ -78,9 +79,33 @@
         });
 
     }
-    else {
+    else 
+    {
         id = basketCookie
     }
+
+    // get basket status
+    $.ajax({
+        type: "GET",
+        url: '/Orders/GetBasketStatus',
+        success: function (data) {
+            basketStatus = data;
+        }
+    });
+
+    if(basketStatus != "Basket") {
+
+        // get basket id
+        $.ajax({
+            type: "GET",
+            url: '/Orders/GetBasketId',
+            success: function (data) {
+                id = data;
+                document.cookie = createCookie('gustaf-cookie-basket',id,cookieExpiry,cookiePath);
+            }
+        });
+
+    };
 
     var button = document.getElementById('viewBasket');
     button.removeAttribute('href');

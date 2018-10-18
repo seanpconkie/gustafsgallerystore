@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -122,6 +123,103 @@ namespace GustafsGalleryStore.Controllers
                     return ControllerHelper.RedirectToLocal(this,"/ManageSite/Colour");
                 }
                 catch (System.Exception ex)
+                {
+                    StatusMessage = "An Error occured; " + ex.Message;
+                }
+
+            }
+
+            model.StatusMessage = StatusMessage;
+
+            return View(model);
+
+        }
+
+        // GET: /<controller>/
+        public IActionResult Delivery()
+        {
+            var viewModel = new DeliveryViewModel(){};
+
+            List<DeliveryType> types = _context.DeliveryTypes.Where(x => x.Id > 0).Include(x => x.DeliveryCompany).ToList();
+
+            foreach (var type in types)
+            {
+                type.DeliveryCompany = _context.DeliveryCompanies.Where(x => x.Id == type.DeliveryCompanyId).SingleOrDefault();
+            }
+
+            viewModel.DeliveryTypes = types;
+
+            return View(viewModel);
+        }
+
+        // GET: /<controller>/
+        public IActionResult DeliveryType()
+        {
+            var viewModel = new DeliveryViewModel() { DeliveryCompanies = _context.DeliveryCompanies.ToList()};
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeliveryType(DeliveryViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+
+                    var result = ManageSiteHelper.AddDeliveryType(model, _context);
+
+                    if (result == UpdateResult.Error)
+                    {
+                        throw new Exception("Delivery method couldn't be updated.");
+                    }
+
+                    return ControllerHelper.RedirectToLocal(this, "/ManageSite/Delivery");
+                }
+                catch (Exception ex)
+                {
+                    StatusMessage = "An Error occured; " + ex.Message;
+                }
+
+            }
+
+            model.StatusMessage = StatusMessage;
+
+            return View(model);
+
+        }
+
+        // GET: /<controller>/
+        public IActionResult DeliveryCompany()
+        {
+            var viewModel = new DeliveryViewModel() { DeliveryCompanies = _context.DeliveryCompanies.ToList() };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeliveryCompany(DeliveryViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+
+                    var result = ManageSiteHelper.AddDeliveryCompany(model, _context);
+
+                    if (result == UpdateResult.Error)
+                    {
+                        throw new Exception("Company couldn't be updated.");
+                    }
+
+                    return ControllerHelper.RedirectToLocal(this, "/ManageSite/DeliveryCompany");
+                }
+                catch (Exception ex)
                 {
                     StatusMessage = "An Error occured; " + ex.Message;
                 }

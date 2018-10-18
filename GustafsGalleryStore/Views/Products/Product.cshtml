@@ -4,7 +4,8 @@
 }
 
 <!-- Page content -->
-<div class="w3-padding-large w3-margin-top w3-margin-bottom">
+<div class="w3-padding-large w3-margin-top w3-margin-bottom"> 
+    <div id="alertDiv"></div>
     <div class="w3-content">
         <header>
             <h2>@Model.Product.Title</h2>
@@ -63,7 +64,7 @@
     function addToBasket(id) {
 
         openModal('spin');
-        debugger;
+
         var basketCookie = readCookie('gustaf-cookie-basket');
         var orderId = 0;
 
@@ -76,6 +77,7 @@
 
         jsonPacket["ProductId"] = id;
         jsonPacket["OrderId"] = orderId;
+        jsonPacket["Quantity"] = 1;
 
         var size = document.getElementById('size');
         var sizeOption = size.options[size.selectedIndex];
@@ -92,7 +94,7 @@
         jsonPacket["Size"] = sizeValue;
 
         var colour = document.getElementById('colour');
-        var colourOption = colour.options[size.selectedIndex];
+        var colourOption = colour.options[colour.selectedIndex];
         var colourValue = colourOption.text;
 
         if (colourValue == "" || colourValue == "Select Colour")
@@ -129,6 +131,15 @@
             });
 
         closeModal('spin');
+     
+        var y = document.getElementById('alertDiv');
+        y.innerHTML += '<div class="alert alert-success" id="success-alert" role="alert"><button type="button" class="alert-close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success!</strong> Your basket has been updated.</div>'
+
+        setTimeout(function() {
+
+            $(".alert").alert('close');
+
+        }, 5000);
 
     }
 

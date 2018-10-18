@@ -4,14 +4,16 @@ using GustafsGalleryStore.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GustafsGalleryStore.Migrations
 {
     [DbContext(typeof(GustafsGalleryStoreContext))]
-    partial class GustafsGalleryStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20181017085915_UpdateOrderModelAddStripeSource")]
+    partial class UpdateOrderModelAddStripeSource
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,8 +219,6 @@ namespace GustafsGalleryStore.Migrations
 
                     b.Property<string>("PaymentMessage");
 
-                    b.Property<string>("PaymentStatus");
-
                     b.Property<string>("SellerMessage");
 
                     b.Property<string>("StripeSource");
@@ -352,7 +352,7 @@ namespace GustafsGalleryStore.Migrations
 
                     b.Property<string>("Colour");
 
-                    b.Property<long>("ProductId");
+                    b.Property<long?>("ProductId");
 
                     b.HasKey("Id");
 
@@ -385,7 +385,7 @@ namespace GustafsGalleryStore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("ProductId");
+                    b.Property<long?>("ProductId");
 
                     b.Property<string>("Size");
 
@@ -583,8 +583,7 @@ namespace GustafsGalleryStore.Migrations
                 {
                     b.HasOne("GustafsGalleryStore.Models.DataModels.Product")
                         .WithMany("ProductColours")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.ProductImage", b =>
@@ -599,8 +598,7 @@ namespace GustafsGalleryStore.Migrations
                 {
                     b.HasOne("GustafsGalleryStore.Models.DataModels.Product")
                         .WithMany("ProductSizes")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

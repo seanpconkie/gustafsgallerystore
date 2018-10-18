@@ -78,7 +78,7 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    var signedIn = _signInManager.IsSignedIn(User);
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

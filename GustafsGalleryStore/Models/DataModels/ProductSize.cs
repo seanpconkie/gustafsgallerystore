@@ -8,6 +8,7 @@ namespace GustafsGalleryStore.Models.DataModels
     {
         public long Id { get; set; }
         public string Size { get; set; }
+        public long ProductId { get; set; }
 
 
         #region Public Methods

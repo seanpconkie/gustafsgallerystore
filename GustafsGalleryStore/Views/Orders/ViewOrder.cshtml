@@ -1,0 +1,51 @@
+﻿@model GustafsGalleryStore.Models.ViewModels.BasketViewModel
+@{
+    ViewData["Title"] = "Order " + Model.Basket.Id;
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+<div class="w3-content w3-container w3-padding-64" id="main">
+    <div id="alertDiv"></div>
+    <div class="w3-section w3-light-grey w3-padding-large">
+        <table style="width: 100%">
+            <thead>
+                <tr>
+                    <th class="w3-quarter"></th>
+                    <th class="w3-half"></th>
+                    <th class="w3-col s1">Price</th>
+                    <th class="w3-col s1">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Basket.OrderItems)
+                {
+                    <tr>
+                        <td class="w3-quarter">
+                            @if (item.Product.ProductImages.Count > 0)
+                            {
+                                <img class="w3-hover-opacity-off w3-opacity" style="max-width: 200px;" src="@item.Product.ProductImages[0].Uri" />
+                            }
+                        </td>
+                        <td class="w3-half">
+                            <a href="/Products/Product?id=@item.Product.Id"><h4>@item.Product.Title</h4></a>
+                        </td>
+                        <td class="w3-col s1 w3-center">
+                            <p>£@item.Product.Price</p>
+                        </td>
+                        <td class="w3-col s1 w3-center">
+                            <p><span id="@item.ProductId" class="w3-center" style="max-width: 40px;">@item.Quantity</span></p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (Model.Basket.OrderItems.Count == 0)
+        {
+            <h4>Your order is empty.</h4>
+        }
+    </div>
+    <div class="w3-section w3-light-grey w3-padding-large">
+        <div class="w3-bar">
+            <h4 class="w3-right" id="subtotal">Subtotal: £@Model.Basket.OrderTotalPrice</h4>
+        </div>
+    </div>
+</div>

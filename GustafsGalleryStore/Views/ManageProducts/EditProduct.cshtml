@@ -129,16 +129,22 @@
                                 <select asp-for="Colour" size="6" class="w3-input" id="Colour" multiple>
                                     @foreach (var colour in Model.Colours)
                                     {
+                                        bool exists = false;
                                         foreach (var prodColour in Model.Product.ProductColours)
                                         {
                                             if (colour.Text == prodColour.Colour)
                                             {
-                                                <option selected>@colour.Text</option>
+                                                exists = true;
                                             }
-                                            else
-                                            {
-                                                <option>@colour.Text</option>
-                                            }
+                                        }
+
+                                        if (exists)
+                                        {
+                                            <option selected>@colour.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option>@colour.Text</option>
                                         }
                                     }
                                 </select>

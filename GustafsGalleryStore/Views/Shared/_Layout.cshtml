@@ -1,39 +1,36 @@
 ﻿<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>@ViewData["Title"] - Gustaf's Studio & Gallery</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-bootgrid/1.3.1/jquery.bootgrid.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/generalJScripts.js?Authorization"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imageSlider.js?Authorization"></script>
+    <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/hammer/hammer.min.js?Authorization"></script>
+    <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/fancybox/jquery.fancybox.js?Authorization"></script>
+    <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/xzoom/xzoom.min.js?Authorization"></script>
+    <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/xzoom/setup.js?Authorization"></script>
 
-        <title>@ViewData["Title"] - Gustaf's Studio & Gallery</title>
+    <script src="https://js.stripe.com/v3/"></script>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-bootgrid/1.3.1/jquery.bootgrid.min.js"></script>
-        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/generalJScripts.js?Authorization"></script>
-        <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imageSlider.js?Authorization"></script>
-
-        <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/hammer/hammer.min.js?Authorization"></script>
-        <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/fancybox/jquery.fancybox.js?Authorization"></script>
-        <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/xzoom/xzoom.min.js?Authorization"></script>
-        <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/xzoom/setup.js?Authorization"></script>
-
-        <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-        <link rel="stylesheet" href="https://s3.amazonaws.com/sbt-solutions.co.uk/w3.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" type="text/css" media="screen" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/styleSheetTemplate.css?Authorization" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-bootgrid/1.3.1/jquery.bootgrid.min.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-        <link type="text/css" rel="stylesheet" media="all" href="https://s3.amazonaws.com/sbt-solutions.co.uk/fancybox/jquery.fancybox.css?Authorization" />
-        <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/sbt-solutions.co.uk/xzoom/xzoom.css?Authorization" media="all" />
-        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imageSlider.css?Authorization" />
-
-        <link rel="shortcut icon" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/favicon.ico" />
-
-    </head>
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" href="https://s3.amazonaws.com/sbt-solutions.co.uk/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" type="text/css" media="screen" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/styleSheetTemplate.css?Authorization" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-bootgrid/1.3.1/jquery.bootgrid.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <link type="text/css" rel="stylesheet" media="all" href="https://s3.amazonaws.com/sbt-solutions.co.uk/fancybox/jquery.fancybox.css?Authorization" />
+    <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/sbt-solutions.co.uk/xzoom/xzoom.css?Authorization" media="all" />
+    <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imageSlider.css?Authorization" />
+    <link rel="shortcut icon" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/favicon.ico" />
+</head>
     <body id="home">
 
         <partial name="_Navbar" />

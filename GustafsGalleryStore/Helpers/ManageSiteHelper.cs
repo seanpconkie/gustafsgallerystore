@@ -82,12 +82,79 @@ namespace GustafsGalleryStore.Helpers
             }
         }
 
-        public static UpdateResult AddDepartment(DepartmentViewModel model, GustafsGalleryStoreContext context)
+        public static UpdateResult AddDeliveryCompany (DeliveryViewModel model, GustafsGalleryStoreContext context)
         {
             try
             {
 
+                var company = new DeliveryCompany()
+                {
+                    Company = model.Company
+                };
 
+                List<DeliveryCompany> companies = new List<DeliveryCompany>();
+
+                companies = context.DeliveryCompanies.Where(x => x.Company == model.Company).ToList();
+
+                if (companies.Count > 0)
+                {
+                    return UpdateResult.Duplicate;
+                }
+
+                context.Add(company);
+                context.SaveChanges();
+
+                return UpdateResult.Success;
+
+            }
+            catch
+            {
+                return UpdateResult.Error;
+            }
+        }
+
+        public static UpdateResult AddDeliveryType(DeliveryViewModel model, GustafsGalleryStoreContext context)
+        {
+            try
+            {
+
+                var company = context.DeliveryCompanies.Where(c => c.Company == model.Company).SingleOrDefault();
+                var type = new DeliveryType()
+                {
+                    Type = model.Type,
+                    Price = model.Price,
+                    Time = model.Time,
+                    DeliveryCompany = company
+                };
+
+                List<DeliveryType> types = new List<DeliveryType>();
+
+                types = context.DeliveryTypes.
+                               Where(x => x.DeliveryCompanyId == type.DeliveryCompany.Id).
+                               Where(x => x.Type == type.Type).
+                               ToList();
+
+                if (types.Count > 0)
+                {
+                    return UpdateResult.Duplicate;
+                }
+
+                context.Add(type);
+                context.SaveChanges();
+
+                return UpdateResult.Success;
+
+            }
+            catch
+            {
+                return UpdateResult.Error;
+            }
+        }
+
+        public static UpdateResult AddDepartment(DepartmentViewModel model, GustafsGalleryStoreContext context)
+        {
+            try
+            {
 
                 var dept = new Department()
                 {

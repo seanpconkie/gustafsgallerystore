@@ -19,6 +19,7 @@ using GustafsGalleryStore.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 using GustafsGalleryStore.Helpers;
+using Newtonsoft.Json;
 
 namespace GustafsGalleryStore
 {
@@ -55,6 +56,10 @@ namespace GustafsGalleryStore
                     options.AllowAreas = true;
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
+                })
+                .AddJsonOptions(options => 
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; 
                 });
 
             services.Configure<ApiBehaviorOptions>(options =>

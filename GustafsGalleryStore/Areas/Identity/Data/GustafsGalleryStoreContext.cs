@@ -26,6 +26,8 @@ namespace GustafsGalleryStore.Areas.Identity.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Colour> Colours { get; set; }
         public DbSet<Size> Sizes { get; set; }
+        public DbSet<DeliveryType> DeliveryTypes { get; set; }
+        public DbSet<DeliveryCompany> DeliveryCompanies { get; set; }
 
         public GustafsGalleryStoreContext(DbContextOptions<GustafsGalleryStoreContext> options)
             : base(options)

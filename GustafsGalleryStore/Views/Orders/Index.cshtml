@@ -1,10 +1,42 @@
-﻿<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title></title>
-    </head>
-    <body>
+﻿@model GustafsGalleryStore.Models.ViewModels.OrdersViewModel
+@{
+    ViewData["Title"] = "Your Orders";
+}
 
-    </body>
-</html>
+<div>
+    @foreach (var item in Model.Orders)
+    {
+        <div class="w3-padding-large">
+            <div class="w3-responsive w3-card-4 w3-round">
+                <table class="w3-table w3-striped w3-bordered">
+                    <thead>
+                        <tr class="w3-light-grey">
+                            <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/Orders/ViewOrder?id=@item.Id">@item.Id</a></th>
+                            <th style="width: 50%"><strong>Order Placed: </strong><br />@item.OrderPlacedDate</th>
+                            <th style="width: 25%"><strong>Total: </strong><br />£@item.OrderTotalPrice</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <h5>@item.OrderStatus.Status</h5>
+                                @if (item.PaymentStatus == "approved_by_network")
+                                {
+                                    <strong>Payment complete.</strong>
+                                }
+                                else
+                                {
+                                    <strong>Awaiting payment confirmation.</strong>
+                                }
+                            </td>
+                            <td>
+                                <a href="/Orders/ViewOrder?id=@item.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top">Order Details</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

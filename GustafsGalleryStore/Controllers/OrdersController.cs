@@ -73,7 +73,10 @@ namespace GustafsGalleryStore.Controllers
                     return 0;
                 }
 
-                var basket = _context.Orders.Where(x => x.UserId == userId).Where(x => x.OrderStatusId == StatusId("Basket")).SingleOrDefault();
+                var basket = _context.Orders.
+                                     Where(x => x.UserId == userId).
+                                     Where(x => x.OrderStatusId == OrderHelper.StatusId("Basket", _context)).
+                                     SingleOrDefault();
 
                 if (basket == null)
                 {
@@ -96,7 +99,15 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Index()
         {
             var userId = _userManager.GetUserId(User);
-            var viewModel = new OrdersViewModel() { Orders = _context.Orders.Where(x => x.UserId == userId).Where(x => x.OrderStatusId != StatusId("Basket")).ToList() };
+            var viewModel = new OrdersViewModel() 
+            { 
+                Orders = _context.Orders.
+                                 Where(x => x.UserId == userId).
+                                 Where(x => x.OrderStatusId != OrderHelper.StatusId("Basket", _context)).
+                                 Include(x => x.OrderStatus).
+                                 OrderByDescending(x => x.OrderPlacedDate).
+                                 ToList() 
+            };
             return View(viewModel);
         }
 
@@ -123,7 +134,7 @@ namespace GustafsGalleryStore.Controllers
 
             _basket = _context.Orders.
                               Where(x => x.Id == id).
-                              Where(x => x.OrderStatusId == StatusId("Basket")).
+                              Where(x => x.OrderStatusId == OrderHelper.StatusId("Basket", _context)).
                               Include(x => x.OrderItems).
                               SingleOrDefault();
 
@@ -142,6 +153,25 @@ namespace GustafsGalleryStore.Controllers
 
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public string GetBasketStatus(long id)
+        {
+
+            _basket = _context.Orders.
+                              Where(x => x.Id == id).
+                              Include(x => x.OrderStatus).
+                              SingleOrDefault();
+
+            if (_basket == null)
+            {
+                return "";
+            }
+
+            return _basket.OrderStatus.Status;
+
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public IActionResult AddToBasket([FromBody]OrderItemDTO newItemDTO)
@@ -151,7 +181,7 @@ namespace GustafsGalleryStore.Controllers
             {
                 _basket = _context.Orders.
                                      Where(x => x.Id == newItemDTO.OrderId).
-                                     Where(x => x.OrderStatusId == StatusId("Basket")).
+                                     Where(x => x.OrderStatusId == OrderHelper.StatusId("Basket", _context)).
                                      Include(x => x.OrderItems).
                                      SingleOrDefault();
 
@@ -195,56 +225,111 @@ namespace GustafsGalleryStore.Controllers
             return new BadRequestResult();
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult UpdateItem([FromBody]OrderItemDTO itemDTO)
+        {
+
+            if (ModelState.IsValid)
+            {
+                _basket = _context.Orders.
+                                     Where(x => x.Id == itemDTO.OrderId).
+                                     Where(x => x.OrderStatusId == OrderHelper.StatusId("Basket", _context)).
+                                     Include(x => x.OrderItems).
+                                     SingleOrDefault();
+
+                if (_basket == null)
+                {
+                    var paramName = "Basket";
+                    var message = "Basket does not exist.";
+                    throw new ArgumentNullException(paramName, message);
+                }
+
+                var updatedItem = TransformNewItemDTO(itemDTO);
+                List<OrderItem> newList = new List<OrderItem>();
+                decimal orderTotalPrice = 0;
+
+                foreach (var item in _basket.OrderItems)
+                {
+                    if (item.Id == updatedItem.Id)
+                    {
+                        if (updatedItem.Quantity > 0)
+                        {
+
+                            item.Product = OrderHelper.GetProduct(item, _context);
+
+                            item.Quantity = updatedItem.Quantity;
+
+                            orderTotalPrice += (item.Product.Price * item.Quantity);
+
+                            newList.Add(item);
+
+                        }
+                    }
+                    else
+                    {
+
+                        item.Product = OrderHelper.GetProduct(item, _context);
+
+                        orderTotalPrice += (item.Product.Price * item.Quantity);
+
+                        newList.Add(item);
+                    }
+                }
+
+                _basket.OrderItems.Clear();
+
+                _basket.OrderItems = newList;
+
+                _context.Update(_basket);
+
+                try
+                {
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message, ex.InnerException);
+                }
+
+                return new OkObjectResult(orderTotalPrice);
+            }
+
+            return new BadRequestResult();
+        }
+
+
+        [AllowAnonymous]
         public IActionResult ViewBasket(long id)
         {
             var viewModel = new BasketViewModel()
             {
-                Basket = _context.Orders.
-                                    Where(x => x.Id == id).
-                                    Where(x => x.OrderStatusId == StatusId("Basket")).
-                                    Include(x => x.OrderItems).
-                                    Include(x => x.CustomerContact).
-                                    Include(x => x.DeliveryType).SingleOrDefault()
+                Basket = OrderHelper.GetOrder(id, _context)
             };
 
-            var userId = _userManager.GetUserId(User);
-
-            if (viewModel.Basket.UserId == null)
+            if(_signInManager.IsSignedIn(User))
             {
-                // set basket user id
-                viewModel.Basket.UserId = userId;
+                var userId = _userManager.GetUserId(User);
 
-                _context.Update(viewModel.Basket);
-                _context.SaveChanges();
-            }
-            else if (viewModel.Basket.UserId != userId)
-            {
-                // clear basket
-                NewBasket();
-                viewModel.Basket = _basket;
+                if (viewModel.Basket.UserId == null)
+                {
+                    // set basket user id
+                    viewModel.Basket.UserId = userId;
+
+                    OrderHelper.UpdateUser(id,userId,_context);
+                }
             }
 
-            // expand orderitems
-            List<OrderItem> orderItems = new List<OrderItem>();
+            return View(viewModel);
 
-            foreach (var item in viewModel.Basket.OrderItems)
+        }
+
+        public IActionResult ViewOrder(long id)
+        {
+            var viewModel = new BasketViewModel()
             {
-
-                var productId = item.ProductId;
-                var product = _context.Products.Where(x => x.Id == productId).
-                                  Include(c => c.ProductBrand).
-                                  Include(c => c.ProductColours).
-                                  Include(c => c.ProductSizes).
-                                  Include(c => c.ProductImages).
-                                  SingleOrDefault();
-
-                item.Product = product;
-
-                orderItems.Add(item);
-
-            }
-
-            viewModel.Basket.OrderItems = orderItems;
+                Basket = OrderHelper.GetOrder(id, _context)
+            };
 
             return View(viewModel);
 
@@ -254,12 +339,16 @@ namespace GustafsGalleryStore.Controllers
 
         private void NewBasket()
         {
+            var userId = _userManager.GetUserId(User);
+
             //create new basket
-            Order basket = new Order() { 
-                OrderStatus = _context.OrderStatuses.Where(x => x.Id == StatusId("Basket")).SingleOrDefault(),
+            Order basket = new Order()
+            {
+                OrderStatus = _context.OrderStatuses.
+                                      Where(x => x.Id == OrderHelper.StatusId("Basket", _context)).
+                                      SingleOrDefault(),
                 OpenedDate = DateTime.Now
             };
-            var userId = _userManager.GetUserId(User);
 
             if (userId != null)
             {
@@ -281,34 +370,34 @@ namespace GustafsGalleryStore.Controllers
 
         }
 
-        private long StatusId(string status)
-        {
-
-            var statusInDb = _context.OrderStatuses.Where(x => x.Status == status).SingleOrDefault();
-            if(statusInDb != null)
-            {
-                return statusInDb.Id;
-            }
-
-            return 0;
-        }
-
         private OrderItem TransformNewItemDTO (OrderItemDTO input)
         {
             var output = new OrderItem();
             var size = _context.Sizes.Where(x => x.Value == input.Size).SingleOrDefault();
             var colour = _context.Colours.Where(x => x.Value == input.Colour).SingleOrDefault();
 
+            output.Id = input.Id;
+
             output.ProductId = input.ProductId;
-            output.SizeId = size.Id;
-            output.ColourId = colour.Id;
-            output.Quantity = 1;
+
+            if (size != null)
+            {
+                output.SizeId = size.Id;
+            }
+
+            if (colour != null)
+            {
+                output.ColourId = colour.Id;
+            }
+
+            output.Quantity = input.Quantity;
 
             return output;
 
         }
+
         #endregion
-    
+
     }
 
 }

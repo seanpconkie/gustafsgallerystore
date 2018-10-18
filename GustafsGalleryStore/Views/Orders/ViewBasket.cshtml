@@ -1,10 +1,128 @@
-﻿<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title></title>
-    </head>
-    <body>
+﻿@model GustafsGalleryStore.Models.ViewModels.BasketViewModel
+@{
+    ViewData["Title"] = "Your Basket";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
 
-    </body>
-</html>
+<div class="w3-content w3-container w3-padding-64" id="main">
+    <div id="alertDiv"></div>
+    <div class="w3-section w3-light-grey w3-padding-large">
+        <table style="width: 100%">
+            <thead>
+                <tr>
+                    <th class="w3-quarter"></th>
+                    <th class="w3-half"></th>
+                    <th class="w3-col s1">Price</th>
+                    <th class="w3-col s1">Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Basket.OrderItems)
+                {
+                    <tr>
+                        <td class="w3-quarter">
+                            @if (item.Product.ProductImages.Count > 0)
+                            {
+                                <img class="w3-hover-opacity-off w3-opacity" style="max-width: 200px;" src="@item.Product.ProductImages[0].Uri" />
+                            }
+                        </td>
+                        <td class="w3-half">
+                            <a href="/Products/Product?id=@item.Product.Id"><h4>@item.Product.Title</h4></a>
+
+                            @if (item.Product.Stock > 5)
+                            {
+                                <p>In Stock</p>
+                            }
+                            else if (item.Product.Stock == 0)
+                            {
+                                <p>Out of Stock</p>
+                            }
+                            else
+                            {
+                                <p>Low Stock</p>
+                            }
+                            <p><a href="javascript:void(0);" onclick="updateBasket(@item.Id,@item.ProductId)">Update</a></p>
+                        </td>
+                        <td class="w3-col s1 w3-center">
+                            <p>£@item.Product.Price</p>
+                        </td>
+                        <td class="w3-col s1 w3-center">
+                            <p><input id="@item.ProductId" class="w3-center" value="@item.Quantity" style="max-width: 40px;" type="number" /></p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (Model.Basket.OrderItems.Count == 0)
+        {
+            <h4>Your basket is empty.</h4>
+        }
+    </div>
+    <div class="w3-section w3-light-grey w3-padding-large">
+        <div class="w3-bar">
+            <h4 class="w3-right" id="subtotal">Subtotal: £@Model.Basket.OrderTotalPrice</h4>
+        </div>
+    </div>
+    <div class="w3-bar">
+        <a href="/Checkout/Index?id=@Model.Basket.Id" class="w3-button w3-round w3-dark-grey" onclick="openModal('spin')">Procced to Checkout</a>
+    </div>
+</div>
+
+<script>
+
+    function updateBasket(id, productId) {
+
+        var basketCookie = readCookie('gustaf-cookie-basket');
+        var orderId = 0;
+        var input = document.getElementById(productId);
+        var subtotal = document.getElementById('subtotal');
+
+        // do we have a cookie?
+        if (basketCookie != null) {
+            orderId = basketCookie
+        }
+
+        var jsonPacket = {};
+
+        jsonPacket["Id"] = id;
+        jsonPacket["ProductId"] = productId;
+        jsonPacket["OrderId"] = orderId;
+        jsonPacket["Quantity"] = input.value;
+
+        $.ajax({
+                url: "/Orders/UpdateItem",
+                method: "POST",
+                data: JSON.stringify(jsonPacket),
+                contentType: "application/json; charset=utf-8",
+                success: function(data) {
+                    debugger;
+                    // update subtotal
+                    subtotal.innerHTML = 'Subtotal: £' + data;
+
+                    // update basket counter
+
+                    $.ajax({
+                        type: "GET",
+                        url: '/Orders/GetBasketCount?id=' + orderId,
+                        success: function (data) {
+                            var badge = document.getElementById('badge');
+                            badge.innerHTML = data;
+                        }
+                    });
+
+                    var y = document.getElementById('alertDiv');
+                    y.innerHTML += '<div class="alert alert-success" id="success-alert" role="alert"><button type="button" class="alert-close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success!</strong> Your basket has been updated.</div>'
+
+                    setTimeout(function() {
+
+                        $(".alert").alert('close');
+
+                    }, 5000);
+
+                },
+                error: function(error){
+                }
+            });
+
+    }
+</script>

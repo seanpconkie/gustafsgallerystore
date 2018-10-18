@@ -8,7 +8,7 @@ namespace GustafsGalleryStore.Models.DataModels
         public long Id { get; set; }
         public long OrderId { get; set; }
 
-        public ProductBrand OrderStatus { get; set; }
+        public OrderStatus OrderStatus { get; set; }
 
         [Display(Name = "Order Status")]
         public long OrderStatusId { get; set; }
