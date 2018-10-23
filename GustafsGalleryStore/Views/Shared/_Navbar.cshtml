@@ -56,7 +56,7 @@
 </div>
 
 <script>
-
+    
     // do we have an id?
     var basketCookie = readCookie('gustaf-cookie-basket');
     var cookieExpiry = 30;
@@ -65,18 +65,12 @@
     var id = 0;
 
     // do we have a cookie?
-    if (basketCookie == null) {
+    if (basketCookie == null || basketCookie == "undefined") {
 
         // get basket id
-
-        $.ajax({
-            type: "GET",
-            url: '/Orders/GetBasketId',
-            success: function (data) {
-                id = data;
-                document.cookie = createCookie('gustaf-cookie-basket',id,cookieExpiry,cookiePath);
-            }
-        });
+        id = getBasketId();
+        // create cookie
+        document.cookie = createCookie('gustaf-cookie-basket',id,cookieExpiry,cookiePath);
 
     }
     else 
@@ -85,25 +79,14 @@
     }
 
     // get basket status
-    $.ajax({
-        type: "GET",
-        url: '/Orders/GetBasketStatus',
-        success: function (data) {
-            basketStatus = data;
-        }
-    });
+    basketStatus = getBasketStatus();
 
     if(basketStatus != "Basket") {
 
         // get basket id
-        $.ajax({
-            type: "GET",
-            url: '/Orders/GetBasketId',
-            success: function (data) {
-                id = data;
-                document.cookie = createCookie('gustaf-cookie-basket',id,cookieExpiry,cookiePath);
-            }
-        });
+        id = getBasketId();
+        // create cookie
+        document.cookie = createCookie('gustaf-cookie-basket',id,cookieExpiry,cookiePath);
 
     };
 
@@ -112,14 +95,59 @@
     button.setAttribute('href','/Orders/ViewBasket?id=' + id);
 
     // update basket counter
+    var badge = document.getElementById('badge');
+    badge.innerHTML = getBasketCounter();
+    
+
+function getBasketId(){
+
+    var returnValue = null;
+
+    $.ajax({
+        type: "GET",
+        url: '/Orders/GetBasketId',
+        async: false,
+        success: function (data) {
+
+            returnValue = data;
+            
+        }
+    });
+
+    return returnValue;
+}
+
+function getBasketStatus() {
+
+    var returnValue = null;
+
+    $.ajax({
+        type: "GET",
+        url: '/Orders/GetBasketStatus?id=' + id,
+        async: false,
+        success: function (data) {
+            returnValue = data;
+            
+        }
+    });
+
+    return returnValue;
+}
+
+function getBasketCounter() {
+
+    var returnValue = null;
 
     $.ajax({
         type: "GET",
         url: '/Orders/GetBasketCount?id=' + id,
+        async: false,
         success: function (data) {
-            var badge = document.getElementById('badge');
-            badge.innerHTML = data;
+            returnValue = data;
+            
         }
     });
 
+    return returnValue;
+}
 </script>

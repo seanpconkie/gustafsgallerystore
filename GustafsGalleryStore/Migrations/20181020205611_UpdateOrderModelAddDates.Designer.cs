@@ -4,14 +4,16 @@ using GustafsGalleryStore.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GustafsGalleryStore.Migrations
 {
     [DbContext(typeof(GustafsGalleryStoreContext))]
-    partial class GustafsGalleryStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20181020205611_UpdateOrderModelAddDates")]
+    partial class UpdateOrderModelAddDates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,10 +196,6 @@ namespace GustafsGalleryStore.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("CancellationCompletedDate");
-
-                    b.Property<DateTime?>("CancellationRequestedDate");
 
                     b.Property<long>("CustomerContactId");
 
@@ -412,50 +410,6 @@ namespace GustafsGalleryStore.Migrations
                     b.ToTable("ProductSizes");
                 });
 
-            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.Return", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("OrderId");
-
-                    b.Property<string>("Reason");
-
-                    b.Property<DateTime?>("RefundCreatedDate");
-
-                    b.Property<string>("RefundId");
-
-                    b.Property<string>("RefundMessage");
-
-                    b.Property<string>("RefundStatus");
-
-                    b.Property<DateTime?>("ReturnCompleteDate");
-
-                    b.Property<DateTime?>("ReturnOpenedDate");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Returns");
-                });
-
-            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.ReturnItem", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("ItemId");
-
-                    b.Property<long>("ReturnId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReturnId");
-
-                    b.ToTable("ReturnItems");
-                });
-
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.Size", b =>
                 {
                     b.Property<long>("Id")
@@ -660,14 +614,6 @@ namespace GustafsGalleryStore.Migrations
                     b.HasOne("GustafsGalleryStore.Models.DataModels.Product")
                         .WithMany("ProductSizes")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.ReturnItem", b =>
-                {
-                    b.HasOne("GustafsGalleryStore.Models.DataModels.Return")
-                        .WithMany("ReturnItems")
-                        .HasForeignKey("ReturnId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

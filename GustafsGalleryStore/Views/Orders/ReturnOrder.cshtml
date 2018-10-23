@@ -1,0 +1,56 @@
+﻿@model GustafsGalleryStore.Models.ViewModels.ReturnOrderViewModel
+@{
+    ViewData["Title"] = "Return Order " + Model.Order.Id;
+}
+<div class="w3-container">
+    <form action="/Orders/ReturnOrder" method="post" id="return-form">
+        <div class="w3-row">
+            <div class="w3-half w3-row-padding">
+                <span>Please select item(s) to be returned.</span>
+                <select size="6" class="w3-input" id="item" multiple asp-for="ReturnItems">
+                    @foreach (var item in Model.Order.OrderItems)
+                    {
+                        <option value="@item.Product.Id">@item.Product.Title</option>
+                    }
+                </select>
+            </div>
+            <div class="w3-half w3-row-padding">
+                <span>Please provide reason for return.</span>
+                <div class="form-group">
+                    <input type="radio" name="reason" onclick="radioButton('Item Damanged')" /><label>&nbsp;Item Damaged</label><br />
+                    <input type="radio" name="reason" onclick="radioButton('Item Unsuitable')" /><label>&nbsp;Item Unsuitable</label><br />
+                    <input type="radio" name="reason" onclick="radioButton('Wrong Item Recieved')" /><label>&nbsp;Wrong Item Received</label><br />
+                    <input type="radio" name="reason" onclick="radioButton('Other')" /><label>&nbsp;Other</label><br />
+                    <div id="other" style="display: none;">
+                        <span><em>Please enter details of the reason your are returning the item(s).</em></span>
+                        <input type="text" class="w3-input" id="reason" asp-for="Return.Reason" />
+                    </div>
+                    <div id="hiddenInputs">
+                        <input asp-for="Return.OrderId" value="@Model.Order.Id" hidden />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w3-row w3-padding-large"><div class="w3-half"><button class="w3-button w3-dark-grey w3-round w3-block" onclick="openModal('spin')">Start Return</button></div></div>
+    </form>
+</div>
+
+<script>
+    function radioButton(r) {
+
+        var group = document.getElementById('other');
+        var input = document.getElementById('reason');
+
+        if (r == "Other")
+        {
+            group.style.display = ('block');
+            input.value = null;
+        }
+        else
+        {
+            group.style.display = ('none');
+            input.value = r;
+        }
+
+    }
+</script>

@@ -56,11 +56,12 @@ namespace GustafsGalleryStore
                     options.AllowAreas = true;
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
-                })
-                .AddJsonOptions(options => 
-                {
-                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore; 
                 });
+
+                //.AddJsonOptions(options =>
+                 //{
+                 //    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                 //})
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

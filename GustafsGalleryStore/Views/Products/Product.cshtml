@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <p class="w3-padding">
-                    <a href="javascript:void(0);" onclick="addToBasket(@Model.Product.Id)" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                    <a href="javascript:void(0);" onclick="openModal('spin');addToBasket(@Model.Product.Id);closeModal('spin')" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
                 </p>
                 <div id="errorMessage" style="display: none" class="w3-container">
                     <span onclick="clearErrorMessage()" class="w3-button w3-right"><i class="fas fa-times"></i></span>
@@ -62,8 +62,6 @@
 <script>
 
     function addToBasket(id) {
-
-        openModal('spin');
 
         var basketCookie = readCookie('gustaf-cookie-basket');
         var orderId = 0;
@@ -112,6 +110,7 @@
                 method: "POST",
                 data: JSON.stringify(jsonPacket),
                 contentType: "application/json; charset=utf-8",
+                async: false,
                 success: function() {
 
                     // update basket counter
@@ -130,16 +129,7 @@
                 }
             });
 
-        closeModal('spin');
-     
-        var y = document.getElementById('alertDiv');
-        y.innerHTML += '<div class="alert alert-success" id="success-alert" role="alert"><button type="button" class="alert-close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success!</strong> Your basket has been updated.</div>'
-
-        setTimeout(function() {
-
-            $(".alert").alert('close');
-
-        }, 5000);
+        toastr["success"]("Your basket has been updated", "Success");
 
     }
 

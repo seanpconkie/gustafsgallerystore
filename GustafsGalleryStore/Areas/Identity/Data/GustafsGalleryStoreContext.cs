@@ -28,6 +28,8 @@ namespace GustafsGalleryStore.Areas.Identity.Data
         public DbSet<Size> Sizes { get; set; }
         public DbSet<DeliveryType> DeliveryTypes { get; set; }
         public DbSet<DeliveryCompany> DeliveryCompanies { get; set; }
+        public DbSet<Return> Returns { get; set; }
+        public DbSet<ReturnItem> ReturnItems { get; set; }
 
         public GustafsGalleryStoreContext(DbContextOptions<GustafsGalleryStoreContext> options)
             : base(options)

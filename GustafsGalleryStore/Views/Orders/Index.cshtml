@@ -11,14 +11,24 @@
                 <table class="w3-table w3-striped w3-bordered">
                     <thead>
                         <tr class="w3-light-grey">
-                            <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/Orders/ViewOrder?id=@item.Id">@item.Id</a></th>
-                            <th style="width: 50%"><strong>Order Placed: </strong><br />@item.OrderPlacedDate</th>
-                            <th style="width: 25%"><strong>Total: </strong><br />£@item.OrderTotalPrice</th>
+                            <th style="width: 33%"><strong>Order Number: </strong><br /><a href="/Orders/ViewOrder?id=@item.Id">@item.Id</a></th>
+                            <th style="width: 34%"><strong>Order Placed: </strong><br />@item.OrderPlacedDate.Value.ToString("D")</th>
+                            <th style="width: 33%"><strong>Total: </strong><br />£@item.OrderTotalPrice</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td></td>
+                            <td>
+                                @if(!string.IsNullOrWhiteSpace(item.PackageReference))
+                                {
+                                    <span>Order Dispatched: <strong>@item.OrderCompleteDate.Value.ToString("D")</strong></span><br />
+                                    <span>Package Reference: <a href="https://www.royalmail.com/track-your-item" target="_blank"><strong>@item.PackageReference</strong></a></span> <br />
+                                }
+                                @if(item.CancellationCompletedDate != null)
+                                {
+                                    <span>Order Cancelled: <strong>@item.CancellationCompletedDate.Value.ToString("D")</strong></span><br />
+                                }
+                            </td>
                             <td>
                                 <h5>@item.OrderStatus.Status</h5>
                                 @if (item.PaymentStatus == "approved_by_network")
@@ -31,12 +41,43 @@
                                 }
                             </td>
                             <td>
-                                <a href="/Orders/ViewOrder?id=@item.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top">Order Details</a>
+                                <a href="/Orders/ViewOrder?id=@item.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Order Details</a>
+                                @if(item.OrderStatus.Status == "Awaiting Stock" ||
+                                  item.OrderStatus.Status == "Order Placed")
+                                {
+                                    <a href="/Orders/CancelOrder?id=@item.Id" class="w3-button w3-block w3-round w3-light-grey w3-margin-top" onclick="openModal('spin')">Cancel Order</a>
+                                }
+                                @if(item.OrderStatus.Status == "Order Dispatched")
+                                {
+                                    <a href="/Orders/ReturnOrder?id=@item.Id" class="w3-button w3-block w3-round w3-light-grey w3-margin-top" onclick="openModal('spin')">Return Order</a>
+                                }
                             </td>
                         </tr>
+
                     </tbody>
                 </table>
             </div>
         </div>
     }
 </div>
+<script>
+    
+    var failure = "@Model.FailureMessage";
+    var message = "@Model.StatusMessage";
+    var success = "@Model.SuccessMessage";
+
+    if (failure != "")
+    {
+        toastr["warning"](failure, "Warning");
+    }
+
+    if (message != "")
+    {
+        toastr["info"](message, "Info");
+    }
+
+    if (success != "")
+    {
+        toastr["success"](success, "Success");
+    }
+</script>

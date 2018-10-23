@@ -16,6 +16,7 @@ namespace GustafsGalleryStore.Helpers
             if (inDb != null)
             {
                 var status = context.OrderStatuses.Where(x => x.Id == statusId).SingleOrDefault();
+
                 var history = new OrderHistory()
                 {
                     OrderId = id,
@@ -26,13 +27,33 @@ namespace GustafsGalleryStore.Helpers
                 context.Add(history);
 
                 inDb.OrderStatus = status;
-                if (status.Status == "Order Placed")
+
+                switch (status.Status)
                 {
-                    inDb.OrderPlacedDate = DateTime.Now;
-                }
-                else if (status.Status == "Order Dispatched")
-                {
-                    inDb.OrderCompleteDate = DateTime.Now;
+                    case "Order Placed":
+                        inDb.OrderPlacedDate = DateTime.Now;
+                        break;
+                    case "Order Dispatched":
+                        inDb.OrderCompleteDate = DateTime.Now;
+                        break;
+                    case "Order Cancelled":
+                        inDb.CancellationRequestedDate = DateTime.Now;
+                        break;
+                    case "Cancellation Completed":
+                        inDb.CancellationCompletedDate = DateTime.Now;
+                        break;
+                    case "Return Completed":
+                        inDb.OrderCompleteDate = DateTime.Now;
+                        break;
+                    case "Awaiting Return":
+                        inDb.ReturnRequestedDate = DateTime.Now;
+                        break;
+                    case "Order Returned":
+                        inDb.ReturnReceivedDate = DateTime.Now;
+                        inDb.OrderCompleteDate = DateTime.Now;
+                        break;
+                    default:
+                        break;
                 }
 
                 context.Update(inDb);
@@ -56,12 +77,12 @@ namespace GustafsGalleryStore.Helpers
         public static Order GetOrder(long id, GustafsGalleryStoreContext context)
         {
             var order = context.Orders.
-                                Where(x => x.Id == id).
-                                Include(x => x.CustomerContact).
-                                Include(x => x.DeliveryType).
-                                SingleOrDefault();
+                            Where(x => x.Id == id).
+                            SingleOrDefault();
 
-            order.OrderItems = context.OrderItems.Where(x => x.OrderId == id).ToList();
+            order.OrderItems = context.OrderItems.
+                                    Where(x => x.OrderId == id).
+                                    ToList();
 
             // expand orderitems
             List<OrderItem> orderItems = new List<OrderItem>();
@@ -108,6 +129,22 @@ namespace GustafsGalleryStore.Helpers
             order.OrderTotalPrice = totalPrice;
             order.OrderItems = orderItems;
 
+            order.CustomerContact = context.CustomerContacts.
+                                        Where(x => x.Id == order.CustomerContactId).
+                                        SingleOrDefault();
+
+            order.DeliveryType = context.DeliveryTypes.
+                                    Where(x => x.Id == order.DeliveryTypeId).
+                                    SingleOrDefault();
+
+            order.DeliveryType.DeliveryCompany = context.DeliveryCompanies.
+                                                    Where(x => x.Id == order.DeliveryType.DeliveryCompanyId).
+                                                    SingleOrDefault();
+
+            order.OrderStatus = context.OrderStatuses.
+                                    Where(x => x.Id == order.OrderStatusId).
+                                    SingleOrDefault();
+
             return order;
         }
 
@@ -140,15 +177,16 @@ namespace GustafsGalleryStore.Helpers
         public static void UpdateUser(long id, string userId, GustafsGalleryStoreContext context)
         {
             var newOrder = context.Orders.
-                               Where(x => x.Id == id).
-                               Include(x => x.OrderItems).
-                               SingleOrDefault();
+                                Where(x => x.Id == id).
+                                Include(x => x.OrderItems).
+                                SingleOrDefault();
 
             var userOrders = context.Orders.
-                                    Where(x => x.UserId == userId).
-                                    Where(x => x.Id != id).
-                                    Include(x => x.OrderItems).
-                                    ToList();
+                                Where(x => x.UserId == userId).
+                                Where(x => x.Id != id).
+                                Where(x => x.OrderStatusId == StatusId("Basket", context)).
+                                Include(x => x.OrderItems).
+                                ToList();
 
             foreach (var order in userOrders)
             {

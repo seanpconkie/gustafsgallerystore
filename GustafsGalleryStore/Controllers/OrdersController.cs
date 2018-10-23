@@ -96,7 +96,7 @@ namespace GustafsGalleryStore.Controllers
         #endregion
 
         // GET: /<controller>/
-        public IActionResult Index()
+        public IActionResult Index(string statusMessage = "", string successMessage = "", string failureMessage = "")
         {
             var userId = _userManager.GetUserId(User);
             var viewModel = new OrdersViewModel() 
@@ -106,8 +106,12 @@ namespace GustafsGalleryStore.Controllers
                                  Where(x => x.OrderStatusId != OrderHelper.StatusId("Basket", _context)).
                                  Include(x => x.OrderStatus).
                                  OrderByDescending(x => x.OrderPlacedDate).
-                                 ToList() 
+                                 ToList(),
+                StatusMessage = statusMessage,
+                SuccessMessage = successMessage,
+                FailureMessage = failureMessage
             };
+
             return View(viewModel);
         }
 
@@ -333,6 +337,69 @@ namespace GustafsGalleryStore.Controllers
 
             return View(viewModel);
 
+        }
+
+        public async Task<IActionResult> CancelOrder(long id)
+        {
+            var order = _context.Orders.Where(x => x.Id == id).SingleOrDefault();
+            var user = await _userManager.GetUserAsync(User);
+
+            OrderHelper.UpdateOrderStatus(id, OrderHelper.StatusId("Order Cancelled", _context),_context);
+
+            var message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><p>Hi ";
+            message += user.Forename + string.Format(", Thanks for notifying us about your cancellation.  We'll arrange a refund of any payments already made and will let you know when this has been completed.</p><p>Please could you check your emails (including your Spam box) once you have placed your order, as we may have to contact you regarding your order. This is especially important for items requiring personalisation.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a></p></tbody></table></body></html> ",order.Id);
+
+            await _emailSender.SendEmailAsync(user.Email, "Order Confirmation: " + id, message);
+            await _emailSender.SendEmailAsync(user.Email, "Order Cancellation: " + id, string.Format("Order has been cancelled - <a href='https://gustafsgallery.co.uk/ManageOrders/ViewOrder?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a>",order.Id));
+
+            return ControllerHelper.RedirectToLocal(this,"/Orders/Index?successMessage=Your order has been cancelled.");
+        }
+        [HttpGet]
+        public IActionResult ReturnOrder(long id)
+        {
+            var model = new ReturnOrderViewModel()
+            {
+                Order = OrderHelper.GetOrder(id,_context),
+                Return = new Return() {
+                    OrderId = id
+                }
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ReturnOrder(ReturnOrderViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            model.Return.ReturnOpenedDate = DateTime.Now;
+
+            _context.Add(model.Return);
+
+            foreach (var item in model.ReturnItems)
+            {
+                var newItem = new ReturnItem()
+                {
+                    ReturnId = model.Return.Id,
+                    ItemId = item
+                };
+
+                _context.Add(newItem);
+
+                model.Return.ReturnItems.Add(newItem);
+            }
+
+            _context.SaveChanges();
+
+            OrderHelper.UpdateOrderStatus(model.Return.OrderId, OrderHelper.StatusId("Awaiting Return", _context), _context);
+
+            var message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><h4>Thanks you for your purchase!</h4><hr><p>Hi ";
+            message += user.Forename + string.Format(", Thanks for notifying us about your return, we'll be in touch with more details about returning your item(s).</p><p>Please could you check your emails (including your Spam box) once you have placed your order, as we may have to contact you regarding your order. This is especially important for items requiring personalisation.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a></p></tbody></table></body></html> ",model.Return.OrderId);
+
+            await _emailSender.SendEmailAsync(user.Email, "Return Confirmation: " + model.Return.OrderId, message);
+            await _emailSender.SendEmailAsync(user.Email, "Order Returned: " + model.Return.OrderId,string.Format("Order has been returned - <a href='https://gustafsgallery.co.uk/ManageOrders/ViewOrder?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a>",model.Return.OrderId));
+
+            return ControllerHelper.RedirectToLocal(this, "/Orders/Index?successMessage=Your return has been requested.");
         }
 
         #region private methods

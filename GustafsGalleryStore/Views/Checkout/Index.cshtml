@@ -77,6 +77,11 @@
         overflow-x: hidden; /* Disable horizontal scroll */
     }
 
+    .cart-alt {
+        position: absolute; 
+        overflow-x: hidden; 
+    }
+
     .checkout {
         margin-left: 25%; /* Same as the width of the sidebar */
         padding: 0px 10px;
@@ -87,7 +92,7 @@
     <form action="/Checkout/Index" method="post" id="payment-form">
         <span id="err-message"></span>
         <div class="w3-row">
-            <div class="w3-quarter w3-row-padding cart">
+            <div class="w3-quarter w3-row-padding cart stsbc-1" id="cart-container">
                 <div class="w3-content w3-light-grey w3-row-padding w3-border-bottom w3-border-top w3-border-right w3-border-left" id="cart">
                     <div class="w3-row">
                         <h4 class="w3-threequarter">Cart</h4>
@@ -195,6 +200,22 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="w3-row">
+                            <div class="w3-half">
+                                <div class="form-group w3-row-padding">
+                                    <label asp-for="Basket.CustomerContact.MobilePhone"></label>
+                                    <input asp-for="Basket.CustomerContact.MobilePhone" type="tel" class="w3-input" />
+                                </div>
+                                <div class="form-group w3-row-padding">
+                                    <label asp-for="Basket.CustomerContact.OtherPhone"></label>
+                                    <input asp-for="Basket.CustomerContact.OtherPhone" type="tel" class="w3-input"/>
+                                </div>
+                                <div class="form-group w3-row-padding">
+                                    <label asp-for="Basket.CustomerContact.WorkPhone"></label>
+                                    <input asp-for="Basket.CustomerContact.WorkPhone" type="tel" class="w3-input"/>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 @*Payment Details*@
@@ -215,8 +236,16 @@
                         <input hidden asp-for="StripeToken" id="payment-token" />
                         <input hidden asp-for="ThreeDSecure" id="three-d-secure" />
                         <input hidden asp-for="Basket.OrderTotalPrice" type="number" min="0.01" step="0.01" id="hidden-total-price" />
-                        <div class="w3-half">
-                            <button class="w3-margin-top w3-button w3-dark-grey w3-round" onclick="openModal('spin')"><i class="fas fa-credit-card w3-margin-right"></i>Complete Order</button>
+                        <div class="w3-row w3-padding">
+                            <div class="w3-third">
+                                <button class="w3-button w3-dark-grey w3-round w3-block" onclick="openModal('spin')"><i class="fas fa-credit-card w3-margin-right"></i>Complete Order</button>
+                            </div>
+                            <div class="w3-third">
+                                <h4 class="w3-center">OR</h4>
+                            </div>
+                            <div class="w3-third">
+                                @*<div id="paypal-button-container"></div>*@
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -226,6 +255,11 @@
     </form>
 
 </div>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/stripeCheckout.js?Authorization"></script>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/checkoutDeliveryAddress.js?Authorization"></script>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/checkoutDeliveryOptions.js?Authorization"></script>
+<script src="https://s3.amazonaws.com/sbt-solutions.co.uk/addressAutoComplete.js?Authorization"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOfCiFMuWl_6DzM4BsVFPYZ7ZvWmHcKR0&libraries=places&callback=initAutocomplete" async="" defer="defer"></script>
 <script>
     var deliveryData = [];
 
@@ -242,83 +276,35 @@
         @:y.innerHTML = '<div class="alert alert-warning" id="warning-alert" role="alert"><button type="button" class="alert-close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Warning!</strong>@Model.StatusMessage</div>';
     }
 
-</script>
-<script>
-    // Create a Stripe client.
-var stripe = Stripe('pk_test_RXPUXTy20WdoZwlxasr8TYCA');
+    deliveryCompleteCheck();
+    addressCompleteCheck();
 
-// Create an instance of Elements.
-var elements = stripe.elements({locale: 'auto'});
+    $(function() {
 
-// Custom styling can be passed to options when creating an Element.
-// (Note that this demo uses a wider set of styles than the guide below.)
-var style = {
-  base: {
-    color: '#32325d',
-    lineHeight: '18px',
-    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-    fontSmoothing: 'antialiased',
-    fontSize: '16px',
-    '::placeholder': {
-      color: '#aab7c4'
-    }
-  },
-  invalid: {
-    color: '#fa755a',
-    iconColor: '#fa755a'
-  }
-};
+        var footer = $("#footer-container");
+        var cart = $("#cart-container");
+        var top = cart.offset().top;
 
-// Create an instance of the card Element.
- var card = elements.create('card', {style: style});
+        $(window).scroll(function() {    
+            var scroll = $(window).scrollTop();
+            var check = $(document).height() - (cart.height() + footer.height() + top);
 
-// Add an instance of the card Element into the `card-element` <div>.
- card.mount('#card-element');
+            if (scroll >= check &&
+                cart.hasClass('stsbc-1'))
+            {
 
-// Handle real-time validation errors from the card Element.
-card.addEventListener('change', function(event) {
-  var displayError = document.getElementById('card-errors');
-  if (event.error) {
-    displayError.textContent = event.error.message;
-  } else {
-    displayError.textContent = '';
-  }
-});
-
-// Handle form submission.
-var form = document.getElementById('payment-form');
-form.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    stripe.createSource(card).then(function(result) {
-        if (result.error) {
-            // Inform the user if there was an error.
-            var errorElement = document.getElementById('card-errors');
-            errorElement.textContent = result.error.message;
-        } else {
-            debugger;
-            var three_d_secure = document.getElementById('three-d-secure');
-            three_d_secure.value = result.source.card.three_d_secure;
-            stripeTokenHandler(result.source.id);
-
-        }
+                cart.removeClass('cart').removeClass('stsbc-1').addClass("cart-alt");
+                cart.css("top",(scroll + (top - 5)) + "px");
+            } else if (scroll < check)
+            {
+                cart.removeClass("cart-alt").addClass('cart').addClass('stsbc-1');
+                cart.css("top","");
+            }
+        });
     });
-    
-});
-
-function stripeTokenHandler(token) {
-    debugger;
-  // Insert the token ID into the form so it gets submitted to the server
-  var input = document.getElementById('payment-token');
-  input.setAttribute('value', token);
-
-  // Submit the form
-  form.submit();
-}
-
 
 </script>
-@*<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/stripeCheckout.js?Authorization"></script>*@
+
 <script>
 
     var acc = document.getElementsByClassName("accordion");
@@ -329,11 +315,6 @@ function stripeTokenHandler(token) {
         this.classList.toggle("active");
         var panel = this.nextElementSibling;
 
-        if (panel.style.maxHeight){
-          panel.style.maxHeight = null;
-        } else {
-          panel.style.maxHeight = "100%";
-        }
 
         var cart = document.getElementById('cart');
         var spacer = document.getElementById('spacer');
@@ -346,6 +327,36 @@ function stripeTokenHandler(token) {
 
         spacer.removeAttribute('style');
         spacer.setAttribute('style',"min-height: " + height + "px");
+    
+        var footer = $("#footer-container");
+        var cart = $("#cart-container");
+        var top = cart.offset().top;
+        var scroll = $(window).scrollTop();
+        var cssValue = (scroll + (top - 5)) + "px";
+
+        if (panel.style.maxHeight){
+            panel.style.maxHeight = null;
+            height = 0;
+            cssValue = scroll + "px";
+        } else {
+            panel.style.maxHeight = "100%";
+        }
+
+        var check = ($(document).height() + height) - (cart.height() + footer.height() + top);
+
+        debugger;
+
+        if (scroll >= check &&
+            cart.hasClass('stsbc-1'))
+        {
+
+            cart.removeClass('cart').removeClass('stsbc-1').addClass("cart-alt");
+            cart.css("top",cssValue);
+        } else if (scroll < check)
+        {
+            cart.removeClass("cart-alt").addClass('cart').addClass('stsbc-1');
+            cart.css("top","");
+        }
 
       });
     }
@@ -360,7 +371,3 @@ function stripeTokenHandler(token) {
     first.style.maxHeight = "100%";
 
 </script>
-<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/checkoutDeliveryAddress.js?Authorization"></script>
-<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/checkoutDeliveryOptions.js?Authorization"></script>
-<script src="https://s3.amazonaws.com/sbt-solutions.co.uk/addressAutoComplete.js?Authorization"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOfCiFMuWl_6DzM4BsVFPYZ7ZvWmHcKR0&libraries=places&callback=initAutocomplete" async="" defer="defer"></script>

@@ -15,6 +15,7 @@
     <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/fancybox/jquery.fancybox.js?Authorization"></script>
     <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/xzoom/xzoom.min.js?Authorization"></script>
     <script type="text/javascript" src="https://s3.amazonaws.com/sbt-solutions.co.uk/xzoom/setup.js?Authorization"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
     <script src="https://js.stripe.com/v3/"></script>
 
@@ -29,13 +30,13 @@
     <link type="text/css" rel="stylesheet" media="all" href="https://s3.amazonaws.com/sbt-solutions.co.uk/fancybox/jquery.fancybox.css?Authorization" />
     <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/sbt-solutions.co.uk/xzoom/xzoom.css?Authorization" media="all" />
     <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/imageSlider.css?Authorization" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
     <link rel="shortcut icon" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/favicon.ico" />
 </head>
     <body id="home">
 
         <partial name="_Navbar" />
 
-        @*<partial name="_CookieConsentPartial" />*@    
         <div>
             <div id="sidenav" class="w3-hide">
                 <partial name="_Sidenav" />
@@ -44,7 +45,7 @@
                 @RenderBody()
             </div>
         </div>
-        <footer>
+        <footer id="footer-container">
             <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/footer.html?Authorization"></div>
         </footer>
         @RenderSection("Scripts", required: false)
@@ -59,6 +60,23 @@
         <script>includeHTML();</script>
         <!-- handle cookie message -->
         <script>
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
 
             var cookie = handleCookieMessage();
 

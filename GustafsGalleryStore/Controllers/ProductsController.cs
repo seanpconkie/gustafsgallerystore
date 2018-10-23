@@ -62,8 +62,8 @@ namespace GustafsGalleryStore.Controllers
                 StatusMessage = StatusMessage
             };
 
-            //return View(viewModel);
-            return ControllerHelper.RedirectToLocal(this,"/Home/ComingSoon");
+            return View(viewModel);
+            //return ControllerHelper.RedirectToLocal(this,"/Home/ComingSoon");
         }
 
         // GET: /<controller>/
@@ -84,8 +84,8 @@ namespace GustafsGalleryStore.Controllers
             viewModel.Sizes = ProductSize.GetList(viewModel.Product.ProductSizes);
             viewModel.Colours = ProductColour.GetList(viewModel.Product.ProductColours);
 
-            //return View(viewModel);
-            return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
+            return View(viewModel);
+            //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
         }
     }
 }

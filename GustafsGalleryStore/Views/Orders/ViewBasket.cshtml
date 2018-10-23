@@ -70,6 +70,8 @@
 
 <script>
 
+
+
     function updateBasket(id, productId) {
 
         var basketCookie = readCookie('gustaf-cookie-basket');
@@ -94,6 +96,7 @@
                 method: "POST",
                 data: JSON.stringify(jsonPacket),
                 contentType: "application/json; charset=utf-8",
+                async: false,
                 success: function(data) {
                     debugger;
                     // update subtotal
@@ -110,15 +113,8 @@
                         }
                     });
 
-                    var y = document.getElementById('alertDiv');
-                    y.innerHTML += '<div class="alert alert-success" id="success-alert" role="alert"><button type="button" class="alert-close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success!</strong> Your basket has been updated.</div>'
-
-                    setTimeout(function() {
-
-                        $(".alert").alert('close');
-
-                    }, 5000);
-
+                    toastr["success"]("Your basket has been updated", "Success");
+                    
                 },
                 error: function(error){
                 }

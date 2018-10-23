@@ -65,13 +65,20 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Index(long id, string statusMessage = null)
         {
 
-            return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
+            //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
 
             var userId = _userManager.GetUserId(User);
             var order = _context.Orders.
                                 Where(x => x.Id == id).
                                 Where(x => x.OrderStatusId == StatusId("Basket")).
                                 SingleOrDefault();
+
+            if (order == null)
+            {
+                var paramName = "Basket";
+                var message = "No basket found";
+                throw new ArgumentNullException(paramName,message);
+            }
 
             if (order.UserId == null)
             {
@@ -137,9 +144,7 @@ namespace GustafsGalleryStore.Controllers
             {
 
                 // update contact address and delivery type
-                var inDb = _context.Orders.
-                                   Where(x => x.Id == model.Basket.Id).
-                                   SingleOrDefault();
+                var inDb = OrderHelper.GetOrder(model.Basket.Id, _context);
 
                 var deliveryType = _context.DeliveryTypes.
                                            Where(x => x.Id == model.Basket.DeliveryType.Id).
@@ -163,7 +168,7 @@ namespace GustafsGalleryStore.Controllers
                 };
 
                 inDb.CustomerContact = contact;
-                inDb.OrderTotalPrice = model.Basket.OrderTotalPrice;
+                inDb.OrderTotalPrice = inDb.OrderTotalPrice + inDb.DeliveryType.Price;
 
                 try
                 {
@@ -176,7 +181,7 @@ namespace GustafsGalleryStore.Controllers
                 }
 
                 // create charge
-                int amount = Convert.ToInt32(model.Basket.OrderTotalPrice * 100);
+                int amount = Convert.ToInt32(inDb.OrderTotalPrice * 100);
 
                 if (model.ThreeDSecure == "required" || model.ThreeDSecure == "recommended")
                 {
@@ -202,6 +207,7 @@ namespace GustafsGalleryStore.Controllers
                 inDb.SellerMessage = result.SellerMessage;
                 inDb.PaymentId = result.Id;
                 inDb.PaymentStatus = result.NetworkStatus;
+                inDb.StripeSource = model.StripeToken;
 
                 try
                 {
@@ -257,7 +263,7 @@ namespace GustafsGalleryStore.Controllers
 
         public async Task<IActionResult> ThreeDSecure(string source, bool livemode, string client_secret)
         {
-            return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
+            //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
             try
             {
 
@@ -333,6 +339,8 @@ namespace GustafsGalleryStore.Controllers
 
         }
 
+
+
         #region private methods
 
         private long StatusId(string status)
@@ -356,7 +364,7 @@ namespace GustafsGalleryStore.Controllers
             OrderHelper.UpdateOrderStatus(id, OrderHelper.StatusId("Order Placed", _context), _context);
 
             var message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><h4>Thanks you for your purchase!</h4><hr><p>Hi ";
-                message += user.Forename + ", We are processing your order. We will notify you when it has been sent.</p><p>Please could you check your emails (including your Spam box) once you have placed your order, as we may have to contact you regarding your order. This is especially important for items requiring personalisation.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id=10' class='w3-button w3-dark-grey w3-round'>View Order</a></p><h4>Order Summary</h4><hr><table class='w3-table' style='width: 100%'><tbody>";
+            message += user.Forename + string.Format(", We are processing your order. We will notify you when it has been sent.</p><p>Please could you check your emails (including your Spam box) once you have placed your order, as we may have to contact you regarding your order. This is especially important for items requiring personalisation.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a></p><h4>Order Summary</h4><hr><table class='w3-table' style='width: 100%'><tbody>",id);
 
             var order = _context.Orders.
                                 Where(x => x.Id == id).
@@ -377,6 +385,19 @@ namespace GustafsGalleryStore.Controllers
 
             // send confirmation email
             await _emailSender.SendEmailAsync(user.Email, "Order Confirmation: " + id, message);
+            // send shop notification
+            message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><h4>You've had a new order!</h4><hr><p>Hi ";
+            message += string.Format("Hi Gustaf and friends, you've received a new order.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a></p><h4>Order Summary</h4><hr><table class='w3-table' style='width: 100%'><tbody>",order.Id);
+
+            foreach (var item in order.OrderItems)
+            {
+                item.Product = OrderHelper.GetProduct(item, _context);
+                message += "<tr><td>" + item.Product.Title + "</td></tr>";
+            }
+
+            message += "</tbody></table></body></html> ";
+
+            await _emailSender.SendEmailAsync(user.Email, "New Order: " + id, message);
 
             return UpdateResult.Success;
 

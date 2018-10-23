@@ -4,14 +4,16 @@ using GustafsGalleryStore.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GustafsGalleryStore.Migrations
 {
     [DbContext(typeof(GustafsGalleryStoreContext))]
-    partial class GustafsGalleryStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20181022145800_UpdateOrderModelAddReturn")]
+    partial class UpdateOrderModelAddReturn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -432,9 +434,13 @@ namespace GustafsGalleryStore.Migrations
 
                     b.Property<DateTime?>("ReturnCompleteDate");
 
+                    b.Property<long?>("ReturnId");
+
                     b.Property<DateTime?>("ReturnOpenedDate");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ReturnId");
 
                     b.ToTable("Returns");
                 });
@@ -450,8 +456,6 @@ namespace GustafsGalleryStore.Migrations
                     b.Property<long>("ReturnId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReturnId");
 
                     b.ToTable("ReturnItems");
                 });
@@ -663,12 +667,11 @@ namespace GustafsGalleryStore.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.ReturnItem", b =>
+            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.Return", b =>
                 {
                     b.HasOne("GustafsGalleryStore.Models.DataModels.Return")
                         .WithMany("ReturnItems")
-                        .HasForeignKey("ReturnId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ReturnId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
