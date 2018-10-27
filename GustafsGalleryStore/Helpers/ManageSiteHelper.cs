@@ -15,32 +15,44 @@ namespace GustafsGalleryStore.Helpers
             try
             {
 
-                var brand = new ProductBrand()
-                {
-                    Brand = model.Brand
-                };
 
-                string brandCode = model.Brand.ToUpper().Substring(0, 3).Trim();
-                List<ProductBrand> brands = new List<ProductBrand>();
-
-                brands = context.ProductBrands.Where(x => x.Brand == model.Brand).ToList();
-                if (brands.Count > 0)
+                if (model.Id == 0)
                 {
-                    return UpdateResult.Duplicate;
-                }
 
-                brands = context.ProductBrands.Where(x => x.BrandCode == brandCode).ToList();
-                int i = 0;
-                while (brands.Count > 0)
-                {
-                    i++;
-                    brandCode = model.Brand.ToUpper().Substring(0, 3).Trim() + i;
+                    var brand = new ProductBrand()
+                    {
+                        Brand = model.Brand
+                    };
+
+                    string brandCode = model.Brand.ToUpper().Substring(0, 3).Trim();
+                    List<ProductBrand> brands = new List<ProductBrand>();
+
+                    brands = context.ProductBrands.Where(x => x.Brand == model.Brand).ToList();
+                    if (brands.Count > 0)
+                    {
+                        return UpdateResult.Duplicate;
+                    }
+
                     brands = context.ProductBrands.Where(x => x.BrandCode == brandCode).ToList();
+                    int i = 0;
+                    while (brands.Count > 0)
+                    {
+                        i++;
+                        brandCode = model.Brand.ToUpper().Substring(0, 3).Trim() + i;
+                        brands = context.ProductBrands.Where(x => x.BrandCode == brandCode).ToList();
+                    }
+
+                    brand.BrandCode = brandCode;
+
+                    context.Add(brand);
+                }
+                else
+                {
+                    var inDb = context.ProductBrands.Where(x => x.Id == model.Id).SingleOrDefault();
+                    inDb.Brand = model.Brand;
+                    context.Update(inDb);
                 }
 
-                brand.BrandCode = brandCode;
-
-                context.Add(brand);
                 context.SaveChanges();
 
                 return UpdateResult.Success;
@@ -56,21 +68,30 @@ namespace GustafsGalleryStore.Helpers
         {
             try
             {
-
-                var colour = new Colour()
+                if (model.Id == 0)
                 {
-                    Value = model.Colour
-                };
+                    var colour = new Colour()
+                    {
+                        Value = model.Colour
+                    };
 
-                List<Colour> colours = new List<Colour>();
+                    List<Colour> colours = new List<Colour>();
 
-                colours = context.Colours.Where(x => x.Value == model.Colour).ToList();
-                if (colours.Count > 0)
+                    colours = context.Colours.Where(x => x.Value == model.Colour).ToList();
+                    if (colours.Count > 0)
+                    {
+                        return UpdateResult.Duplicate;
+                    }
+
+                    context.Add(colour);
+                }
+                else
                 {
-                    return UpdateResult.Duplicate;
+                    var inDb = context.Colours.Where(x => x.Id == model.Id).SingleOrDefault();
+                    inDb.Value = model.Colour;
+                    context.Update(inDb);
                 }
 
-                context.Add(colour);
                 context.SaveChanges();
 
                 return UpdateResult.Success;
@@ -86,22 +107,32 @@ namespace GustafsGalleryStore.Helpers
         {
             try
             {
-
-                var company = new DeliveryCompany()
+                if (model.Id == 0)
                 {
-                    Company = model.Company
-                };
 
-                List<DeliveryCompany> companies = new List<DeliveryCompany>();
+                    var company = new DeliveryCompany()
+                    {
+                        Company = model.Company
+                    };
 
-                companies = context.DeliveryCompanies.Where(x => x.Company == model.Company).ToList();
+                    List<DeliveryCompany> companies = new List<DeliveryCompany>();
 
-                if (companies.Count > 0)
+                    companies = context.DeliveryCompanies.Where(x => x.Company == model.Company).ToList();
+
+                    if (companies.Count > 0)
+                    {
+                        return UpdateResult.Duplicate;
+                    }
+
+                    context.Add(company);
+                }
+                else
                 {
-                    return UpdateResult.Duplicate;
+                    var inDb = context.DeliveryCompanies.Where(x => x.Id == model.Id).SingleOrDefault();
+                    inDb.Company = model.Company;
+                    context.Update(inDb);
                 }
 
-                context.Add(company);
                 context.SaveChanges();
 
                 return UpdateResult.Success;
@@ -117,33 +148,43 @@ namespace GustafsGalleryStore.Helpers
         {
             try
             {
-
-                var company = context.DeliveryCompanies.Where(c => c.Company == model.Company).SingleOrDefault();
-                var type = new DeliveryType()
+                if (model.Id == 0)
                 {
-                    Type = model.Type,
-                    Price = model.Price,
-                    Time = model.Time,
-                    DeliveryCompany = company
-                };
+                    var company = context.DeliveryCompanies.Where(c => c.Company == model.Company).SingleOrDefault();
+                    var type = new DeliveryType()
+                    {
+                        Type = model.Type,
+                        Price = model.Price,
+                        Time = model.Time,
+                        DeliveryCompany = company
+                    };
 
-                List<DeliveryType> types = new List<DeliveryType>();
+                    List<DeliveryType> types = new List<DeliveryType>();
 
-                types = context.DeliveryTypes.
-                               Where(x => x.DeliveryCompanyId == type.DeliveryCompany.Id).
-                               Where(x => x.Type == type.Type).
-                               ToList();
+                    types = context.DeliveryTypes.
+                                   Where(x => x.DeliveryCompanyId == type.DeliveryCompany.Id).
+                                   Where(x => x.Type == type.Type).
+                                   ToList();
 
-                if (types.Count > 0)
+                    if (types.Count > 0)
+                    {
+                        return UpdateResult.Duplicate;
+                    }
+
+                    context.Add(type);
+                }
+                else
                 {
-                    return UpdateResult.Duplicate;
+                    var inDb = context.DeliveryTypes.Where(x => x.Id == model.Id).SingleOrDefault();
+                    inDb.Type = model.Type;
+                    inDb.Price = model.Price;
+                    inDb.Time = model.Time;
+                    context.Update(inDb);
                 }
 
-                context.Add(type);
                 context.SaveChanges();
 
                 return UpdateResult.Success;
-
             }
             catch
             {
@@ -155,33 +196,41 @@ namespace GustafsGalleryStore.Helpers
         {
             try
             {
-
-                var dept = new Department()
+                if (model.Id == 0)
                 {
-                    DepartmentName = model.DepartmentName
-                };
+                    var dept = new Department()
+                    {
+                        DepartmentName = model.DepartmentName
+                    };
 
-                string deptCode = model.DepartmentName.ToUpper().Substring(0, 3).Trim();
-                List<Department> depts = new List<Department>();
+                    string deptCode = model.DepartmentName.ToUpper().Substring(0, 3).Trim();
+                    List<Department> depts = new List<Department>();
 
-                depts = context.Departments.Where(x => x.DepartmentName == model.DepartmentName).ToList();
-                if (depts.Count > 0)
-                {
-                    return UpdateResult.Duplicate;
-                }
+                    depts = context.Departments.Where(x => x.DepartmentName == model.DepartmentName).ToList();
+                    if (depts.Count > 0)
+                    {
+                        return UpdateResult.Duplicate;
+                    }
 
-                depts = context.Departments.Where(x => x.DepartmentCode == deptCode).ToList();
-                int i = 0;
-                while(depts.Count > 0)
-                {
-                    i ++;
-                    deptCode = model.DepartmentName.ToUpper().Substring(0, 3).Trim() + i;
                     depts = context.Departments.Where(x => x.DepartmentCode == deptCode).ToList();
+                    int i = 0;
+                    while (depts.Count > 0)
+                    {
+                        i++;
+                        deptCode = model.DepartmentName.ToUpper().Substring(0, 3).Trim() + i;
+                        depts = context.Departments.Where(x => x.DepartmentCode == deptCode).ToList();
+                    }
+
+                    dept.DepartmentCode = deptCode;
+
+                    context.Add(dept);
                 }
-
-                dept.DepartmentCode = deptCode;
-
-                context.Add(dept);
+                else
+                {
+                    var inDb = context.Departments.Where(x => x.Id == model.Id).SingleOrDefault();
+                    inDb.DepartmentName = model.DepartmentName;
+                    context.Update(inDb);
+                }
                 context.SaveChanges();
 
                 return UpdateResult.Success;
@@ -197,20 +246,29 @@ namespace GustafsGalleryStore.Helpers
         {
             try
             {
-                var size = new Size()
+                if (model.Id == 0)
                 {
-                    Value = model.Size
-                };
+                    var size = new Size()
+                    {
+                        Value = model.Size
+                    };
 
-                List<Size> sizes = new List<Size>();
+                    List<Size> sizes = new List<Size>();
 
-                sizes = context.Sizes.Where(x => x.Value == model.Size).ToList();
-                if (sizes.Count > 0)
-                {
-                    return UpdateResult.Duplicate;
+                    sizes = context.Sizes.Where(x => x.Value == model.Size).ToList();
+                    if (sizes.Count > 0)
+                    {
+                        return UpdateResult.Duplicate;
+                    }
+
+                    context.Add(size);
                 }
-
-                context.Add(size);
+                else
+                {
+                    var inDb = context.Sizes.Where(x => x.Id == model.Id).SingleOrDefault();
+                    inDb.Value = model.Size;
+                    context.Update(inDb);
+                }
                 context.SaveChanges();
 
                 return UpdateResult.Success;

@@ -16,16 +16,20 @@ namespace GustafsGalleryStore.Models.ViewModels
     {
 
         public string StatusMessage { get; set; }
+        public string FailureMessage { get; set; }
+        public string SuccessMessage { get; set; }
 
         public List<DeliveryType> DeliveryTypes { get; set; }
         public List<DeliveryCompany> DeliveryCompanies { get; set; }
 
         // new delivery company
         public string Company { get; set; }
+        public long CompanyId { get; set; }
         // new delivery type
         public string Type { get; set; }
         public decimal Price { get; set; }
         public string Time { get; set; }
+        public long Id { get; set; }
 
 
     }

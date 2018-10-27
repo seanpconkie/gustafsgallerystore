@@ -1,17 +1,20 @@
 ﻿@model GustafsGalleryStore.Models.ViewModels.SizeViewModel
 @{
-    ViewData["Title"] = "Add New Size";
+    ViewData["Title"] = "Update Size";
 }
 @await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
 <div class="w3-row">
     <div class="w3-half w3-row-padding">
-        <label>Brand</label>
-        <select size="6" class="w3-input" id="Size" disabled>
+        <label asp-for="Size"></label>
+        <select size="6" class="w3-input" id="itemList" onchange="selectedItem(this)">
             @foreach (var size in Model.Sizes)
             {
-                <option>@size.Value</option>
+                <option value="@size.Id">@size.Value</option>
             }
         </select>
+        <div class="w3-bar" id="editButton" style="display: none;">
+            <button class="w3-button w3-border-bottom w3-right" type="button" onclick="openModal('editForm');"><i class="fas fa-edit w3-margin-right"></i>Edit Selected</button>
+        </div>
     </div>
     <div class="w3-half w3-row-padding">
         <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
@@ -21,3 +24,72 @@
         </form>
     </div>
 </div>
+<div class="w3-modal" id="editForm" style="z-index:4">
+    <div class="w3-modal-content w3-animate-zoom">
+        <div class="w3-container w3-padding">
+            <span onclick="closeModal('editForm');unSelect();" class="w3-button w3-right"><i class="fas fa-times"></i></span>
+            <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+                <label asp-for="Size"></label>
+                <input asp-for="Size" class="w3-input" id="editInput" />
+                <input asp-for="Id" hidden value="" id="id" />
+                <button type="submit" class="w3-button w3-round w3-light-grey w3-block w3-margin-top" onclick="closeModal('editForm');openModal('spin');"><i class="fas fa-save w3-margin-right"></i>Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+
+    var failure = "@Model.FailureMessage";
+    var message = "@Model.StatusMessage";
+    var success = "@Model.SuccessMessage";
+
+    if (failure != "")
+    {
+        toastr["warning"](failure, "Warning");
+    }
+
+    if (message != "")
+    {
+        toastr["info"](message, "Info");
+    }
+
+    if (success != "")
+    {
+        toastr["success"](success, "Success");
+    }
+
+function selectedItem(l) {
+
+    var selectedId = "";
+    var selectedValue = "";
+    var edit = document.getElementById('editButton');
+    var editInput = document.getElementById('editInput');
+    var id = document.getElementById('id');
+
+    if (l.selectedIndex >= 0)
+    {
+        id.value = l.options[l.selectedIndex].value;
+        editInput.value = l.options[l.selectedIndex].innerHTML;
+        edit.style.display = 'block';
+    }
+    else
+    {
+        edit.style.display = 'none';
+    }
+
+}
+function unSelect() {
+
+    var edit = document.getElementById('editButton');
+    var editInput = document.getElementById('editInput');
+    var id = document.getElementById('id');
+    var list = document.getElementById('itemList');
+
+    list.options[list.selectedIndex].selected = false;
+    id.value = "";
+    editInput.value = "";
+    edit.style.display = 'none';
+
+}
+
+</script>

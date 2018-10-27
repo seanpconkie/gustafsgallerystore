@@ -18,7 +18,7 @@ using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 
 namespace GustafsGalleryStore.Controllers
 {
-    [Authorize(Roles = "IsStaff")]
+    [Authorize(Roles = MasterStrings.StaffRole)]
     public class ManageSiteController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -46,9 +46,6 @@ namespace GustafsGalleryStore.Controllers
 
         public string ReturnUrl { get; set; }
 
-        [TempData]
-        public string StatusMessage { get; set; }
-
         // GET: /<controller>/
         public IActionResult Index()
         {
@@ -56,9 +53,14 @@ namespace GustafsGalleryStore.Controllers
         }
 
         // GET: /<controller>/
-        public IActionResult Brand()
+        public IActionResult Brand(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
-            var viewModel = new BrandViewModel() { Brands = _context.ProductBrands.OrderBy(x => x.Brand).ToList() };
+            var viewModel = new BrandViewModel() { 
+                Brands = _context.ProductBrands.OrderBy(x => x.Brand).ToList(),
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
+            };
 
             return View(viewModel);
         }
@@ -68,37 +70,52 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Brand(BrandViewModel model)
         {
 
+            string failureMessage = null;
+            string successMessage = null;
+            var redirectUrl = "/ManageSite/Brand";
+
             if (ModelState.IsValid)
             {
-                try
+               
+                var result = ManageSiteHelper.AddBrand(model,_context);
+
+                if (result == UpdateResult.Error)
                 {
-
-                    var result = ManageSiteHelper.AddBrand(model,_context);
-
-                    if (result == UpdateResult.Error)
-                    {
-                        throw new Exception("Brand couldn't be updated.");
-                    }
-
-                    return ControllerHelper.RedirectToLocal(this,"/ManageSite/Brand");
+                    failureMessage = "Brand couldn't be updated.";
                 }
-                catch (System.Exception ex)
+                else if (result == UpdateResult.Success)
                 {
-                    StatusMessage = "An Error occured; " + ex.Message;
+                    successMessage = "Brand updated.";
+                }
+                else if (result == UpdateResult.Duplicate)
+                {
+                    failureMessage = "Brand already exists.";
                 }
 
             }
 
-            model.StatusMessage = StatusMessage;
+            if (!string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUrl += string.Format("?failureMessage={0}", failureMessage);
+            }
+            if (!string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("?successMessage={0}", successMessage);
+            }
 
-            return View(model);
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
 
         }
 
         // GET: /<controller>/
-        public IActionResult Colour()
+        public IActionResult Colour(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
-            var viewModel = new ColourViewModel() { Colours = _context.Colours.OrderBy(x => x.Value).ToList() };
+            var viewModel = new ColourViewModel() { 
+                Colours = _context.Colours.OrderBy(x => x.Value).ToList(),
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
+            };
 
             return View(viewModel);
         }
@@ -108,35 +125,46 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Colour(ColourViewModel model)
         {
 
+            string failureMessage = null;
+            string successMessage = null;
+            var redirectUrl = "/ManageSite/Colour";
+
             if (ModelState.IsValid)
             {
-                try
+
+                var result = ManageSiteHelper.AddColour(model, _context);
+
+
+                if (result == UpdateResult.Error)
                 {
-
-                    var result = ManageSiteHelper.AddColour(model, _context);
-
-                    if (result == UpdateResult.Error)
-                    {
-                        throw new Exception("Colour couldn't be updated.");
-                    }
-
-                    return ControllerHelper.RedirectToLocal(this,"/ManageSite/Colour");
+                    failureMessage = "Colour couldn't be updated.";
                 }
-                catch (System.Exception ex)
+                else if (result == UpdateResult.Success)
                 {
-                    StatusMessage = "An Error occured; " + ex.Message;
+                    successMessage = "Colour updated.";
                 }
+                else if (result == UpdateResult.Duplicate)
+                {
+                    failureMessage = "Colour already exists.";
+                }
+            }
+        
 
+            if (!string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUrl += string.Format("?failureMessage={0}", failureMessage);
+            }
+            if (!string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("?successMessage={0}", successMessage);
             }
 
-            model.StatusMessage = StatusMessage;
-
-            return View(model);
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
 
         }
 
         // GET: /<controller>/
-        public IActionResult Delivery()
+        public IActionResult Delivery(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
             var viewModel = new DeliveryViewModel(){};
 
@@ -153,9 +181,31 @@ namespace GustafsGalleryStore.Controllers
         }
 
         // GET: /<controller>/
-        public IActionResult DeliveryType()
+        public IActionResult DeliveryType(long id = 0, string statusMessage = null, 
+                                          string successMessage = null, 
+                                          string failureMessage = null)
         {
-            var viewModel = new DeliveryViewModel() { DeliveryCompanies = _context.DeliveryCompanies.ToList()};
+            var viewModel = new DeliveryViewModel() { 
+                DeliveryCompanies = _context.DeliveryCompanies.ToList(),
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
+            };
+
+            if (id > 0)
+            {
+                var inDb = _context.DeliveryTypes.
+                                   Where(x => x.Id == id).
+                                   Include(x => x.DeliveryCompany).
+                                   SingleOrDefault();
+
+                viewModel.Id = inDb.Id;
+                viewModel.Time = inDb.Time;
+                viewModel.Type = inDb.Type;
+                viewModel.Price = inDb.Price;
+                viewModel.Company = inDb.DeliveryCompany.Company;
+                viewModel.CompanyId = inDb.DeliveryCompany.Id;
+            }
 
             return View(viewModel);
         }
@@ -165,37 +215,55 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult DeliveryType(DeliveryViewModel model)
         {
 
+            var viewModel = new DeliveryViewModel() { };
+            string failureMessage = null;
+            string successMessage = null;
+            var redirectUrl = "/ManageSite/DeliveryType";
+
             if (ModelState.IsValid)
             {
-                try
+
+                var result = ManageSiteHelper.AddDeliveryType(model, _context);
+
+
+                if (result == UpdateResult.Error)
                 {
-
-                    var result = ManageSiteHelper.AddDeliveryType(model, _context);
-
-                    if (result == UpdateResult.Error)
-                    {
-                        throw new Exception("Delivery method couldn't be updated.");
-                    }
-
-                    return ControllerHelper.RedirectToLocal(this, "/ManageSite/Delivery");
+                    failureMessage = "Delivery Method couldn't be updated.";
                 }
-                catch (Exception ex)
+                else if (result == UpdateResult.Success)
                 {
-                    StatusMessage = "An Error occured; " + ex.Message;
+                    successMessage = "Delivery Method updated.";
                 }
+                else if (result == UpdateResult.Duplicate)
+                {
+                    failureMessage = "Delivery Method already exists.";
+                }
+
 
             }
 
-            model.StatusMessage = StatusMessage;
+            if (!string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUrl += string.Format("?failureMessage={0}", failureMessage);
+            }
+            if (!string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("?successMessage={0}", successMessage);
+            }
 
-            return View(model);
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
 
         }
 
         // GET: /<controller>/
-        public IActionResult DeliveryCompany()
+        public IActionResult DeliveryCompany(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
-            var viewModel = new DeliveryViewModel() { DeliveryCompanies = _context.DeliveryCompanies.ToList() };
+            var viewModel = new DeliveryViewModel() { 
+                DeliveryCompanies = _context.DeliveryCompanies.ToList(),
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
+            };
 
             return View(viewModel);
         }
@@ -205,37 +273,53 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult DeliveryCompany(DeliveryViewModel model)
         {
 
+            var viewModel = new DeliveryViewModel() { };
+            string failureMessage = null;
+            string successMessage = null;
+            var redirectUrl = "/ManageSite/DeliveryCompany";
             if (ModelState.IsValid)
             {
-                try
+
+                var result = ManageSiteHelper.AddDeliveryCompany(model, _context);
+
+
+                if (result == UpdateResult.Error)
                 {
-
-                    var result = ManageSiteHelper.AddDeliveryCompany(model, _context);
-
-                    if (result == UpdateResult.Error)
-                    {
-                        throw new Exception("Company couldn't be updated.");
-                    }
-
-                    return ControllerHelper.RedirectToLocal(this, "/ManageSite/DeliveryCompany");
+                    failureMessage = "Delivery Company couldn't be updated.";
                 }
-                catch (Exception ex)
+                else if (result == UpdateResult.Success)
                 {
-                    StatusMessage = "An Error occured; " + ex.Message;
+                    successMessage = "Delivery Company updated.";
+                }
+                else if (result == UpdateResult.Duplicate)
+                {
+                    failureMessage = "Delivery Company already exists.";
                 }
 
             }
 
-            model.StatusMessage = StatusMessage;
+            if (!string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUrl += string.Format("?failureMessage={0}", failureMessage);
+            }
+            if (!string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("?successMessage={0}", successMessage);
+            }
 
-            return View(model);
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
 
         }
 
         // GET: /<controller>/
-        public IActionResult Department()
+        public IActionResult Department(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
-            var viewModel = new DepartmentViewModel() { Departments = _context.Departments.OrderBy(x => x.DepartmentName).ToList() };
+            var viewModel = new DepartmentViewModel() { 
+                Departments = _context.Departments.OrderBy(x => x.DepartmentName).ToList(),
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
+            };
 
             return View(viewModel);
         }
@@ -245,37 +329,52 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Department(DepartmentViewModel model)
         {
 
+            var viewModel = new DeliveryViewModel() { };
+            string failureMessage = null;
+            string successMessage = null;
+            var redirectUrl = "/ManageSite/Department";
             if (ModelState.IsValid)
             {
-                try
+                var result = ManageSiteHelper.AddDepartment(model, _context);
+
+
+                if (result == UpdateResult.Error)
                 {
-
-                    var result = ManageSiteHelper.AddDepartment(model, _context);
-
-                    if (result == UpdateResult.Error)
-                    {
-                        throw new Exception("Department couldn't be updated.");
-                    }
-
-                    return ControllerHelper.RedirectToLocal(this,"/ManageSite/Department");
+                    failureMessage = "Department couldn't be updated.";
                 }
-                catch (System.Exception ex)
+                else if (result == UpdateResult.Success)
                 {
-                    StatusMessage = "An Error occured; " + ex.Message;
+                    successMessage = "Department updated.";
+                }
+                else if (result == UpdateResult.Duplicate)
+                {
+                    failureMessage = "Department already exists.";
                 }
 
             }
 
-            model.StatusMessage = StatusMessage;
+            if (!string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUrl += string.Format("?failureMessage={0}", failureMessage);
+            }
+            if (!string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("?successMessage={0}", successMessage);
+            }
 
-            return View(model);
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
 
         }
 
         // GET: /<controller>/
-        public IActionResult Size()
+        public IActionResult Size(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
-            var viewModel = new SizeViewModel() { Sizes = _context.Sizes.OrderBy(x => x.Value).ToList() };
+            var viewModel = new SizeViewModel() { 
+                Sizes = _context.Sizes.OrderBy(x => x.Value).ToList(),
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
+            };
 
             return View(viewModel);
         }
@@ -285,30 +384,43 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Size(SizeViewModel model)
         {
 
+            var viewModel = new DeliveryViewModel() { };
+            string failureMessage = null;
+            string successMessage = null;
+            var redirectUrl = "/ManageSite/Size";
+
             if (ModelState.IsValid)
             {
-                try
+               
+                var result = ManageSiteHelper.AddSize(model, _context);
+
+
+                if (result == UpdateResult.Error)
                 {
-
-                    var result = ManageSiteHelper.AddSize(model, _context);
-
-                    if (result == UpdateResult.Error)
-                    {
-                        throw new Exception("Size couldn't be updated.");
-                    }
-
-                    return ControllerHelper.RedirectToLocal(this,"/ManageSite/Size");
+                    failureMessage = "Size couldn't be updated.";
                 }
-                catch (Exception ex)
+                else if (result == UpdateResult.Success)
                 {
-                    StatusMessage = "An Error occured; " + ex.Message;
+                    successMessage = "Size updated.";
+                }
+                else if (result == UpdateResult.Duplicate)
+                {
+                    failureMessage = "Size already exists.";
                 }
 
             }
 
-            model.StatusMessage = StatusMessage;
 
-            return View(model);
+            if (!string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUrl += string.Format("?failureMessage={0}", failureMessage);
+            }
+            if (!string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("?successMessage={0}", successMessage);
+            }
+
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
 
         }
 

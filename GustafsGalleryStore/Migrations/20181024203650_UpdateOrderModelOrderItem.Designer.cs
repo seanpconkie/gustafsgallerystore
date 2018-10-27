@@ -4,14 +4,16 @@ using GustafsGalleryStore.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GustafsGalleryStore.Migrations
 {
     [DbContext(typeof(GustafsGalleryStoreContext))]
-    partial class GustafsGalleryStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20181024203650_UpdateOrderModelOrderItem")]
+    partial class UpdateOrderModelOrderItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

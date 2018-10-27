@@ -52,9 +52,6 @@
                 <p class="w3-padding">
                     <a href="javascript:void(0);" onclick="openModal('spin');addToBasket(@Model.Product.Id);closeModal('spin')" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
                 </p>
-                <div id="errorMessage" style="display: none" class="w3-container">
-                    <span onclick="clearErrorMessage()" class="w3-button w3-right"><i class="fas fa-times"></i></span>
-                </div>
             </div>
         </div>
     </div>
@@ -84,7 +81,7 @@
         if (sizeValue == "" || sizeValue == "Select Size")
         {
             //error message
-            updateErrorMessage("Size must be selected.");
+            toastr["warning"]("Size must be selected.", "Warning");
             closeModal('spin');
             return;
         }
@@ -98,7 +95,7 @@
         if (colourValue == "" || colourValue == "Select Colour")
         {
             //error message
-            updateErrorMessage("Colour must be selected.");
+            toastr["warning"]("Colour must be selected.", "Warning");
             closeModal('spin');
             return;
         }
@@ -133,21 +130,4 @@
 
     }
 
-    function updateErrorMessage(value) {
-
-        var messageContainer = document.getElementById('errorMessage');
-
-        messageContainer.innerText = value;
-        messageContainer.style.display = 'block';
-
-    }
-
-    function clearErrorMessage(){
-
-        var messageContainer = document.getElementById('errorMessage');
-
-        messageContainer.innerText = "";
-        messageContainer.style.display = 'none';
-
-    }
 </script>

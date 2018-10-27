@@ -20,7 +20,7 @@
     var isStaff = await UserManager.IsInRoleAsync(user, "IsStaff");
     <div class="w3-hide-small">
         <div class="w3-dropdown-hover w3-hide-small w3-right">
-            <button class="dropbtn"><span class="w3-hide-medium">Hello&nbsp;</span>@user.Forename<span class="w3-hide-medium">!</span><i class="fa fa-caret-down w3-margin-left"></i></button>
+            <button class="dropbtn"><span class="w3-hide-medium">Hello&nbsp;</span>@user.Forename<span class="w3-hide-medium">!</span><i class="fa fa-caret-down"></i></button>
             <div class="w3-dropdown-content w3-bar-block w3-card-4 w3-dark-grey menu">
                 <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="w3-bar-block">
                     <button type="submit" class="w3-bar-item w3-button w3-padding-large"><i class="fas fa-sign-out-alt fa-fw w3-margin-right"></i>Not @user.Forename? Logout.</button>

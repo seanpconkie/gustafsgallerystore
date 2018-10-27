@@ -12,7 +12,10 @@ namespace GustafsGalleryStore.Models.ViewModels
         public List<DeliveryType> DeliveryTypes { get; set; }
         public string StripeToken { get; set; }
         public string StatusMessage { get; set; }
+        public string FailureMessage { get; set; }
+        public string SuccessMessage { get; set; }
         public string ThreeDSecure { get; set; }
+        public string PayPal { get; set; }
 
     }
 }

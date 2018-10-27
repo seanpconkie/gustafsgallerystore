@@ -10,14 +10,16 @@ using Amazon.S3.Transfer;
 using Amazon.S3.Model;
 using Amazon.Extensions.NETCore.Setup;
 using System.Net.Http.Headers;
+using GustafsGalleryStore.Helpers;
+
 namespace GustafsGalleryStore.Services
 {
     public class S3Helper
     {
 
         private IHostingEnvironment _hostingEnvironment;
-        private static AmazonS3Client _s3Client = new AmazonS3Client(awsAccessKeyId: "",
-                                                              awsSecretAccessKey: "",
+        private static AmazonS3Client _s3Client = new AmazonS3Client(awsAccessKeyId: MasterStrings.awsAccessKeyId,
+                                                              awsSecretAccessKey: MasterStrings.awsSecretAccessKey,
                                                               region: Amazon.RegionEndpoint.USEast1);
         private static readonly string _bucketName = "sbt-solutions.imagestore";//this is my Amazon Bucket name
         private static string _bucketSubdirectory = String.Empty;

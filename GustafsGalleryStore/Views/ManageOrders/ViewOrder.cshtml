@@ -44,7 +44,7 @@
                 <p>Order Number: <strong>@Model.Order.Id</strong></p>
                 <p>Order Placed: <strong>@Model.Order.OrderPlacedDate.Value.ToString("F")</strong></p>
                 <p>Order Status: <strong>@Model.Order.OrderStatus.Status</strong></p>
-                <p>Order Total: <strong>£@Model.Order.OrderTotalPrice</strong></p>
+                <p>Order Total: <strong>£@(Model.Order.OrderTotalPrice + Model.Order.DeliveryType.Price)</strong></p>
                 @if (Model.Order.OrderStatus.Status == "Order Dispatched")
                 {
                     @if (Model.Order.OrderCompleteDate != null)
@@ -149,8 +149,10 @@
                     <tr>
                         <th class="w3-quarter"></th>
                         <th class="w3-half"></th>
-                        <th class="w3-col s1">Price</th>
-                        <th class="w3-col s1">Quantity</th>
+                        <th style="width: 6.25%;">Price</th>
+                        <th style="width: 6.25%;">Quantity</th>
+                        <th style="width: 6.25%;">Size</th>
+                        <th style="width: 6.25%;">Colour</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -166,12 +168,14 @@
                         <td class="w3-half">
                             <a href="/Products/Product?id=@item.Product.Id"><h4>@item.Product.Title</h4></a>
                         </td>
-                        <td class="w3-col s1 w3-center">
+                        <td class="w3-center" style="width: 6.25%;">
                             <p>£@item.Product.Price</p>
                         </td>
-                        <td class="w3-col s1 w3-center">
-                            <p><span id="@item.ProductId" class="w3-center" style="max-width: 40px;">@item.Quantity</span></p>
+                        <td class="w3-center" style="width: 6.25%;">
+                            <p>@item.Quantity</p>
                         </td>
+                        <td class="w3-center" style="width: 6.25%;"><p>@item.Size.Value</p></td>
+                        <td class="w3-center" style="width: 6.25%;"><p>@item.Colour.Value</p></td>
                     </tr>
                     }
                 </tbody>
@@ -241,7 +245,7 @@
         <div class="w3-half w3-row-padding">
             <div class="w3-section w3-light-grey w3-padding-large">
                 <h4>Payment Details</h4>
-                @if (Model.Order.PaymentStatus == "approved_by_network")
+                @if (Model.Order.PaymentStatus == "approved_by_network" || Model.Order.PaymentStatus == "approved")
                 {
                     <p>Payment Status: <strong>Payment complete</strong></p>
                 }
@@ -250,21 +254,26 @@
                     <p>Payment Status: <strong>Awaiting payment confirmtion</strong></p>
                 }
                 <p>
-                    Payment Method: 
-                    @if(Model.Order.StripeSource == "")
+                    Payment Method:&nbsp;
+                    @if(string.IsNullOrWhiteSpace(Model.Order.StripeSource))
                     {
-                    <strong><span><i class="fab fa-paypal w3-margin-right"></i>PayPal</span></strong>
+                    <strong><span><i class="fab fa-paypal"></i>PayPal</span></strong>
                     }
                     else
                     {
-                    <strong><span><i class="fab fa-stripe-s w3-margin-right"></i>Stripe</span></strong>
+                    <strong><span><i class="fab fa-stripe-s"></i>Stripe</span></strong>
                     }
                 </p>
                 <p>Payment Id: <strong>@Model.Order.PaymentId</strong></p>
-                <p>Payment Message:  <strong>@Model.Order.PaymentMessage</strong></p>
-                <p>Payment Status:  <strong>@Model.Order.PaymentStatus</strong></p>
-                <p>Stripe Seller Message:  <strong>@Model.Order.SellerMessage</strong></p>
-                <p>Stripe Source Id:  <strong>@Model.Order.StripeSource</strong></p>
+                <p>Payment Message: <strong>@Model.Order.PaymentMessage</strong></p>
+                <p>Payment Status: <strong>@Model.Order.PaymentStatus</strong></p>
+                <hr />
+                <p>Stripe Seller Message: <strong>@Model.Order.SellerMessage</strong></p>
+                <p>Stripe Source Id: <strong>@Model.Order.StripeSource</strong></p>
+                <hr />
+                <p>PayPal Cart Id: <strong>@Model.Order.PayPalCartId</strong></p>
+                <p>PayPal Payer Id: <strong>@Model.Order.PayPalPayerId</strong></p>
+                <p>PayPal Sale Id: <strong>@Model.Order.PayPalSaleId</strong></p>
             </div>
         </div>
     </div>

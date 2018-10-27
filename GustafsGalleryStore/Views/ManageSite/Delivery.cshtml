@@ -21,17 +21,40 @@
         <tbody>
             @foreach (var type in Model.DeliveryTypes)
             {
-            <tr>
-                <td class="w3-center">@type.DeliveryCompany.Company</td>
-                <td class="w3-center">@type.Type</td>
-                <td class="w3-center">@type.Price</td>
-                <td class="w3-center">@type.Time</td>
-                <td class="w3-center w3-hide-small" style="width: 100px">
-                    <a class="w3-bar-item w3-button w3-round w3-light-grey" href="/" onclick="openModal('spin')"><i class="fas fa-edit w3-margin-right"></i>Edit</a>
-                </td>
-            </tr>
+                <tr>
+                    <td class="w3-center">@type.DeliveryCompany.Company</td>
+                    <td class="w3-center">@type.Type</td>
+                    <td class="w3-center">£@type.Price</td>
+                    <td class="w3-center">@type.Time</td>
+                    <td class="w3-center w3-hide-small" style="width: 100px">
+                        <a class="w3-bar-item w3-button w3-round w3-light-grey" href="/ManageSite/DeliveryType?id=@type.Id" onclick="openModal('spin')"><i class="fas fa-edit w3-margin-right"></i>Edit</a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 </div>
 <script>$("#deliveryTypes").DataTable();</script>
+
+<script>
+
+    var failure = "@Model.FailureMessage";
+    var message = "@Model.StatusMessage";
+    var success = "@Model.SuccessMessage";
+
+    if (failure != "")
+    {
+        toastr["warning"](failure, "Warning");
+    }
+
+    if (message != "")
+    {
+        toastr["info"](message, "Info");
+    }
+
+    if (success != "")
+    {
+        toastr["success"](success, "Success");
+    }
+
+</script>

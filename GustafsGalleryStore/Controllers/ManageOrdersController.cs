@@ -24,7 +24,7 @@ using System;
 
 namespace GustafsGalleryStore.Controllers
 {
-    [Authorize(Roles = "IsStaff")]
+    [Authorize(Roles = MasterStrings.StaffRole)]
     public class ManageOrdersController : Controller
     {
         #region private variables
@@ -65,42 +65,46 @@ namespace GustafsGalleryStore.Controllers
         #region properties
         public string ReturnUrl { get; set; }
 
-        [TempData]
-        public string StatusMessage { get; set; }
 
         #endregion
 
         // GET: /<controller>/
-        public IActionResult Index(string statusMessage = null)
+        public IActionResult Index(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
             var userId = _userManager.GetUserId(User);
             var viewModel = new ManageOrdersViewModel()
             {
                 NewOrders = _context.Orders.
-                             Where(x => x.OrderStatusId == OrderHelper.StatusId("Order Placed", _context)).
-                             Include(x => x.OrderStatus).
-                             OrderByDescending(x => x.OrderPlacedDate).
-                             ToList(),
+                                Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.OrderPlaced, _context)).
+                                Include(x => x.OrderStatus).
+                                Include(x => x.DeliveryType).
+                                OrderByDescending(x => x.OrderPlacedDate).
+                                ToList(),
                 AwaitingStock = _context.Orders.
-                             Where(x => x.OrderStatusId == OrderHelper.StatusId("Awaiting Stock", _context)).
-                             Include(x => x.OrderStatus).
-                             OrderByDescending(x => x.OrderPlacedDate).
-                             ToList(),
+                                    Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.AwaitingStock, _context)).
+                                    Include(x => x.OrderStatus).
+                                    Include(x => x.DeliveryType).
+                                    OrderByDescending(x => x.OrderPlacedDate).
+                                    ToList(),
                 CancelledOrders = _context.Orders.
-                             Where(x => x.OrderStatusId == OrderHelper.StatusId("Order Cancelled", _context)).
-                             Include(x => x.OrderStatus).
-                             ToList(),
+                                    Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.OrderCancelled, _context)).
+                                    Include(x => x.OrderStatus).
+                                    Include(x => x.DeliveryType).
+                                    ToList(),
                 OpenReturns = _context.Orders.
-                             Where(x => x.OrderStatusId == OrderHelper.StatusId("Awaiting Return", _context)).
-                             Include(x => x.OrderStatus).
-                             ToList(),
-                StatusMessage = statusMessage
+                                Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.AwaitingReturn, _context)).
+                                Include(x => x.OrderStatus).
+                                Include(x => x.DeliveryType).
+                                ToList(),
+                StatusMessage = statusMessage,
+                SuccessMessage = successMessage,
+                FailureMessage = failureMessage
             };
 
             var searchTerm = "select * from dbo.orders where orderstatusid in (" + 
-                               OrderHelper.StatusId("Order Dispatched", _context) + "," + 
-                               OrderHelper.StatusId("Order Returned", _context) + "," + 
-                               OrderHelper.StatusId("Cancellation Completed",_context) + ")";
+                               OrderHelper.StatusId(MasterStrings.OrderDispatched, _context) + "," + 
+                               OrderHelper.StatusId(MasterStrings.OrderReturned, _context) + "," + 
+                               OrderHelper.StatusId(MasterStrings.CancellationCompleted,_context) + ")";
 
             var completed = _context.Orders.FromSql(searchTerm).ToList();
 
@@ -111,7 +115,7 @@ namespace GustafsGalleryStore.Controllers
 
             List<Order> orders = _context.Orders.
                                     Where(x => x.OpenedDate < date).
-                                    Where(x => x.OrderStatusId == OrderHelper.StatusId("Basket", _context)).
+                                    Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.Basket, _context)).
                                     ToList();
 
             foreach (var item in orders)
@@ -127,7 +131,7 @@ namespace GustafsGalleryStore.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> ViewOrder(long id, string statusMessage = "", string successMessage = "", string failureMessage = "")
+        public async Task<IActionResult> ViewOrder(long id, string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
             var viewModel = new ProcessOrderViewModel()
             {
@@ -169,15 +173,11 @@ namespace GustafsGalleryStore.Controllers
         public async Task<IActionResult> AwaitingStock(long id)
         {
 
-            string statusMessage = null;
-            string failureMessage = null;
-            string successMessage = null;
+            await UpdateOrder(id, MasterStrings.AwaitingStock);
 
-            await UpdateOrder(id, "Awaiting Stock");
+            var redirectUrl = string.Format("/ManageOrders/ViewOrder?id={0}&&successMessage={1}.", id, "Order updated");
 
-            successMessage = "Order updated.";
-
-            return ControllerHelper.RedirectToLocal(this, string.Format("/ManageOrders/ViewOrder?id={0}&&statusMessage={1}&&failureMessage={2}&&successMessage={3}", id, statusMessage, failureMessage, successMessage));
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
         }
 
 
@@ -188,27 +188,26 @@ namespace GustafsGalleryStore.Controllers
                                 Include(x => x.DeliveryType).
                                 SingleOrDefault();
             UpdateResult result = UpdateResult.Error;
-
-            string statusMessage = null;
             string failureMessage = null;
             string successMessage = null;
 
-            int amount = Convert.ToInt32((order.OrderTotalPrice) * 100);
-
             if (!string.IsNullOrWhiteSpace(order.StripeSource))
             {
+
+                int amount = Convert.ToInt32((order.OrderTotalPrice) * 100);
+
                 var stripeResult = StripeHelper.RefundCharge(order.PaymentId, amount);
 
                 order.RefundStatus = stripeResult.Status;
                 order.RefundCreatedDate = stripeResult.Created;
 
-                if (stripeResult.Status == "succeeded" || stripeResult.Status == "pending")
+                if (stripeResult.Status == MasterStrings.StripeResultSucceeded || stripeResult.Status == MasterStrings.StripeResultPending)
                 {
                     order.RefundId = stripeResult.BalanceTransactionId;
                     result = UpdateResult.Success;
                 }
 
-                if (stripeResult.Status == "failed" || stripeResult.Status == "canceled")
+                if (stripeResult.Status == MasterStrings.StripeResultFailed || stripeResult.Status == MasterStrings.StripeResultCancelled)
                 {
                     order.RefundId = stripeResult.FailureBalanceTransactionId;
                     order.RefundMessage = stripeResult.FailureReason;
@@ -219,27 +218,59 @@ namespace GustafsGalleryStore.Controllers
 
                 }
             }
+            else if (!string.IsNullOrWhiteSpace(order.PayPalSaleId))
+            {
+                var payPalResult = PayPalHelper.RefundPayment(order.PayPalSaleId, order.OrderTotalPrice);
+
+                order.RefundStatus = payPalResult.state;
+                order.RefundCreatedDate = Convert.ToDateTime(payPalResult.create_time);
+                order.RefundId = payPalResult.id;
+                order.RefundMessage = payPalResult.reason_code;
+
+                if (payPalResult.state == MasterStrings.PayPalResultCompleted || payPalResult.state == MasterStrings.PayPalResultPending)
+                {
+                    result = UpdateResult.Success;
+                }
+
+                if (payPalResult.state == MasterStrings.PayPalResultFailed || payPalResult.state == MasterStrings.PayPalResultCancelled)
+                {
+                    failureMessage = "Refund failed";
+                    result = UpdateResult.Error;
+                }
+            }
             else
             {
-                // paypal
                 failureMessage = "Refund couldn't be completed.  Please complete this via payment handler.";
             }
 
             if (result == UpdateResult.Success)
             {
                 order.CancellationCompletedDate = DateTime.Now;
-                await UpdateOrder(id, "Cancellation Completed");
+                await UpdateOrder(id, MasterStrings.CancellationCompleted);
                 successMessage = "Order updated.";
             }
 
-            return ControllerHelper.RedirectToLocal(this, string.Format("/ManageOrders/ViewOrder?id={0}&&statusMessage={1}&&failureMessage={2}&&successMessage={3}", id, statusMessage, failureMessage, successMessage));
+            _context.Update(order);
+            _context.SaveChanges();
+            
+            var redirectUrl = string.Format("/ManageOrders/ViewOrder?id={0}", id);
+
+            if (string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUrl += string.Format("&&failureMessage={0}", failureMessage);
+            }
+            if (string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("&&successMessage={0}", successMessage);
+            }
+
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
         }
 
         public async Task<IActionResult> OrderDispatched(long id, string packageReference)
         {
             var order = _context.Orders.Where(x => x.Id == id).SingleOrDefault();
-
-            string statusMessage = null;
+            var redirectUrl = string.Format("/ManageOrders/ViewOrder?id={0}", id);
             string failureMessage = null;
             string successMessage = null;
 
@@ -247,7 +278,9 @@ namespace GustafsGalleryStore.Controllers
             {
                 failureMessage = "Please enter Package Reference.";
 
-                return ControllerHelper.RedirectToLocal(this, string.Format("/ManageOrders/ViewOrder?id={0}&&statusMessage={1}&&failureMessage={2}&&successMessage={3}", id, statusMessage, failureMessage, successMessage));
+                redirectUrl += string.Format("&&failureMessage={0}", failureMessage);
+
+                return ControllerHelper.RedirectToLocal(this, redirectUrl);
             }
 
             order.PackageReference = packageReference;
@@ -255,11 +288,17 @@ namespace GustafsGalleryStore.Controllers
             _context.Update(order);
             _context.SaveChanges();
 
-            await UpdateOrder(id, "Order Dispatched");
+            await UpdateOrder(id, MasterStrings.OrderDispatched);
 
             successMessage = "Order updated.";
 
-            return ControllerHelper.RedirectToLocal(this, string.Format("/ManageOrders/ViewOrder?id={0}&&statusMessage={1}&&failureMessage={2}&&successMessage={3}", id, statusMessage, failureMessage, successMessage));
+
+            if (string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("&&successMessage={0}", successMessage);
+            }
+
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
         }
 
         public async Task<IActionResult> CompleteReturn(long id, decimal returnAmount)
@@ -270,8 +309,6 @@ namespace GustafsGalleryStore.Controllers
                                      SingleOrDefault();
             var order = _context.Orders.Where(x => x.Id == returnItem.OrderId).SingleOrDefault();
             UpdateResult result = UpdateResult.Error;
-
-            string statusMessage = null;
             string failureMessage = null;
             string successMessage = null;
 
@@ -284,13 +321,13 @@ namespace GustafsGalleryStore.Controllers
                 returnItem.RefundStatus = stripeResult.Status;
                 returnItem.RefundCreatedDate = stripeResult.Created;
 
-                if (stripeResult.Status == "succeeded" || stripeResult.Status == "pending")
+                if (stripeResult.Status == MasterStrings.StripeResultSucceeded || stripeResult.Status == MasterStrings.StripeResultPending)
                 {
                     returnItem.RefundId = stripeResult.BalanceTransactionId;
                     result = UpdateResult.Success;
                 }
 
-                if (stripeResult.Status == "failed" || stripeResult.Status == "canceled")
+                if (stripeResult.Status == MasterStrings.StripeResultFailed || stripeResult.Status == MasterStrings.StripeResultCancelled)
                 {
                     returnItem.RefundId = stripeResult.FailureBalanceTransactionId;
                     returnItem.RefundMessage = stripeResult.FailureReason;
@@ -301,20 +338,39 @@ namespace GustafsGalleryStore.Controllers
 
                 }
             }
-            else if(amount == 0)
+            else if (!string.IsNullOrWhiteSpace(order.PayPalSaleId) && amount > 0)
+            {
+                var payPalResult = PayPalHelper.RefundPayment(order.PayPalSaleId, amount);
+
+                order.RefundStatus = payPalResult.state;
+                order.RefundCreatedDate = Convert.ToDateTime(payPalResult.create_time);
+                order.RefundId = payPalResult.id;
+                order.RefundMessage = payPalResult.reason_code;
+
+                if (payPalResult.state == MasterStrings.PayPalResultCompleted || payPalResult.state == MasterStrings.PayPalResultPending)
+                {
+                    result = UpdateResult.Success;
+                }
+
+                if (payPalResult.state == MasterStrings.PayPalResultFailed || payPalResult.state == MasterStrings.PayPalResultCancelled)
+                {
+                    failureMessage = "Refund failed";
+                    result = UpdateResult.Error;
+                }
+            }
+            else if (amount == 0)
             {
                 result = UpdateResult.Success;
             }
             else
             {
-                // paypal
                 failureMessage = "Refund couldn't be completed.  Please complete this via payment handler.";
             }
 
             if (result == UpdateResult.Success)
             {
                 returnItem.ReturnCompleteDate = DateTime.Now;
-                await UpdateOrder(order.Id, "Order Returned");
+                await UpdateOrder(order.Id, MasterStrings.OrderReturned);
                 successMessage = "Order updated.";
             }
 
@@ -322,7 +378,18 @@ namespace GustafsGalleryStore.Controllers
             _context.SaveChanges();
 
 
-            return ControllerHelper.RedirectToLocal(this, string.Format("/ManageOrders/ViewOrder?id={0}&&statusMessage={1}&&failureMessage={2}&&successMessage={3}", id, statusMessage, failureMessage, successMessage));
+            var redirectUrl = string.Format("/ManageOrders/ViewOrder?id={0}", id);
+
+            if (string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUrl += string.Format("&&failureMessage={0}", failureMessage);
+            }
+            if (string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("&&successMessage={0}", successMessage);
+            }
+
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
         }
 
         #region private methods
@@ -339,14 +406,31 @@ namespace GustafsGalleryStore.Controllers
             // update order status
             OrderHelper.UpdateOrderStatus(id, OrderHelper.StatusId(statusType, _context), _context);
 
+            var orderSummary = MasterStrings.OrderSummaryStart;
+
+            foreach (var item in order.OrderItems)
+            {
+                item.Product = OrderHelper.GetProduct(item, _context);
+                orderSummary += "<tr><td>" + item.Product.Title + "</td></tr>";
+            }
+
+            orderSummary += MasterStrings.OrderSummaryFinish;
+
+
             // send confirmation email
             switch (statusType)
             {
-                case "Awaiting Stock":
-                    await _emailSender.SendEmailAsync(user.Email, "News about your order: " + id, AwaitingStockMessage(order, user));
+                case MasterStrings.AwaitingStock:
+                    await _emailSender.SendEmailAsync(user.Email, "News about your order: " + id, AwaitingStockMessage(order.Id, user, orderSummary));
                     break;
-                case "Order Dispatched":
-                    await _emailSender.SendEmailAsync(user.Email, "Dispatch Confirmation: " + id, OrderDispatchedMessage(order, user));
+                case MasterStrings.OrderDispatched:
+                    await _emailSender.SendEmailAsync(user.Email, "Dispatch Confirmation: " + id, OrderDispatchedMessage(order.Id, user, orderSummary));
+                    break;
+                case MasterStrings.CancellationCompleted:
+                    await _emailSender.SendEmailAsync(user.Email, "Order Cancellation: " + id, OrderCancelledMessage(order.Id, user, orderSummary));
+                    break;
+                case MasterStrings.OrderReturned:
+                    await _emailSender.SendEmailAsync(user.Email, "Return: " + id, OrderReturnMessage(order.Id, user, orderSummary));
                     break;
                 default:
                     break;
@@ -356,34 +440,57 @@ namespace GustafsGalleryStore.Controllers
 
         }
 
-        private string AwaitingStockMessage(Order order, ApplicationUser user)
+        private string OrderReturnMessage(long id, ApplicationUser user, string orderSummary)
         {
-            var message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><p>Hi ";
-            message += user.Forename + ", Some of the items in your order are out of stock. We will notify you when they are back in stock and your order has been sent.</p><p>Please could you check your emails (including your Spam box) once you have placed your order, as we may have to contact you regarding your order. This is especially important for items requiring personalisation.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id=10' class='w3-button w3-dark-grey w3-round'>View Order</a></p><h4>Order Summary</h4><hr><table class='w3-table' style='width: 100%'><tbody>";
 
-            foreach (var item in order.OrderItems)
-            {
-                item.Product = OrderHelper.GetProduct(item, _context);
-                message += "<tr><td>" + item.Product.Title + "</td></tr>";
-            }
+            var message = MasterStrings.Header;
+            message += "<body>";
+            message += string.Format(MasterStrings.OrderReturnMessage, user.Forename);
+            message += MasterStrings.SpamMessage;
+            message += string.Format(MasterStrings.CustomerOrderLink, id);
+            message += orderSummary;
+            message += "</body></html> ";
 
-            message += "</tbody></table></body></html> ";
+            return message;
+        }
+        private string OrderCancelledMessage(long id, ApplicationUser user, string orderSummary)
+        {
+
+            var message = MasterStrings.Header;
+            message += "<body>";
+            message += string.Format(MasterStrings.OrderCancelledMessage, user.Forename, id);
+            message += MasterStrings.SpamMessage;
+            message += string.Format(MasterStrings.CustomerOrderLink, id);
+            message += orderSummary;
+            message += "</body></html> ";
 
             return message;
         }
 
-        string OrderDispatchedMessage(Order order, ApplicationUser user)
+        private string AwaitingStockMessage(long id, ApplicationUser user, string orderSummary)
         {
-            var message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><p>Hi ";
-            message += user.Forename + ", Your order has been sent.</p><p>View your order details to see postage details and track your package.</p><p>Please could you check your emails (including your Spam box) once you have placed your order, as we may have to contact you regarding your order. This is especially important for items requiring personalisation.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id=10' class='w3-button w3-dark-grey w3-round'>View Order</a></p><h4>Order Summary</h4><hr><table class='w3-table' style='width: 100%'><tbody>";
 
-            foreach (var item in order.OrderItems)
-            {
-                item.Product = OrderHelper.GetProduct(item, _context);
-                message += "<tr><td>" + item.Product.Title + "</td></tr>";
-            }
+            var message = MasterStrings.Header;
+            message += "<body>";
+            message += string.Format(MasterStrings.AwaitingStockMessage, user.Forename);
+            message += MasterStrings.SpamMessage;
+            message += string.Format(MasterStrings.CustomerOrderLink, id);
+            message += orderSummary;
+            message += "</body></html> ";
 
-            message += "</tbody></table></body></html> ";
+            return message;
+        }
+
+        private string OrderDispatchedMessage(long id, ApplicationUser user, string orderSummary)
+        {
+
+            var message = MasterStrings.Header;
+            message += "<body>";
+            message += string.Format(MasterStrings.OrderDispatchedMessage, user.Forename);
+            message += MasterStrings.SpamMessage;
+            message += string.Format(MasterStrings.CustomerOrderLink, id);
+            message += orderSummary;
+            message += "</body></html> ";
 
             return message;
         }

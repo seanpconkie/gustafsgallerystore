@@ -118,6 +118,13 @@ namespace GustafsGalleryStore.Helpers
                         ToList();
 
                     item.Product = product;
+                    item.Colour = context.Colours.
+                                    Where(x => x.Id == item.ColourId).
+                                    SingleOrDefault();
+
+                    item.Size = context.Sizes.
+                                    Where(x => x.Id == item.SizeId).
+                                    SingleOrDefault();
 
                     orderItems.Add(item);
 

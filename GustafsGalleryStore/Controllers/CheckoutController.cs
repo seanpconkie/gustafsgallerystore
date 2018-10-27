@@ -62,7 +62,7 @@ namespace GustafsGalleryStore.Controllers
         #endregion
 
         // GET: /<controller>/
-        public IActionResult Index(long id, string statusMessage = null)
+        public IActionResult Index(long id, string statusMessage = "", string successMessage = "", string failureMessage = "")
         {
 
             //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
@@ -70,7 +70,7 @@ namespace GustafsGalleryStore.Controllers
             var userId = _userManager.GetUserId(User);
             var order = _context.Orders.
                                 Where(x => x.Id == id).
-                                Where(x => x.OrderStatusId == StatusId("Basket")).
+                                Where(x => x.OrderStatusId == StatusId(MasterStrings.Basket)).
                                 SingleOrDefault();
 
             if (order == null)
@@ -99,7 +99,9 @@ namespace GustafsGalleryStore.Controllers
                 Contacts = _context.CustomerContacts.
                                     Where(x => x.UserId == userId).
                                     ToList(),
-                StatusMessage = statusMessage
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage,
+                SuccessMessage = successMessage
             };
 
             if (viewModel.Basket == null)
@@ -118,17 +120,18 @@ namespace GustafsGalleryStore.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             // stripe token?
-            if (string.IsNullOrWhiteSpace(model.StripeToken))
+            if (string.IsNullOrWhiteSpace(model.StripeToken) && 
+               string.IsNullOrWhiteSpace(model.PayPal))
             {
                 isValid = false;
-                model.StatusMessage += "Payment details required.<br/>";
+                model.StatusMessage += "Payment details required.";
             }
 
             // DeliveryType?
             if (model.Basket.DeliveryType.Id == 0)
             {
                 isValid = false;
-                model.StatusMessage += "Delivery method required.<br/>";
+                model.StatusMessage += "Delivery method required.";
             }
 
             // address
@@ -137,7 +140,7 @@ namespace GustafsGalleryStore.Controllers
                 string.IsNullOrWhiteSpace(model.Basket.CustomerContact.Postcode))
             {
                 isValid = false;
-                model.StatusMessage += "Delivery address required.<br/>Please ensure Address Line 1, Post Town and Post Code are completed.<br/>";
+                model.StatusMessage += "Delivery address required. Please ensure Address Line 1, Post Town and Post Code are completed.";
             }
 
             if (isValid)
@@ -167,75 +170,110 @@ namespace GustafsGalleryStore.Controllers
                     UserId = user.Id
                 };
 
-                inDb.CustomerContact = contact;
-                inDb.OrderTotalPrice = inDb.OrderTotalPrice + inDb.DeliveryType.Price;
+                decimal orderTotalPrice = 0;
 
-                try
+                foreach (var item in inDb.OrderItems)
                 {
-                    _context.Update(inDb);
-                    _context.SaveChanges();
+                    var product = _context.Products.
+                                           Where(x => x.Id == item.ProductId).
+                                           SingleOrDefault();
+
+                    orderTotalPrice += product.Price;
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
+
+                inDb.CustomerContact = contact;
+                inDb.OrderTotalPrice = orderTotalPrice + inDb.DeliveryType.Price;
 
                 // create charge
-                int amount = Convert.ToInt32(inDb.OrderTotalPrice * 100);
-
-                if (model.ThreeDSecure == "required" || model.ThreeDSecure == "recommended")
+                if (!string.IsNullOrWhiteSpace(model.StripeToken))
                 {
-                    var source = StripeHelper.CreateSource(model.StripeToken, amount, "http://localhost:5000/Checkout/ThreeDSecure");
 
-                    inDb.StripeSource = source.Id;
+                    // create charge
+                    int amount = Convert.ToInt32(inDb.OrderTotalPrice * 100);
 
-                    try
+                    if (model.ThreeDSecure == MasterStrings.ThreeDSecureRequired || model.ThreeDSecure == MasterStrings.ThreeDSecureRecommended)
                     {
-                        _context.Update(inDb);
-                        _context.SaveChanges();
+                        var source = StripeHelper.CreateSource(model.StripeToken, amount, "http://localhost:5000/Checkout/ThreeDSecure");
+
+                        inDb.StripeSource = source.Id;
+
+                        try
+                        {
+                            _context.Update(inDb);
+                            _context.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception(ex.Message);
+                        }
+
+                        return Redirect(source.Redirect.Url);
                     }
-                    catch (Exception ex)
-                    {
-                        throw new Exception(ex.Message);
-                    }
 
-                    return Redirect(source.Redirect.Url);
-                }
+                    var result = StripeHelper.CreateCharge(model.StripeToken, model.Basket.Id, "OrderId", amount);
 
-                var result = StripeHelper.CreateCharge(model.StripeToken,model.Basket.Id,"OrderId",amount);
+                    inDb.SellerMessage = result.SellerMessage;
+                    inDb.PaymentId = result.Id;
+                    inDb.PaymentStatus = result.NetworkStatus;
+                    inDb.StripeSource = model.StripeToken;
 
-                inDb.SellerMessage = result.SellerMessage;
-                inDb.PaymentId = result.Id;
-                inDb.PaymentStatus = result.NetworkStatus;
-                inDb.StripeSource = model.StripeToken;
-
-                try
-                {
                     _context.Update(inDb);
                     _context.SaveChanges();
+
+
+                    if (result.NetworkStatus == MasterStrings.StripeDeclined)
+                    {
+                        var messages = new DeclineMessageViewModel();
+                        messages = StripeHelper.DeclineMessage(result.Reason);
+
+                        model.FailureMessage += messages.StatusMessage;
+                        model.Basket.PaymentMessage = messages.PaymentMessage;
+
+                        return ControllerHelper.RedirectToLocal(this, "/Checkout?id=" + model.Basket.Id + "&&failureMessage=" + model.FailureMessage);
+
+                    }
+
+                    if (result.NetworkStatus == MasterStrings.StripeApproved)
+                    {
+
+                        await PlaceOrder(model.Basket.Id);
+
+                        return ControllerHelper.RedirectToLocal(this, "/Checkout/OrderPlaced?id=" + model.Basket.Id);
+                    }
+
+                    return ControllerHelper.RedirectToLocal(this, "/Checkout?id=" + model.Basket.Id + "&&failureMessage=Something went wrong with your payment, please try again.");
+
+
                 }
-                catch (Exception ex)
+                if (!string.IsNullOrWhiteSpace(model.PayPal))
                 {
-                    throw new Exception(ex.Message);
-                }
+                    // process paypal
 
+                    // create charge
+                    var createdPayment = PayPalHelper.CreatePayment(model.Basket.Id, inDb.OrderItems, inDb.DeliveryType.Price, _context);
+                    var redirect = "";
 
-                if (result.NetworkStatus == "declined_by_network" )
-                {
-                    var messages = new DeclineMessageViewModel();
-                    messages = StripeHelper.DeclineMessage(result.Reason);
+                    inDb.PayPalPaymentId = createdPayment.id;
+                    inDb.PaymentId = createdPayment.transactions[0].invoice_number;
 
-                    model.StatusMessage += messages.StatusMessage;
-                    model.Basket.PaymentMessage = messages.PaymentMessage;
+                    _context.Update(inDb);
+                    _context.SaveChanges();
 
-                }
+                    var links = createdPayment.links.GetEnumerator();
+                    while (links.MoveNext())
+                    {
+                        var link = links.Current;
+                        if (link.rel.ToLower().Trim().Equals("approval_url"))
+                        {
+                            // Redirect the customer to link.href
+                            redirect = link.href;
+                        }
+                    }
 
-                if (result.NetworkStatus == "approved_by_network")
-                {
-
-                    await PlaceOrder(model.Basket.Id);
-
-                    return ControllerHelper.RedirectToLocal(this, "/Checkout/OrderPlaced?id=" + model.Basket.Id);
+                    if (!string.IsNullOrWhiteSpace(redirect))
+                    {
+                        return Redirect(redirect);
+                    }
                 }
 
             }
@@ -263,83 +301,146 @@ namespace GustafsGalleryStore.Controllers
 
         public async Task<IActionResult> ThreeDSecure(string source, bool livemode, string client_secret)
         {
-            //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
+
+            var order = _context.Orders.Where(x => x.StripeSource == source).Include(x => x.DeliveryType).SingleOrDefault();
+
+            var userId = _userManager.GetUserId(User);
+            var viewModel = new CheckoutViewModel()
+                {
+                    Basket = OrderHelper.GetOrder(order.Id, _context),
+                    DeliveryTypes = _context.DeliveryTypes.
+                                        Where(x => x.Id > 0).
+                                        Include(x => x.DeliveryCompany).
+                                        ToList(),
+                    Contacts = _context.CustomerContacts.
+                                        Where(x => x.UserId == userId).
+                                        ToList()
+                };
+
+            var result = StripeHelper.ChargeSource(source,livemode,client_secret, order.Id, "OrderId");
+
+            order.SellerMessage = result.SellerMessage;
+            order.PaymentId = result.Id;
+            order.PaymentStatus = result.NetworkStatus;
+
             try
             {
-
-                var order = _context.Orders.Where(x => x.StripeSource == source).Include(x => x.DeliveryType).SingleOrDefault();
-
-                var userId = _userManager.GetUserId(User);
-                var viewModel = new CheckoutViewModel()
-                    {
-                        Basket = OrderHelper.GetOrder(order.Id, _context),
-                        DeliveryTypes = _context.DeliveryTypes.
-                                            Where(x => x.Id > 0).
-                                            Include(x => x.DeliveryCompany).
-                                            ToList(),
-                        Contacts = _context.CustomerContacts.
-                                            Where(x => x.UserId == userId).
-                                            ToList()
-                    };
-
-                var result = StripeHelper.ChargeSource(source,livemode,client_secret, order.Id, "OrderId");
-
-                order.SellerMessage = result.SellerMessage;
-                order.PaymentId = result.Id;
-                order.PaymentStatus = result.NetworkStatus;
-
-                try
-                {
-                    _context.Update(order);
-                    _context.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-
-                if (result.NetworkStatus == "declined_by_network")
-                {
-                    var messages = new DeclineMessageViewModel();
-                    messages = StripeHelper.DeclineMessage(result.Reason);
-
-                    var statusMessage = messages.StatusMessage;
-                    order.PaymentMessage = messages.PaymentMessage;
-
-                    return ControllerHelper.RedirectToLocal(this,"/Checkout/Index?statusMessage" + statusMessage);
-
-                }
-
-                if (result.NetworkStatus == "approved_by_network" ||
-                   result.NetworkStatus == "not_sent_to_network" && result.Type == "pending")
-                {
-                    await PlaceOrder(order.Id);
-
-                    return ControllerHelper.RedirectToLocal(this, "/Checkout/OrderPlaced?id=" + order.Id);
-                }
-
-                if (result.NetworkStatus == "reversed_after_approval" || 
-                    (result.NetworkStatus == "not_sent_to_network" && result.Type != "pending"))
-                {
-
-                    var statusMessage = "The payment has been declined.<br/>Please contact your card issuer for more information.";
-                    order.PaymentMessage = "Status reason: " + result.Reason;
-
-                    return ControllerHelper.RedirectToLocal(this, "/Checkout/Index?statusMessage" + statusMessage);
-
-                }
-
-                return View();
-
+                _context.Update(order);
+                _context.SaveChanges();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
 
+            if (result.NetworkStatus == MasterStrings.StripeDeclined)
+            {
+                var messages = new DeclineMessageViewModel();
+                messages = StripeHelper.DeclineMessage(result.Reason);
+
+                var statusMessage = messages.StatusMessage;
+                order.PaymentMessage = messages.PaymentMessage;
+
+                return ControllerHelper.RedirectToLocal(this,"/Checkout/Index?id=" + order.Id + "failureMessage=" + statusMessage);
+
+            }
+
+            if (result.NetworkStatus == MasterStrings.StripeApproved ||
+                result.NetworkStatus == MasterStrings.StripeNotSent && result.Type == MasterStrings.StripeResultPending)
+            {
+                await PlaceOrder(order.Id);
+
+                return ControllerHelper.RedirectToLocal(this, "/Checkout/OrderPlaced?id=" + order.Id);
+            }
+
+            if (result.NetworkStatus == MasterStrings.StripeReversed || 
+                (result.NetworkStatus == MasterStrings.StripeNotSent && result.Type != MasterStrings.StripeResultPending))
+            {
+
+                var statusMessage = "The payment has been declined.<br/>Please contact your card issuer for more information.";
+                order.PaymentMessage = "Status reason: " + result.Reason;
+
+                return ControllerHelper.RedirectToLocal(this, "/Checkout/Index?id=" + order.Id + "failureMessage" + statusMessage);
+
+            }
+
+            return View();
+
         }
 
+        public async Task<IActionResult> PayPalComplete(string paymentId, string token, string payerId)
+        {
 
+            var order = _context.Orders.
+                                Where(x => x.PayPalPaymentId == paymentId).
+                                Include(x => x.DeliveryType).
+                                Include(x => x.OrderItems).
+                                Include(x => x.CustomerContact).
+                                SingleOrDefault();
+
+            var userId = _userManager.GetUserId(User);
+            var viewModel = new CheckoutViewModel()
+            {
+                Basket = OrderHelper.GetOrder(order.Id, _context),
+                DeliveryTypes = _context.DeliveryTypes.
+                                        Where(x => x.Id > 0).
+                                        Include(x => x.DeliveryCompany).
+                                        ToList(),
+                Contacts = _context.CustomerContacts.
+                                        Where(x => x.UserId == userId).
+                                        ToList()
+            };
+
+            var result = PayPalHelper.ChargePayment(paymentId, token, payerId,order.PaymentId,order.Id,order.OrderItems,order.DeliveryType.Price,_context);
+
+            order.PaymentId = result.id;
+            order.PaymentStatus = result.state;
+            order.PayPalCartId = result.cart;
+            order.PayPalPayerId = result.payer.payer_info.payer_id;
+            order.PayPalSaleId = result.transactions[0].related_resources[0].sale.id;
+
+            if(result.payer.payer_info.shipping_address != null)
+            {
+                order.CustomerContact.BuildingNumber = "";
+                order.CustomerContact.AddressLine1 = result.payer.payer_info.shipping_address.line1;
+                order.CustomerContact.AddressLine2 = result.payer.payer_info.shipping_address.line2;
+                order.CustomerContact.PostTown = result.payer.payer_info.shipping_address.city;
+                order.CustomerContact.County = result.payer.payer_info.shipping_address.state;
+                order.CustomerContact.Postcode = result.payer.payer_info.shipping_address.postal_code;
+                order.CustomerContact.Country = result.payer.payer_info.shipping_address.country_code;
+                order.CustomerContact.OtherPhone = result.payer.payer_info.shipping_address.phone;
+            }
+
+            try
+            {
+                _context.Update(order);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            if (result.state == MasterStrings.PayPalResultFailed)
+            {
+                var message = "The payment has been declined.<br/>Please contact your card issuer for more information.";
+                var statusMessage = message;
+                order.PaymentMessage = message;
+
+                return ControllerHelper.RedirectToLocal(this, "/Checkout/Index?id=" + order.Id + "failureMessage" + statusMessage);
+
+            }
+
+            if (result.state == MasterStrings.PayPalResultApproved)
+            {
+                await PlaceOrder(order.Id);
+
+                return ControllerHelper.RedirectToLocal(this, "/Checkout/OrderPlaced?id=" + order.Id);
+            }
+
+            return View();
+
+        }
 
         #region private methods
 
@@ -361,10 +462,9 @@ namespace GustafsGalleryStore.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             // update order status
-            OrderHelper.UpdateOrderStatus(id, OrderHelper.StatusId("Order Placed", _context), _context);
+            OrderHelper.UpdateOrderStatus(id, OrderHelper.StatusId(MasterStrings.OrderPlaced, _context), _context);
 
-            var message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><h4>Thanks you for your purchase!</h4><hr><p>Hi ";
-            message += user.Forename + string.Format(", We are processing your order. We will notify you when it has been sent.</p><p>Please could you check your emails (including your Spam box) once you have placed your order, as we may have to contact you regarding your order. This is especially important for items requiring personalisation.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a></p><h4>Order Summary</h4><hr><table class='w3-table' style='width: 100%'><tbody>",id);
+            var orderSummary = MasterStrings.OrderSummaryStart;
 
             var order = _context.Orders.
                                 Where(x => x.Id == id).
@@ -374,35 +474,49 @@ namespace GustafsGalleryStore.Controllers
             foreach (var item in order.OrderItems)
             {
                 item.Product = OrderHelper.GetProduct(item, _context);
-                message += "<tr><td>" + item.Product.Title + "</td></tr>";
+                orderSummary += "<tr><td>" + item.Product.Title + "</td></tr>";
                 item.Product.Stock--;
                 _context.Update(item.Product);
             }
 
             _context.SaveChanges();
 
-            message += "</tbody></table></body></html> ";
+            orderSummary += MasterStrings.OrderSummaryFinish;
 
             // send confirmation email
-            await _emailSender.SendEmailAsync(user.Email, "Order Confirmation: " + id, message);
+            var customerMessage = MasterStrings.Header;
+            customerMessage += "<body>";
+            customerMessage += string.Format(MasterStrings.CustomerNewOrder, user.Forename);
+            customerMessage += MasterStrings.SpamMessage;
+            customerMessage += string.Format(MasterStrings.CustomerOrderLink, id);
+            customerMessage += orderSummary;
+            customerMessage += "</body></html> ";
+
+            await _emailSender.SendEmailAsync(user.Email, "Order Confirmation: " + id, customerMessage);
+
             // send shop notification
-            message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><h4>You've had a new order!</h4><hr><p>Hi ";
-            message += string.Format("Hi Gustaf and friends, you've received a new order.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a></p><h4>Order Summary</h4><hr><table class='w3-table' style='width: 100%'><tbody>",order.Id);
+            var storeMessage = MasterStrings.Header;
+            storeMessage += "<body>";
+            storeMessage += string.Format(MasterStrings.StoreNewOrder,MasterStrings.StoreName);
+            storeMessage += string.Format(MasterStrings.StoreOrderLink,order.Id);
+            storeMessage += orderSummary;
+            storeMessage += "</body></html> ";
 
-            foreach (var item in order.OrderItems)
-            {
-                item.Product = OrderHelper.GetProduct(item, _context);
-                message += "<tr><td>" + item.Product.Title + "</td></tr>";
-            }
-
-            message += "</tbody></table></body></html> ";
-
-            await _emailSender.SendEmailAsync(user.Email, "New Order: " + id, message);
+            await _emailSender.SendEmailAsync(MasterStrings.AdminEmail, "New Order: " + id, storeMessage);
 
             return UpdateResult.Success;
 
         }
 
+        private string ProcessPayPal(CheckoutViewModel model, string userId)
+        {
+
+            var inDb = OrderHelper.GetOrder(model.Basket.Id, _context);
+
+
+            return "/Checkout?id=" + model.Basket.Id + "&&failureMessage=Something went wrong with your payment, please try again.";
+
+        }
         #endregion
     }
 }

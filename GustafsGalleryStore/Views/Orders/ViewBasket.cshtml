@@ -3,17 +3,17 @@
     ViewData["Title"] = "Your Basket";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
-
-<div class="w3-content w3-container w3-padding-64" id="main">
-    <div id="alertDiv"></div>
+<div class="w3-container w3-padding-64" id="main">
     <div class="w3-section w3-light-grey w3-padding-large">
         <table style="width: 100%">
             <thead>
                 <tr>
                     <th class="w3-quarter"></th>
                     <th class="w3-half"></th>
-                    <th class="w3-col s1">Price</th>
-                    <th class="w3-col s1">Quantity</th>
+                    <th style="width: 6.25%;">Price</th>
+                    <th style="width: 6.25%;">Quantity</th>
+                    <th style="width: 6.25%;">Size</th>
+                    <th style="width: 6.25%;">Colour</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,12 +43,14 @@
                             }
                             <p><a href="javascript:void(0);" onclick="updateBasket(@item.Id,@item.ProductId)">Update</a></p>
                         </td>
-                        <td class="w3-col s1 w3-center">
+                        <td class="w3-center" style="width: 6.25%;">
                             <p>£@item.Product.Price</p>
                         </td>
-                        <td class="w3-col s1 w3-center">
+                        <td class="w3-center" style="width: 6.25%;">
                             <p><input id="@item.ProductId" class="w3-center" value="@item.Quantity" style="max-width: 40px;" type="number" /></p>
                         </td>
+                        <td class="w3-center" style="width: 6.25%;"><p>@item.Size.Value</p></td>
+                        <td class="w3-center" style="width: 6.25%;"><p>@item.Colour.Value</p></td>
                     </tr>
                 }
             </tbody>
@@ -67,7 +69,6 @@
         <a href="/Checkout/Index?id=@Model.Basket.Id" class="w3-button w3-round w3-dark-grey" onclick="openModal('spin')">Procced to Checkout</a>
     </div>
 </div>
-
 <script>
 
 

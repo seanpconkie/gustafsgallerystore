@@ -12,7 +12,7 @@ namespace GustafsGalleryStore.Services
         {
             // Set your secret key: remember to change this to your live secret key in production
             // See your keys here: https://dashboard.stripe.com/account/apikeys
-            StripeConfiguration.SetApiKey("");
+            StripeConfiguration.SetApiKey(MasterStrings.stripeAPIKey);
 
             var options = new StripeChargeCreateOptions
             {
@@ -37,18 +37,20 @@ namespace GustafsGalleryStore.Services
                     charge = service.Create(options);
                 }
 
+                charge.Outcome.Id = charge.Id;
+
                 return charge.Outcome;
             }
             catch (Exception ex)
             {
-                return new StripeOutcome() { NetworkStatus = "declined_by_network", Reason = ex.Message };
+                return new StripeOutcome() { NetworkStatus = MasterStrings.StripeDeclined, Reason = ex.Message };
             }
 
         }
 
         public static StripeSource CreateSource(string token, int amount, string redirectUrl)
         {
-            StripeConfiguration.SetApiKey("");
+            StripeConfiguration.SetApiKey(MasterStrings.stripeAPIKey);
 
             var sourceOptions = new StripeSourceCreateOptions
             {
@@ -79,7 +81,7 @@ namespace GustafsGalleryStore.Services
         {
             // Set your secret key: remember to change this to your live secret key in production
             // See your keys here: https://dashboard.stripe.com/account/apikeys
-            StripeConfiguration.SetApiKey("");
+            StripeConfiguration.SetApiKey(MasterStrings.stripeAPIKey);
 
             var service = new StripeSourceService();
             StripeSource sourceService = service.Get(source);
@@ -110,6 +112,7 @@ namespace GustafsGalleryStore.Services
                         charge = serviceCharge.Create(options);
                     }
 
+                    charge.Outcome.Id = charge.Id;
                     return charge.Outcome;
                 }
                 catch (Exception ex)
@@ -120,10 +123,29 @@ namespace GustafsGalleryStore.Services
 
             return new StripeOutcome() 
             { 
-                NetworkStatus = "not_sent_to_network",
+                NetworkStatus = MasterStrings.StripeNotSent,
                 SellerMessage = "Card not yet chargeable.",
                 Type = "pending"
             };
+        }
+
+        public static StripeRefund RefundCharge(string token, int amount)
+        {
+            // Set your secret key: remember to change this to your live secret key in production
+            // See your keys here: https://dashboard.stripe.com/account/apikeys
+            StripeConfiguration.SetApiKey(MasterStrings.stripeAPIKey);
+
+            var refundOptions = new StripeRefundCreateOptions()
+            {
+                Amount = amount,
+                Reason = "requested_by_customer"
+
+            };
+            var refundService = new StripeRefundService();
+            StripeRefund refund = refundService.Create(token, refundOptions);
+
+            return refund;
+
         }
 
         public static DeclineMessageViewModel DeclineMessage(string reason)

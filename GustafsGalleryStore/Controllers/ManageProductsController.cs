@@ -23,7 +23,7 @@ using System;
 
 namespace GustafsGalleryStore.Controllers
 {
-    [Authorize(Roles = "IsStaff")]
+    [Authorize(Roles = MasterStrings.StaffRole)]
     public class ManageProductsController : Controller
     {
         private IHostingEnvironment _hostingEnvironment;

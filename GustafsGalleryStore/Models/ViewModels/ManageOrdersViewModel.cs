@@ -13,6 +13,8 @@ namespace GustafsGalleryStore.Models.ViewModels
         public List<Order> CancelledOrders { get; set; }
         public List<Order> CompletedOrders { get; set; }
         public string StatusMessage { get; set; }
+        public string FailureMessage { get; set; }
+        public string SuccessMessage { get; set; }
 
     }
 }

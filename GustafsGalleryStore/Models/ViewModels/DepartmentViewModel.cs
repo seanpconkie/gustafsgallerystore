@@ -16,6 +16,8 @@ namespace GustafsGalleryStore.Models.ViewModels
     {
 
         public string StatusMessage { get; set; }
+        public string FailureMessage { get; set; }
+        public string SuccessMessage { get; set; }
 
         public List<Department> Departments { get; set; }
 
@@ -23,6 +25,7 @@ namespace GustafsGalleryStore.Models.ViewModels
         [Required]
         public string DepartmentName { get; set; }
         public string DepartmentCode { get; set; }
+        public long Id { get; set; }
 
     }
 }

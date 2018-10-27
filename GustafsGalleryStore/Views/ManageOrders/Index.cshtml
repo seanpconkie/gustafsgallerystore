@@ -56,7 +56,7 @@
                     <tr class="w3-light-grey">
                         <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/Orders/ViewOrder?id=@order.Id">@order.Id</a></th>
                         <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                        <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
+                        <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,7 +64,7 @@
                         <td></td>
                         <td>
                             <h5>@order.OrderStatus.Status</h5>
-                            @if (order.PaymentStatus == "approved_by_network")
+                            @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
                             {
                                 <strong>Payment complete.</strong>
                             }
@@ -96,7 +96,7 @@
                 <tr class="w3-light-grey">
                     <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
                     <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                    <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
+                    <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
                 </tr>
             </thead>
             <tbody>
@@ -104,14 +104,14 @@
                     <td></td>
                     <td>
                         <h5>@order.OrderStatus.Status</h5>
-                        @if (order.PaymentStatus == "approved_by_network")
+                        @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
                         {
-                        <strong>Payment complete.</strong>
+                            <strong>Payment complete.</strong>
                         }
                         else
                         {
                             <strong>Awaiting payment confirmation.</strong>
-                        }   
+                        }
                     </td>
                     <td>
                         <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>
@@ -136,7 +136,7 @@
                 <tr class="w3-light-grey">
                     <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
                     <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                    <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
+                    <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
                 </tr>
             </thead>
             <tbody>
@@ -144,7 +144,7 @@
                     <td></td>
                     <td>
                         <h5>@order.OrderStatus.Status</h5>
-                        @if (order.PaymentStatus == "approved_by_network")
+                        @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
                         {
                             <strong>Payment complete.</strong>
                         }
@@ -176,7 +176,7 @@
                 <tr class="w3-light-grey">
                     <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
                     <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                    <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
+                    <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
                 </tr>
             </thead>
             <tbody>
@@ -186,7 +186,7 @@
                     </td>
                     <td>
                         <h5>@order.OrderStatus.Status</h5>
-                        @if (order.PaymentStatus == "approved_by_network")
+                        @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
                         {
                             <strong>Payment complete.</strong>
                         }
@@ -218,7 +218,7 @@
                 <tr class="w3-light-grey">
                     <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
                     <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                    <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
+                    <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
                 </tr>
             </thead>
             <tbody>
@@ -236,14 +236,14 @@
                     </td>
                     <td>
                         <h5>@order.OrderStatus.Status</h5>
-                        @if (order.PaymentStatus == "approved_by_network")
-                        {
-                        <strong>Payment complete.</strong>
-                        }
-                        else
-                        {
-                        <strong>Awaiting payment confirmation.</strong>
-                        }
+                        @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
+    {
+                    <strong>Payment complete.</strong>
+}
+else
+{
+                    <strong>Awaiting payment confirmation.</strong>
+}
                     </td>
                     <td>
                         <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>

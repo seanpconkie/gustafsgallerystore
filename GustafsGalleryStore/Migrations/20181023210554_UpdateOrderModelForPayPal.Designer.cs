@@ -4,14 +4,16 @@ using GustafsGalleryStore.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GustafsGalleryStore.Migrations
 {
     [DbContext(typeof(GustafsGalleryStoreContext))]
-    partial class GustafsGalleryStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20181023210554_UpdateOrderModelForPayPal")]
+    partial class UpdateOrderModelForPayPal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,13 +219,7 @@ namespace GustafsGalleryStore.Migrations
 
                     b.Property<string>("PackageReference");
 
-                    b.Property<string>("PayPalCartId");
-
-                    b.Property<string>("PayPalPayerId");
-
                     b.Property<string>("PayPalPaymentId");
-
-                    b.Property<string>("PayPalSaleId");
 
                     b.Property<string>("PaymentId");
 
@@ -297,13 +293,9 @@ namespace GustafsGalleryStore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ColourId");
-
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("SizeId");
 
                     b.ToTable("OrderItems");
                 });
@@ -627,11 +619,6 @@ namespace GustafsGalleryStore.Migrations
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.OrderItem", b =>
                 {
-                    b.HasOne("GustafsGalleryStore.Models.DataModels.Colour", "Colour")
-                        .WithMany()
-                        .HasForeignKey("ColourId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("GustafsGalleryStore.Models.DataModels.Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
@@ -640,11 +627,6 @@ namespace GustafsGalleryStore.Migrations
                     b.HasOne("GustafsGalleryStore.Models.DataModels.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("GustafsGalleryStore.Models.DataModels.Size", "Size")
-                        .WithMany()
-                        .HasForeignKey("SizeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

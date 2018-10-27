@@ -1,6 +1,6 @@
 ﻿@model GustafsGalleryStore.Models.ViewModels.DeliveryViewModel
 @{
-    ViewData["Title"] = "Delivery Methods";
+    ViewData["Title"] = "Update Delivery Method";
 }
 <div>
     <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
@@ -10,7 +10,14 @@
                 <select asp-for="Company" class="w3-input">
                     @foreach (var item in Model.DeliveryCompanies)
                     {
-                        <option>@item.Company</option>
+                        @if(item.Company == Model.Company)
+                        {
+                            <option selected>@item.Company</option>
+                        }
+                        else
+                        {
+                            <option>@item.Company</option>
+                        }
                     }
                 </select>
             </div>
@@ -26,8 +33,34 @@
                 <label asp-for="Time"></label>
                 <input asp-for="Time" class="w3-input" />
             </div>
+            <div class="hidden-group">
+                <input hidden asp-for="Id" />
+            </div>
             <button type="submit" class="w3-button w3-round w3-light-grey w3-block w3-margin-top" onclick="openModal('spin')"><i class="fas fa-save w3-margin-right"></i>Save</button>
 
         </div>
     </form>
 </div>
+
+<script>
+
+    var failure = "@Model.FailureMessage";
+    var message = "@Model.StatusMessage";
+    var success = "@Model.SuccessMessage";
+
+    if (failure != "")
+    {
+        toastr["warning"](failure, "Warning");
+    }
+
+    if (message != "")
+    {
+        toastr["info"](message, "Info");
+    }
+
+    if (success != "")
+    {
+        toastr["success"](success, "Success");
+    }
+
+</script>

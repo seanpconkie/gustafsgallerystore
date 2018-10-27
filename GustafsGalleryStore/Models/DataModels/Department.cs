@@ -10,6 +10,7 @@ namespace GustafsGalleryStore
 
         [Required]
         [StringLength(250)]
+        [Display(Name = "Department")]
         public string DepartmentName { get; set; }
 
         [Required]

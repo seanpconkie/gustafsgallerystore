@@ -75,7 +75,7 @@ namespace GustafsGalleryStore.Controllers
 
                 var basket = _context.Orders.
                                      Where(x => x.UserId == userId).
-                                     Where(x => x.OrderStatusId == OrderHelper.StatusId("Basket", _context)).
+                                     Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.Basket, _context)).
                                      SingleOrDefault();
 
                 if (basket == null)
@@ -103,8 +103,9 @@ namespace GustafsGalleryStore.Controllers
             { 
                 Orders = _context.Orders.
                                  Where(x => x.UserId == userId).
-                                 Where(x => x.OrderStatusId != OrderHelper.StatusId("Basket", _context)).
+                                 Where(x => x.OrderStatusId != OrderHelper.StatusId(MasterStrings.Basket, _context)).
                                  Include(x => x.OrderStatus).
+                                 Include(x => x.DeliveryType).
                                  OrderByDescending(x => x.OrderPlacedDate).
                                  ToList(),
                 StatusMessage = statusMessage,
@@ -138,7 +139,7 @@ namespace GustafsGalleryStore.Controllers
 
             _basket = _context.Orders.
                               Where(x => x.Id == id).
-                              Where(x => x.OrderStatusId == OrderHelper.StatusId("Basket", _context)).
+                              Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.Basket, _context)).
                               Include(x => x.OrderItems).
                               SingleOrDefault();
 
@@ -185,7 +186,7 @@ namespace GustafsGalleryStore.Controllers
             {
                 _basket = _context.Orders.
                                      Where(x => x.Id == newItemDTO.OrderId).
-                                     Where(x => x.OrderStatusId == OrderHelper.StatusId("Basket", _context)).
+                                     Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.Basket, _context)).
                                      Include(x => x.OrderItems).
                                      SingleOrDefault();
 
@@ -200,7 +201,10 @@ namespace GustafsGalleryStore.Controllers
 
                 foreach (var item in _basket.OrderItems)
                 {
-                    if (item.ProductId == newItem.ProductId)
+                    if (item.ProductId == newItem.ProductId &&
+                        item.SizeId == newItem.SizeId &&
+                        item.ColourId == newItem.ColourId
+                       )
                     {
                         isProductInBasket = true;
                         item.Quantity++;
@@ -238,7 +242,7 @@ namespace GustafsGalleryStore.Controllers
             {
                 _basket = _context.Orders.
                                      Where(x => x.Id == itemDTO.OrderId).
-                                     Where(x => x.OrderStatusId == OrderHelper.StatusId("Basket", _context)).
+                                     Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.Basket, _context)).
                                      Include(x => x.OrderItems).
                                      SingleOrDefault();
 
@@ -344,16 +348,28 @@ namespace GustafsGalleryStore.Controllers
             var order = _context.Orders.Where(x => x.Id == id).SingleOrDefault();
             var user = await _userManager.GetUserAsync(User);
 
-            OrderHelper.UpdateOrderStatus(id, OrderHelper.StatusId("Order Cancelled", _context),_context);
+            OrderHelper.UpdateOrderStatus(id, OrderHelper.StatusId(MasterStrings.OrderCancelled, _context),_context);
 
-            var message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><p>Hi ";
-            message += user.Forename + string.Format(", Thanks for notifying us about your cancellation.  We'll arrange a refund of any payments already made and will let you know when this has been completed.</p><p>Please could you check your emails (including your Spam box) once you have placed your order, as we may have to contact you regarding your order. This is especially important for items requiring personalisation.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a></p></tbody></table></body></html> ",order.Id);
+            var customerMessage = MasterStrings.Header;
+            customerMessage += "<body>";
+            customerMessage += string.Format(MasterStrings.CustomerCancellation, user.Forename);
+            customerMessage += MasterStrings.SpamMessage;
+            customerMessage += string.Format(MasterStrings.CustomerOrderLink, id);
+            customerMessage += "</body></html> ";
 
-            await _emailSender.SendEmailAsync(user.Email, "Order Confirmation: " + id, message);
-            await _emailSender.SendEmailAsync(user.Email, "Order Cancellation: " + id, string.Format("Order has been cancelled - <a href='https://gustafsgallery.co.uk/ManageOrders/ViewOrder?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a>",order.Id));
+            var storeMessage = MasterStrings.Header;
+            storeMessage += "<body>";
+            storeMessage += string.Format(MasterStrings.StoreCancellation, MasterStrings.StoreName);
+            storeMessage += MasterStrings.SpamMessage;
+            storeMessage += string.Format(MasterStrings.StoreOrderLink, id);
+            storeMessage += "</body></html> ";
+
+            await _emailSender.SendEmailAsync(user.Email, "Order Confirmation: " + id, customerMessage);
+            await _emailSender.SendEmailAsync(MasterStrings.AdminEmail, "Order Cancellation: " + id, storeMessage);
 
             return ControllerHelper.RedirectToLocal(this,"/Orders/Index?successMessage=Your order has been cancelled.");
         }
+
         [HttpGet]
         public IActionResult ReturnOrder(long id)
         {
@@ -367,6 +383,7 @@ namespace GustafsGalleryStore.Controllers
 
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> ReturnOrder(ReturnOrderViewModel model)
         {
@@ -391,13 +408,24 @@ namespace GustafsGalleryStore.Controllers
 
             _context.SaveChanges();
 
-            OrderHelper.UpdateOrderStatus(model.Return.OrderId, OrderHelper.StatusId("Awaiting Return", _context), _context);
+            OrderHelper.UpdateOrderStatus(model.Return.OrderId, OrderHelper.StatusId(MasterStrings.AwaitingReturn, _context), _context);
 
-            var message = "<!DOCTYPE html><html lang='en'><head><style>body,h1,h2,h3,h4,h5,h6 {font-family: 'Lato', sans-serif;} body, html {height: 100%;color: #777;line-height: 1.8;} .w3-button:hover{color:#000!important;background-color:#ccc!important} .w3-button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap} .w3-round,.w3-round-medium{border-radius:4px} .w3-dark-grey,.w3-hover-dark-grey:hover,.w3-dark-gray,.w3-hover-dark-gray:hover{color:#fff!important;background-color:#616161!important} .w3-table,.w3-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.w3-table-all{border:1px solid #ccc} </style></head><body><h4>Thanks you for your purchase!</h4><hr><p>Hi ";
-            message += user.Forename + string.Format(", Thanks for notifying us about your return, we'll be in touch with more details about returning your item(s).</p><p>Please could you check your emails (including your Spam box) once you have placed your order, as we may have to contact you regarding your order. This is especially important for items requiring personalisation.</p><p><a href='https://gustafsgallery.co.uk/Orders/YourOrders?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a></p></tbody></table></body></html> ",model.Return.OrderId);
+            var customerMessage = MasterStrings.Header;
+            customerMessage += "<body>";
+            customerMessage += string.Format(MasterStrings.CustomerReturn, user.Forename);
+            customerMessage += MasterStrings.SpamMessage;
+            customerMessage += string.Format(MasterStrings.CustomerOrderLink, model.Return.OrderId);
+            customerMessage += "</body></html> ";
 
-            await _emailSender.SendEmailAsync(user.Email, "Return Confirmation: " + model.Return.OrderId, message);
-            await _emailSender.SendEmailAsync(user.Email, "Order Returned: " + model.Return.OrderId,string.Format("Order has been returned - <a href='https://gustafsgallery.co.uk/ManageOrders/ViewOrder?id={0}' class='w3-button w3-dark-grey w3-round'>View Order</a>",model.Return.OrderId));
+            var storeMessage = MasterStrings.Header;
+            storeMessage += "<body>";
+            storeMessage += string.Format(MasterStrings.StoreReturn, MasterStrings.StoreName);
+            storeMessage += MasterStrings.SpamMessage;
+            storeMessage += string.Format(MasterStrings.StoreOrderLink, model.Return.OrderId);
+            storeMessage += "</body></html> ";
+
+            await _emailSender.SendEmailAsync(user.Email, "Return Confirmation: " + model.Return.OrderId, customerMessage);
+            await _emailSender.SendEmailAsync(MasterStrings.AdminEmail, "Order Returned: " + model.Return.OrderId, storeMessage);
 
             return ControllerHelper.RedirectToLocal(this, "/Orders/Index?successMessage=Your return has been requested.");
         }
@@ -412,7 +440,7 @@ namespace GustafsGalleryStore.Controllers
             Order basket = new Order()
             {
                 OrderStatus = _context.OrderStatuses.
-                                      Where(x => x.Id == OrderHelper.StatusId("Basket", _context)).
+                                      Where(x => x.Id == OrderHelper.StatusId(MasterStrings.Basket, _context)).
                                       SingleOrDefault(),
                 OpenedDate = DateTime.Now
             };

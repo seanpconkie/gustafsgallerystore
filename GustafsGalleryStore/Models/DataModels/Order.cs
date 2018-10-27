@@ -51,9 +51,15 @@ namespace GustafsGalleryStore.Models.DataModels
         public string PaymentMessage { get; set; }
         [Display(Name = "Payment Status")]
         public string PaymentStatus { get; set; }
+
         [Display(Name = "Stripe Seller Message")]
         public string SellerMessage { get; set; }
         public string StripeSource { get; set; }
+
+        public string PayPalPaymentId { get; set; }
+        public string PayPalPayerId { get; set; }
+        public string PayPalCartId { get; set; }
+        public string PayPalSaleId { get; set; }
 
         public string RefundId { get; set; }
         public string RefundMessage { get; set; }

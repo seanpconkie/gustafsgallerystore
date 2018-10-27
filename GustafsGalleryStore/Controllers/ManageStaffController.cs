@@ -15,7 +15,7 @@ using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 namespace GustafsGalleryStore.Controllers
 {
-    [Authorize(Roles = "IsStaff")]
+    [Authorize(Roles = MasterStrings.StaffRole)]
     public class ManageStaffController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;

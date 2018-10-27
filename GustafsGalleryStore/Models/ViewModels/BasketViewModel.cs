@@ -8,6 +8,8 @@ namespace GustafsGalleryStore.Models.ViewModels
 
         public Order Basket { get; set; }
         public string StatusMessage { get; set; }
+        public string FailureMessage { get; set; }
+        public string SuccessMessage { get; set; }
 
     }
 }

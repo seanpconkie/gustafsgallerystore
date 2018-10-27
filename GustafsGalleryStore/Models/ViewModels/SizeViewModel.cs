@@ -16,12 +16,15 @@ namespace GustafsGalleryStore.Models.ViewModels
     {
 
         public string StatusMessage { get; set; }
+        public string FailureMessage { get; set; }
+        public string SuccessMessage { get; set; }
 
         public List<Size> Sizes { get; set; }
 
         //new brand
         [Required]
         public string Size { get; set; }
+        public long Id { get; set; }
 
     }
 }

@@ -13,7 +13,7 @@
                         <tr class="w3-light-grey">
                             <th style="width: 33%"><strong>Order Number: </strong><br /><a href="/Orders/ViewOrder?id=@item.Id">@item.Id</a></th>
                             <th style="width: 34%"><strong>Order Placed: </strong><br />@item.OrderPlacedDate.Value.ToString("D")</th>
-                            <th style="width: 33%"><strong>Total: </strong><br />£@item.OrderTotalPrice</th>
+                            <th style="width: 33%"><strong>Total: </strong><br />£@(item.OrderTotalPrice + item.DeliveryType.Price)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,7 +31,7 @@
                             </td>
                             <td>
                                 <h5>@item.OrderStatus.Status</h5>
-                                @if (item.PaymentStatus == "approved_by_network")
+                                @if (item.PaymentStatus == "approved_by_network" || item.PaymentStatus == "approved")
                                 {
                                     <strong>Payment complete.</strong>
                                 }
@@ -58,6 +58,10 @@
                 </table>
             </div>
         </div>
+    }
+    @if(Model.Orders.Count == 0)
+    {
+        <h4>You have no orders.</h4>
     }
 </div>
 <script>

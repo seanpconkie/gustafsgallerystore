@@ -10,6 +10,7 @@ using GustafsGalleryStore.Models.DataModels;
 using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 using Microsoft.AspNetCore.Authorization;
 using GustafsGalleryStore.Helpers;
+using System.Collections.Generic;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -46,28 +47,145 @@ namespace GustafsGalleryStore.Controllers
 
         public string ReturnUrl { get; set; }
 
-        [TempData]
-        public string StatusMessage { get; set; }
-
         // GET: /<controller>/
-        public IActionResult Index()
+        public IActionResult Index(List<string> filterBrand = null, List<string> filterDepartment = null, 
+                                   string statusMessage = null, string successMessage = null, 
+                                   string failureMessage = null)
         {
+            var products = new List<Product>();
+            var where = "";
+            var searchTerm = "select * from products where ";
+
+            if (filterBrand != null && filterBrand.Count > 0)
+            {
+                foreach (var brand in filterBrand)
+                {
+                    if (brand.ToLower().IndexOf("delete", System.StringComparison.CurrentCulture) > -1 ||
+                        brand.ToLower().IndexOf("update", System.StringComparison.CurrentCulture) > -1 ||
+                        brand.ToLower().IndexOf("insert", System.StringComparison.CurrentCulture) > -1 ||
+                        brand.ToLower().IndexOf("create", System.StringComparison.CurrentCulture) > -1 ||
+                        brand.ToLower().IndexOf("drop", System.StringComparison.CurrentCulture) > -1
+                       )
+                    {
+                        return ControllerHelper.RedirectToLocal(this, "/Products?failureMessage=Filter not available.");
+                    }
+
+                    if (where.Length == 0)
+                    {
+                        where = " productbrandid in ( ";
+                    }
+                    else
+                    {
+                        where += ",";
+                    }
+
+                    var inDb = _context.ProductBrands.Where(x => x.Brand == brand).SingleOrDefault();
+                    if (inDb != null)
+                    {
+                        where += inDb.Id;
+                    }
+                }
+
+                searchTerm += where + ")";
+            }
+
+            if (where.Length > 0 && filterDepartment != null && filterDepartment.Count > 0)
+            {
+                searchTerm += " and ";
+            }
+
+            if (filterDepartment != null && filterDepartment.Count > 0)
+            {
+                foreach (var dept in filterDepartment)
+                {
+                    if (dept.ToLower().IndexOf("delete", System.StringComparison.CurrentCulture) > -1 ||
+                        dept.ToLower().IndexOf("update", System.StringComparison.CurrentCulture) > -1 ||
+                        dept.ToLower().IndexOf("insert", System.StringComparison.CurrentCulture) > -1 ||
+                        dept.ToLower().IndexOf("create", System.StringComparison.CurrentCulture) > -1 ||
+                        dept.ToLower().IndexOf("drop", System.StringComparison.CurrentCulture) > -1
+                       )
+                    {
+                        return ControllerHelper.RedirectToLocal(this, "/Products?failureMessage=Filter not available.");
+                    }
+
+                    if (where.Length == 0)
+                    {
+                        where = " departmentid in ( ";
+                    }
+                    else
+                    {
+                        where += ",";
+                    }
+
+                    var inDb = _context.Departments.Where(x => x.DepartmentName == dept).SingleOrDefault();
+                    if (inDb != null)
+                    {
+                        where += inDb.Id;
+                    }
+                }
+
+                searchTerm += where + ")";
+            }
+
+            if(where.Length > 0)
+            {
+                products = _context.Products.
+                                   FromSql(searchTerm).
+                                   Include(p => p.Department).
+                                   Include(p => p.ProductBrand).
+                                   Include(p => p.ProductSizes).
+                                   Include(p => p.ProductImages).
+                                   Include(p => p.ProductColours).
+                                   Where(x => x.Stock > 0).
+                                   ToList();
+            }
+            else
+            {
+                products = _context.Products.
+                                   Include(p => p.Department).
+                                   Include(p => p.ProductBrand).
+                                   Include(p => p.ProductSizes).
+                                   Include(p => p.ProductImages).
+                                   Include(p => p.ProductColours).
+                                   Where(x => x.Stock > 0).
+                                   ToList();
+            }
+
             var viewModel = new ProductListViewModel
             {
-                Products = _context.Products.
-                                   Include(x => x.Department).
-                                   Include(x => x.ProductBrand).
-                                   Include(x => x.ProductImages).
-                                   ToList(),
-                StatusMessage = StatusMessage
+                Products = products,
+                Brands = _context.ProductBrands.OrderBy(x => x.Brand).ToList(),
+                Departments = _context.Departments.OrderBy(x => x.DepartmentName).ToList(),
+                SuccessMessage = successMessage,
+                FailureMessage = failureMessage,
+                StatusMessage = statusMessage
             };
+
+            if(filterBrand != null)
+            {
+                viewModel.FilteredBrands = filterBrand;
+            }
+            else
+            {
+                viewModel.FilteredBrands = new List<string>();
+            }
+
+            if (filterDepartment != null)
+            {
+                viewModel.FilteredDepartments = filterDepartment;
+            }
+            else
+            {
+                viewModel.FilteredDepartments = new List<string>();
+            }
 
             return View(viewModel);
             //return ControllerHelper.RedirectToLocal(this,"/Home/ComingSoon");
         }
 
         // GET: /<controller>/
-        public IActionResult Product(long id)
+        public IActionResult Product(long id, string statusMessage = null, string successMessage = null,
+                                   string failureMessage = null)
         {
             var viewModel = new ProductViewModel()
             {
@@ -77,7 +195,9 @@ namespace GustafsGalleryStore.Controllers
                                   Include(c => c.ProductSizes).
                                   Include(c => c.ProductImages).
                                   SingleOrDefault(),
-                StatusMessage = StatusMessage,
+                StatusMessage = statusMessage,
+                SuccessMessage = successMessage,
+                FailureMessage = failureMessage,
                 ReturnUrl = "~/Products"
             };
 
