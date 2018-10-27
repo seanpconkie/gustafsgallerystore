@@ -59,19 +59,21 @@ namespace GustafsGalleryStore.Controllers
         public string StatusMessage { get; set; }
 
         // GET: /<controller>/
-        public IActionResult Index()
+        public IActionResult Index(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
             var viewModel = new ProductListViewModel
             {
                 Products = _context.Products.Include(x => x.ProductBrand).Include(x => x.Department).ToList(),
-                StatusMessage = StatusMessage
+                StatusMessage = statusMessage,
+                SuccessMessage = successMessage,
+                FailureMessage = failureMessage
             };
 
             return View(viewModel);
         }
 
         [HttpGet]
-        public IActionResult AddProduct()
+        public IActionResult AddProduct(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
 
             var viewModel = new NewEditProductViewModel
@@ -80,7 +82,10 @@ namespace GustafsGalleryStore.Controllers
                 Brands = ProductBrand.GetList(_context.ProductBrands.OrderBy(b => b.Brand).ToList()),
                 Colours = Colour.GetList(_context.Colours.OrderBy(c => c.Value).ToList()),
                 Sizes = Size.GetList(_context.Sizes.OrderBy(s => s.Value).ToList()),
-                Departments = Department.GetList(_context.Departments.OrderBy(d => d.DepartmentName).ToList())
+                Departments = Department.GetList(_context.Departments.OrderBy(d => d.DepartmentName).ToList()),
+                StatusMessage = statusMessage,
+                SuccessMessage = successMessage,
+                FailureMessage = failureMessage
             };
 
             return View(viewModel);
@@ -194,7 +199,7 @@ namespace GustafsGalleryStore.Controllers
                 }
                 catch (System.Exception ex)
                 {
-                    StatusMessage = "An Error occured; " + ex.Message;
+                    input.FailureMessage = "An Error occured; " + ex.Message;
                 }
             }
             input.Brands = ProductBrand.GetList(_context.ProductBrands.OrderBy(b => b.Brand).ToList());
@@ -206,7 +211,7 @@ namespace GustafsGalleryStore.Controllers
             return View(input);
         }
 
-        public IActionResult EditProduct(long id)
+        public IActionResult EditProduct(long id, string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
 
             var viewModel = new NewEditProductViewModel()
@@ -218,7 +223,9 @@ namespace GustafsGalleryStore.Controllers
                                   Include(c => c.ProductImages).
                                   Include(c => c.Department).
                                   SingleOrDefault(),
-                StatusMessage = StatusMessage,
+                StatusMessage = statusMessage,
+                SuccessMessage = successMessage,
+                FailureMessage = failureMessage,
                 ReturnUrl = "~/ManageProducts"
             };
 
@@ -393,7 +400,7 @@ namespace GustafsGalleryStore.Controllers
                 }
                 catch (System.Exception ex)
                 {
-                    StatusMessage = "An Error occured; " + ex.Message;
+                    input.FailureMessage = "An Error occured; " + ex.Message;
                 }
             }
 
@@ -408,14 +415,17 @@ namespace GustafsGalleryStore.Controllers
         }
 
         [HttpGet]
-        public IActionResult Stock()
+        public IActionResult Stock(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
             var viewModel = new ProductListViewModel()
             {
                 Products = _context.Products.
-                                                                            Include(p => p.ProductBrand).
-                                                                            Include(p => p.Department).
-                                                                            ToList()
+                                Include(p => p.ProductBrand).
+                                Include(p => p.Department).
+                                ToList(),
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
             };
             return View(viewModel);
         }

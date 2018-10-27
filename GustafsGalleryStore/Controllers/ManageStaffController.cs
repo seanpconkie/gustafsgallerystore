@@ -47,20 +47,22 @@ namespace GustafsGalleryStore.Controllers
         public string StatusMessage { get; set; }
 
         // GET: /<controller>/
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
 
             var viewModel = new StaffListViewModel
             {
-                Staff = await _userManager.GetUsersInRoleAsync("IsStaff"),
-                StatusMessage = StatusMessage
+                Staff = await _userManager.GetUsersInRoleAsync(MasterStrings.StaffRole),
+                StatusMessage = statusMessage,
+                SuccessMessage = successMessage,
+                FailureMessage = failureMessage
             };
 
             return View(viewModel);
         }
 
         [HttpGet]
-        public IActionResult AddStaff()
+        public IActionResult AddStaff(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
 
             var viewModel = new InputViewModel
@@ -104,13 +106,15 @@ namespace GustafsGalleryStore.Controllers
                     await _emailSender.SendEmailAsync(input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    await _userManager.AddToRoleAsync(user, "IsStaff");
+                    await _userManager.AddToRoleAsync(user, MasterStrings.StaffRole);
 
-                    return ControllerHelper.RedirectToLocal(this,"/ManageStaff");
+                    return ControllerHelper.RedirectToLocal(this,"/ManageStaff?successMessage=" + input.Forename + " added.");
 
                 }
 
                 ControllerHelper.AddErrors(this,result);
+
+                input.FailureMessage = "Something went wrong.";
 
             }
 
@@ -123,7 +127,7 @@ namespace GustafsGalleryStore.Controllers
 
             IList<ApplicationUser> users = new List<ApplicationUser>();
 
-            users = await _userManager.GetUsersInRoleAsync("IsStaff");
+            users = await _userManager.GetUsersInRoleAsync(MasterStrings.StaffRole);
 
             if (users.Count > 0)
             {
@@ -136,16 +140,17 @@ namespace GustafsGalleryStore.Controllers
                         {
                             _logger.LogInformation("User account deleted.");
 
-                            return ControllerHelper.RedirectToLocal(this,"/ManageStaff");
+                            return ControllerHelper.RedirectToLocal(this,"/ManageStaff?successMessage=User deleted.");
                         }
 
                         ControllerHelper.AddErrors(this,result);
 
+                        return ControllerHelper.RedirectToLocal(this, "/ManageStaff?failureMessage=Something went wrong.");
                     }
                 }
             }
 
-            return View();
+            return ControllerHelper.RedirectToLocal(this, "/ManageStaff?failureMessage=No user found.");
         }
 
 

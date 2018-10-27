@@ -62,7 +62,7 @@ namespace GustafsGalleryStore.Controllers
         #endregion
 
         // GET: /<controller>/
-        public IActionResult Index(long id, string statusMessage = "", string successMessage = "", string failureMessage = "")
+        public IActionResult Index(long id, string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
 
             //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
@@ -75,9 +75,7 @@ namespace GustafsGalleryStore.Controllers
 
             if (order == null)
             {
-                var paramName = "Basket";
-                var message = "No basket found";
-                throw new ArgumentNullException(paramName,message);
+                return ControllerHelper.RedirectToLocal(this, "/Home?failureMessage=No basket found");
             }
 
             if (order.UserId == null)
@@ -103,11 +101,6 @@ namespace GustafsGalleryStore.Controllers
                 FailureMessage = failureMessage,
                 SuccessMessage = successMessage
             };
-
-            if (viewModel.Basket == null)
-            {
-                throw new System.Exception("No basket found.");
-            }
 
             return View(viewModel);
 
@@ -197,15 +190,8 @@ namespace GustafsGalleryStore.Controllers
 
                         inDb.StripeSource = source.Id;
 
-                        try
-                        {
-                            _context.Update(inDb);
-                            _context.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Exception(ex.Message);
-                        }
+                        _context.Update(inDb);
+                        _context.SaveChanges();
 
                         return Redirect(source.Redirect.Url);
                     }
@@ -341,7 +327,7 @@ namespace GustafsGalleryStore.Controllers
                 var statusMessage = messages.StatusMessage;
                 order.PaymentMessage = messages.PaymentMessage;
 
-                return ControllerHelper.RedirectToLocal(this,"/Checkout/Index?id=" + order.Id + "failureMessage=" + statusMessage);
+                return ControllerHelper.RedirectToLocal(this,"/Checkout/Index?id=" + order.Id + "&&failureMessage=" + statusMessage);
 
             }
 
@@ -360,7 +346,7 @@ namespace GustafsGalleryStore.Controllers
                 var statusMessage = "The payment has been declined.<br/>Please contact your card issuer for more information.";
                 order.PaymentMessage = "Status reason: " + result.Reason;
 
-                return ControllerHelper.RedirectToLocal(this, "/Checkout/Index?id=" + order.Id + "failureMessage" + statusMessage);
+                return ControllerHelper.RedirectToLocal(this, "/Checkout/Index?id=" + order.Id + "&&failureMessage" + statusMessage);
 
             }
 
@@ -427,7 +413,7 @@ namespace GustafsGalleryStore.Controllers
                 var statusMessage = message;
                 order.PaymentMessage = message;
 
-                return ControllerHelper.RedirectToLocal(this, "/Checkout/Index?id=" + order.Id + "failureMessage" + statusMessage);
+                return ControllerHelper.RedirectToLocal(this, "/Checkout/Index?id=" + order.Id + "&&failureMessage" + statusMessage);
 
             }
 

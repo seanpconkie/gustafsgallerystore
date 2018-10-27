@@ -12,7 +12,7 @@ namespace GustafsGalleryStore.Services
         {
             // Set your secret key: remember to change this to your live secret key in production
             // See your keys here: https://dashboard.stripe.com/account/apikeys
-            StripeConfiguration.SetApiKey(MasterStrings.stripeAPIKey);
+            StripeConfiguration.SetApiKey(MasterStrings.StripeAPIKey);
 
             var options = new StripeChargeCreateOptions
             {
@@ -50,7 +50,7 @@ namespace GustafsGalleryStore.Services
 
         public static StripeSource CreateSource(string token, int amount, string redirectUrl)
         {
-            StripeConfiguration.SetApiKey(MasterStrings.stripeAPIKey);
+            StripeConfiguration.SetApiKey(MasterStrings.StripeAPIKey);
 
             var sourceOptions = new StripeSourceCreateOptions
             {
@@ -81,7 +81,7 @@ namespace GustafsGalleryStore.Services
         {
             // Set your secret key: remember to change this to your live secret key in production
             // See your keys here: https://dashboard.stripe.com/account/apikeys
-            StripeConfiguration.SetApiKey(MasterStrings.stripeAPIKey);
+            StripeConfiguration.SetApiKey(MasterStrings.StripeAPIKey);
 
             var service = new StripeSourceService();
             StripeSource sourceService = service.Get(source);
@@ -133,7 +133,7 @@ namespace GustafsGalleryStore.Services
         {
             // Set your secret key: remember to change this to your live secret key in production
             // See your keys here: https://dashboard.stripe.com/account/apikeys
-            StripeConfiguration.SetApiKey(MasterStrings.stripeAPIKey);
+            StripeConfiguration.SetApiKey(MasterStrings.StripeAPIKey);
 
             var refundOptions = new StripeRefundCreateOptions()
             {

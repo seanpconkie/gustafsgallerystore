@@ -18,8 +18,8 @@ namespace GustafsGalleryStore.Services
     {
 
         private IHostingEnvironment _hostingEnvironment;
-        private static AmazonS3Client _s3Client = new AmazonS3Client(awsAccessKeyId: MasterStrings.awsAccessKeyId,
-                                                              awsSecretAccessKey: MasterStrings.awsSecretAccessKey,
+        private static AmazonS3Client _s3Client = new AmazonS3Client(awsAccessKeyId: MasterStrings.AWSAccessKeyId,
+                                                              awsSecretAccessKey: MasterStrings.AWSSecretAccessKey,
                                                               region: Amazon.RegionEndpoint.USEast1);
         private static readonly string _bucketName = "sbt-solutions.imagestore";//this is my Amazon Bucket name
         private static string _bucketSubdirectory = String.Empty;

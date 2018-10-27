@@ -248,9 +248,7 @@ namespace GustafsGalleryStore.Controllers
 
                 if (_basket == null)
                 {
-                    var paramName = "Basket";
-                    var message = "Basket does not exist.";
-                    throw new ArgumentNullException(paramName, message);
+                    return ControllerHelper.RedirectToLocal(this,string.Format("/Orders/ViewOrder?id={0}&&failureMessage={1}", itemDTO.Id, "Basket does not exist."));
                 }
 
                 var updatedItem = TransformNewItemDTO(itemDTO);
@@ -291,14 +289,7 @@ namespace GustafsGalleryStore.Controllers
 
                 _context.Update(_basket);
 
-                try
-                {
-                    _context.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message, ex.InnerException);
-                }
+                _context.SaveChanges();
 
                 return new OkObjectResult(orderTotalPrice);
             }

@@ -64,10 +64,10 @@ namespace GustafsGalleryStore.Helpers
         public const string PayPalResultCancelled = "cancelled";
 
         // Keys
-        public const string payPalClientId = "";
-        public const string payPalSecretKey = "";
-        public const string awsAccessKeyId = "";
-        public const string awsSecretAccessKey = "";
-        public const string stripeAPIKey = "";
+        public const string PayPalClientId = "";
+        public const string PayPalSecretKey = "";
+        public const string AWSAccessKeyId = "";
+        public const string AWSSecretAccessKey = "";
+        public const string StripeAPIKey = "";
     }
 }

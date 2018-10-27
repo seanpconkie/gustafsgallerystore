@@ -36,5 +36,9 @@ namespace GustafsGalleryStore.Models.ViewModels
         public List<SelectListItem> Titles { get; set; }
 
         public string ReturnUrl { get; set; }
+
+        public string StatusMessage { get; set; }
+        public string FailureMessage { get; set; }
+        public string SuccessMessage { get; set; }
     }
 }

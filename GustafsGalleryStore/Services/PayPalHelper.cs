@@ -13,8 +13,8 @@ namespace GustafsGalleryStore.Services
 
         public static Payment CreatePayment(long id, List<OrderItem> products, decimal shipping, GustafsGalleryStoreContext context)
         {
-            var clientId = MasterStrings.payPalClientId;
-            var secretKey = MasterStrings.payPalSecretKey;
+            var clientId = MasterStrings.PayPalClientId;
+            var secretKey = MasterStrings.PayPalSecretKey;
 
             var payer = new Payer()
             {
@@ -45,8 +45,8 @@ namespace GustafsGalleryStore.Services
 
         public static Payment ChargePayment(string paymentId, string token, string payerId, string guid, long id, List<OrderItem> products, decimal shipping, GustafsGalleryStoreContext context)
         {
-            var clientId = MasterStrings.payPalClientId;
-            var secretKey = MasterStrings.payPalSecretKey;
+            var clientId = MasterStrings.PayPalClientId;
+            var secretKey = MasterStrings.PayPalSecretKey;
 
             // Using the information from the redirect, setup the payment to execute.
             var payment = new Payment() { id = paymentId };
@@ -81,8 +81,8 @@ namespace GustafsGalleryStore.Services
 
         public static Refund RefundPayment(string saleId, decimal refundAmount)
         {
-            var clientId = MasterStrings.payPalClientId;
-            var secretKey = MasterStrings.payPalSecretKey;
+            var clientId = MasterStrings.PayPalClientId;
+            var secretKey = MasterStrings.PayPalSecretKey;
 
             var amount = new Amount() { 
                 currency = "GBP",

@@ -55,15 +55,18 @@ namespace GustafsGalleryStore.Controllers
         [TempData]
         public string StatusMessage { get; set; }
 
-        public IActionResult Index()
+        public IActionResult Index(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
-            var viewModel = new ProductListViewModel();
-
-            viewModel.Products = _context.Products.
-                OrderByDescending(p => p.CreateDate).
-                Include(b => b.ProductBrand).
-                Include(i => i.ProductImages).
-                ToList();
+            var viewModel = new ProductListViewModel() {
+                Products = _context.Products.
+                                OrderByDescending(p => p.CreateDate).
+                                Include(b => b.ProductBrand).
+                                Include(i => i.ProductImages).
+                                ToList(),
+                StatusMessage = statusMessage,
+                SuccessMessage = successMessage,
+                FailureMessage = failureMessage
+            };
 
             return View(viewModel);
         }
