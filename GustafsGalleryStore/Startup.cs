@@ -50,6 +50,32 @@ namespace GustafsGalleryStore
                 .AddEntityFrameworkStores<GustafsGalleryStoreContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddAuthentication()
+                    .AddFacebook(facebookOptions => {
+                        facebookOptions.AppId = MasterStrings.FacebookApiId;
+                        facebookOptions.AppSecret = MasterStrings.FacebookSecretKey;
+                        })
+                    .AddTwitter(twitterOptions => {
+                        twitterOptions.ConsumerKey = MasterStrings.TwitterApiId;
+                        twitterOptions.ConsumerSecret = MasterStrings.TwitterSecrectKey;
+                        })
+                    .AddGoogle(googleOptions => {
+                        googleOptions.ClientId = MasterStrings.GoogleApiId;
+                        googleOptions.ClientSecret = MasterStrings.GoogleSecretKey;
+                        })
+                    .AddMicrosoftAccount(microsoftOptions => {
+                        microsoftOptions.ClientId = MasterStrings.MicrosoftApiId;
+                        microsoftOptions.ClientSecret = MasterStrings.MicrosoftSecretKey;
+                        })
+                    .AddGitHub(githubOptions => { 
+                        githubOptions.ClientId = MasterStrings.GitHubApiId;
+                        githubOptions.ClientSecret = MasterStrings.GithubSecretKey;
+                        })
+                    .AddLinkedIn(linkedinOptions => {
+                        linkedinOptions.ClientId = MasterStrings.LinkedInApiId;
+                        linkedinOptions.ClientSecret = MasterStrings.LinkedInSecretKey;
+                        });
+
             services.AddMvc(config => config.Filters.Add(new ValidateModelAttribute())).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddRazorPagesOptions(options =>
                 {
@@ -87,6 +113,8 @@ namespace GustafsGalleryStore
              //using Microsoft.AspNetCore.Identity.UI.Services;
             services.AddSingleton<GustafsGalleryStore.Services.IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,109 +2,8 @@
 @{
     ViewData["Title"] = "Checkout";
 }
-
-<style>
-        /**
-    * The CSS shown here will not be introduced in the Quickstart guide, but shows
-    * how you can use CSS to style your Element's container.
-    */
-        .StripeElement {
-            background-color: white;
-            height: 40px;
-            padding: 10px 12px;
-            border-radius: 4px;
-            border: 1px solid transparent;
-            box-shadow: 0 1px 3px 0 #e6ebf1;
-            -webkit-transition: box-shadow 150ms ease;
-            transition: box-shadow 150ms ease;
-        }
-
-        .StripeElement--focus {
-            box-shadow: 0 1px 3px 0 #cfd7df;
-        }
-
-        .StripeElement--invalid {
-            border-color: #fa755a;
-        }
-
-        .StripeElement--webkit-autofill {
-            background-color: #fefde5 !important;
-        }
-
-        /* Style the buttons that are used to open and close the accordion panel */
-        .accordion {
-            background-color: #eee;
-            color: #444;
-            cursor: pointer;
-            padding: 18px;
-            width: 100%;
-            text-align: left;
-            border: none;
-            outline: none;
-            transition: 0.4s;
-        }
-
-            /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-            .active, .accordion:hover {
-                background-color: #ccc;
-            }
-
-        /* Style the accordion panel. Note: hidden by default */
-
-        .panel {
-            padding: 0 18px;
-            background-color: white;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.2s ease-out;
-        }
-
-        .accordion:after {
-            content: '\02795'; /* Unicode character for "plus" sign (+) */
-            font-size: 13px;
-            color: #777;
-            float: right;
-            margin-left: 5px;
-        }
-
-        .active:after {
-            content: "\2796"; /* Unicode character for "minus" sign (-) */
-        }
-
-    .cart {
-        position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-        z-index: 1; /* Stay on top */
-        overflow-x: hidden; /* Disable horizontal scroll */
-    }
-
-    .cart-alt {
-        position: absolute; 
-        overflow-x: hidden; 
-    }
-
-    .checkout {
-        margin-left: 25%; /* Same as the width of the sidebar */
-        padding: 0px 10px;
-    }
-
-    .paypal {
-        background: #ffc439;
-        color: #111;
-    }
-
-    .paypal-button-logo {
-        height: 17px;
-        min-height: 14px;
-        max-height: 21px;
-        position: relative;
-        top: 50%;
-        padding: 0;
-        display: inline-block;
-        background: none;
-        border: none;
-        width: auto;
-    }
-</style>
+<link type="text/css" rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/checkout.min.css?Authorization" />
+<link type="text/css" rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/accordian.min.css?Authorization" />
 <div id="checkoutContent">
     <div id="alertDiv"></div>
     <form action="/Checkout/Index" method="post" id="payment-form">
@@ -132,7 +31,7 @@
                     </p>
                     <p>
                         <span class="w3-twothird">Total: </span>
-                        <span class="w3-third" style="color:black"><b id="orderTotal">£@Model.Basket.OrderTotalPrice</b></span>
+                        <span class="w3-third" style="color:black"><b id="orderTotal">£@Model.Basket.OrderSubTotalPrice</b></span>
                     </p>
                 </div>
             </div>
@@ -166,75 +65,75 @@
                 @*Delivery Addresss*@
                 <button class="accordion">Delivery Address<span id="address" class="w3-hide"><i class="fas fa-check w3-margin-left w3-large w3-text-green"></i></span></button>
                 <div class="panel">
-                    <div class="w3-content w3-container w3-padding-large">
-                        <div class="w3-row">
-                            <div id="locationField w3-padding-large">
-                                <label><i class="fas fa-map-marker fa-fw w3-margin-right"></i>Address</label>
-                                <input id="autocomplete" placeholder="Enter your address" onFocus="geolocate()" type="text" class="w3-input" onchange="addressCompleteCheck()" />
+            <div class="w3-content w3-container w3-padding-large">
+                    <div class="w3-row">
+                        <div id="locationField w3-padding-large">
+                            <label><i class="fas fa-map-marker fa-fw w3-margin-right"></i>Address</label>
+                            <input id="autocomplete" placeholder="Enter your address" onFocus="geolocate()" type="text" class="w3-input" onchange="addressCompleteCheck()" />
+                        </div>
+                        <div class="">
+                            <div class="form-group w3-row-padding w3-quarter">
+                                <label asp-for="Basket.CustomerContact.BuildingNumber"></label>
+                                <input asp-for="Basket.CustomerContact.BuildingNumber" class="w3-input" id="street_number" onchange="addressCompleteCheck()" />
+                                <span asp-validation-for="Basket.CustomerContact.BuildingNumber" class="text-danger"></span>
                             </div>
-                            <div class="w3-half">
-                                <div class="form-group w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.BuildingNumber"></label>
-                                    <input asp-for="Basket.CustomerContact.BuildingNumber" class="w3-input" id="street_number" onchange="addressCompleteCheck()" />
-                                    <span asp-validation-for="Basket.CustomerContact.BuildingNumber" class="text-danger"></span>
-                                </div>
-                                <div class="form-group w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.AddressLine2"></label>
-                                    <input asp-for="Basket.CustomerContact.AddressLine2" class="w3-input" onchange="addressCompleteCheck()" />
-                                    <span asp-validation-for="Basket.CustomerContact.AddressLine2" class="text-danger"></span>
-                                </div>
-                                <div class="form-grou w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.County"></label>
-                                    <input asp-for="Basket.CustomerContact.County" class="w3-input" id="locality" onchange="addressCompleteCheck()" />
-                                    <span asp-validation-for="Basket.CustomerContact.County" class="text-danger"></span>
-                                </div>
-                                <div class="form-group w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.Country"></label>
-                                    <input asp-for="Basket.CustomerContact.Country" class="w3-input" id="country" onchange="addressCompleteCheck()" />
-                                    <span asp-validation-for="Basket.CustomerContact.Country" class="text-danger"></span>
-                                </div>
+                            <div class="form-group w3-row-padding w3-threequarter">
+                                <label asp-for="Basket.CustomerContact.AddressLine1"></label>
+                                <input asp-for="Basket.CustomerContact.AddressLine1" class="w3-input" id="route" onchange="addressCompleteCheck()" />
+                                <span asp-validation-for="Basket.CustomerContact.AddressLine1" class="text-danger"></span>
                             </div>
-                            <div class="w3-half">
-                                <div class="form-group w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.AddressLine1"></label>
-                                    <input asp-for="Basket.CustomerContact.AddressLine1" class="w3-input" id="route" onchange="addressCompleteCheck()" />
-                                    <span asp-validation-for="Basket.CustomerContact.AddressLine1" class="text-danger"></span>
-                                </div>
-                                <div class="form-group w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.PostTown"></label>
-                                    <input asp-for="Basket.CustomerContact.PostTown" class="w3-input" id="postal_town" onchange="addressCompleteCheck()" />
-                                    <span asp-validation-for="Basket.CustomerContact.PostTown" class="text-danger"></span>
-                                </div>
-                                <div class="form-group w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.Postcode"></label>
-                                    <input asp-for="Basket.CustomerContact.Postcode" class="w3-input" id="postal_code" onchange="addressCompleteCheck()" />
-                                    <span asp-validation-for="Basket.CustomerContact.Postcode" class="text-danger"></span>
-                                </div>
-                                <div id="addressButtons" class="w3-hide">
-                                    <div class="w3-bar w3-padding-large">
-                                        <a class="w3-button w3-right" onclick="addressNext()">Next<i class="fas fa-arrow-right w3-margin-left"></i></a>
-                                        <a href="#delivery" class="w3-button w3-right" onclick="addressBack()"><i class="fas fa-arrow-left w3-margin-right"></i>Back</a>
-                                    </div>
-                                </div>
+                            <div class="form-group w3-row-padding w3-half">
+                                <label asp-for="Basket.CustomerContact.AddressLine2"></label>
+                                <input asp-for="Basket.CustomerContact.AddressLine2" class="w3-input" onchange="addressCompleteCheck()" />
+                                <span asp-validation-for="Basket.CustomerContact.AddressLine2" class="text-danger"></span>
+                            </div>
+                            <div class="form-group w3-row-padding w3-half">
+                                <label asp-for="Basket.CustomerContact.PostTown"></label>
+                                <input asp-for="Basket.CustomerContact.PostTown" class="w3-input" id="postal_town" onchange="addressCompleteCheck()" />
+                                <span asp-validation-for="Basket.CustomerContact.PostTown" class="text-danger"></span>
+                            </div>
+                            <div class="form-grou w3-row-padding w3-half">
+                                <label asp-for="Basket.CustomerContact.County"></label>
+                                <input asp-for="Basket.CustomerContact.County" class="w3-input" id="locality" onchange="addressCompleteCheck()" />
+                                <span asp-validation-for="Basket.CustomerContact.County" class="text-danger"></span>
+                            </div>
+                            <div class="form-group w3-row-padding w3-half">
+                                <label asp-for="Basket.CustomerContact.Postcode"></label>
+                                <input asp-for="Basket.CustomerContact.Postcode" class="w3-input" id="postal_code" onchange="addressCompleteCheck()" />
+                                <span asp-validation-for="Basket.CustomerContact.Postcode" class="text-danger"></span>
+                            </div>
+                            <div class="form-group w3-row-padding w3-half">
+                                <label asp-for="Basket.CustomerContact.Country"></label>
+                                <select asp-for="Basket.CustomerContact.Country" class="w3-input" id="country" onchange="addressCompleteCheck()">
+                                    <option selected>Please Select</option>
+                                </select>
+                                <span asp-validation-for="Basket.CustomerContact.Country" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="w3-row">
-                            <div class="w3-half">
-                                <div class="form-group w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.MobilePhone"></label>
-                                    <input asp-for="Basket.CustomerContact.MobilePhone" type="tel" class="w3-input" />
-                                </div>
-                                <div class="form-group w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.OtherPhone"></label>
-                                    <input asp-for="Basket.CustomerContact.OtherPhone" type="tel" class="w3-input"/>
-                                </div>
-                                <div class="form-group w3-row-padding">
-                                    <label asp-for="Basket.CustomerContact.WorkPhone"></label>
-                                    <input asp-for="Basket.CustomerContact.WorkPhone" type="tel" class="w3-input"/>
+                    </div>
+                    <div class="w3-row">
+                        <div class="">
+                            <div class="form-group w3-row-padding w3-half">
+                                <label asp-for="Basket.CustomerContact.MobilePhone"></label>
+                                <input asp-for="Basket.CustomerContact.MobilePhone" type="tel" class="w3-input" />
+                            </div>
+                            <div class="form-group w3-row-padding w3-half">
+                                <label asp-for="Basket.CustomerContact.OtherPhone"></label>
+                                <input asp-for="Basket.CustomerContact.OtherPhone" type="tel" class="w3-input"/>
+                            </div>
+                            <div class="form-group w3-row-padding w3-half">
+                                <label asp-for="Basket.CustomerContact.WorkPhone"></label>
+                                <input asp-for="Basket.CustomerContact.WorkPhone" type="tel" class="w3-input"/>
+                            </div>
+                            <div id="addressButtons" class="w3-half w3-hide">
+                                <div class="w3-bar w3-padding-large">
+                                    <a class="w3-button w3-right" onclick="addressNext()">Next<i class="fas fa-arrow-right w3-margin-left"></i></a>
+                                    <a href="#delivery" class="w3-button w3-right" onclick="addressBack()"><i class="fas fa-arrow-left w3-margin-right"></i>Back</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
                 @*Payment Details*@
                 <button class="accordion">Payment Details<span id="card" class="w3-hide"><i class="fas fa-check w3-margin-left w3-large w3-text-green"></i></span></button>
@@ -253,7 +152,7 @@
                         <input hidden asp-for="Basket.Id" id="basket-id" />
                         <input hidden asp-for="StripeToken" id="payment-token" />
                         <input hidden asp-for="ThreeDSecure" id="three-d-secure" />
-                        <input hidden asp-for="Basket.OrderTotalPrice" type="number" min="0.01" step="0.01" id="hidden-total-price" />
+                        <input hidden asp-for="Basket.OrderSubTotalPrice" type="number" min="0.01" step="0.01" id="hidden-total-price" />
                         <div class="w3-row w3-padding">
                             <div class="w3-third">
                                 <button class="w3-button w3-dark-grey w3-round w3-block" onclick="openModal('spin');submitStripe();"><i class="fas fa-credit-card w3-margin-right"></i>Complete Order</button>
@@ -278,8 +177,8 @@
 
 </div>
 <script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/stripeCheckout.js?Authorization"></script>
-<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/checkoutDeliveryAddress.js?Authorization"></script>
-<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/checkoutDeliveryOptions.js?Authorization"></script>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/checkoutDeliveryAddress.min.js?Authorization"></script>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/checkoutDeliveryOptions.min.js?Authorization"></script>
 <script src="https://s3.amazonaws.com/sbt-solutions.co.uk/addressAutoComplete.js?Authorization"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOfCiFMuWl_6DzM4BsVFPYZ7ZvWmHcKR0&libraries=places&callback=initAutocomplete" async="" defer="defer"></script>
 <script>
@@ -290,130 +189,32 @@
         @:deliveryData.push({Id:"@type.Id",Type:"@type.Type",Company:"@type.DeliveryCompany.Company",Price:"@type.Price",Time:"@type.Time"})
     }
 
-    var orderTotal = @Model.Basket.OrderTotalPrice;
+    var orderTotal = @Model.Basket.OrderSubTotalPrice;
 
     deliveryCompleteCheck();
     addressCompleteCheck();
+</script>
+<script>
+    var countries = [];
+    var select = document.getElementById('country');
+    $.ajax({
+            url: "https://restcountries.eu/rest/v2/all",
+            method: "GET",
+            success: function(data) {
+                debugger;
+                countries = data;
 
-    var failure = "@Model.FailureMessage";
-    var message = "@Model.StatusMessage";
-    var success = "@Model.SuccessMessage";
+                for (var i = 0;i < countries.length; i++)
+                {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = countries[i].name;
+                    select.appendChild(opt);
+                }
 
-    if (failure != "")
-    {
-        toastr["warning"](failure, "Warning");
-    }
-
-    if (message != "")
-    {
-        toastr["info"](message, "Info");
-    }
-
-    if (success != "")
-    {
-        toastr["success"](success, "Success");
-    }
-
-
-    $(function() {
-
-        var footer = $("#footer-container");
-        var cart = $("#cart-container");
-        var top = cart.offset().top;
-
-        $(window).scroll(function() {    
-            var scroll = $(window).scrollTop();
-            var check = $(document).height() - (cart.height() + footer.height() + top);
-
-            if (scroll >= check &&
-                cart.hasClass('stsbc-1'))
-            {
-
-                cart.removeClass('cart').removeClass('stsbc-1').addClass("cart-alt");
-                cart.css("top",(scroll + (top - 5)) + "px");
-            } else if (scroll < check)
-            {
-                cart.removeClass("cart-alt").addClass('cart').addClass('stsbc-1');
-                cart.css("top","");
+            },
+            error: function(error){
+                toastr["warning"]("Something went wrong, please try again.", "Warning");
             }
         });
-    });
-
 </script>
-
-<script>
-
-    var acc = document.getElementsByClassName("accordion");
-    var i;
-
-    for (i = 0; i < acc.length; i++) {
-      acc[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var panel = this.nextElementSibling;
-
-        debugger;
-
-        var cart = document.getElementById('cart');
-        var spacer = document.getElementById('spacer');
-        var content = document.getElementById('checkoutContent');
-        var height = cart.offsetHeight;
-        if (height < 0)
-        {
-            height = 0;
-        }
-
-        spacer.removeAttribute('style');
-        spacer.setAttribute('style',"min-height: " + height + "px");
-    
-        var footer = $("#footer-container");
-        var cart = $("#cart-container");
-        var top = cart.offset().top;
-        var scroll = $(window).scrollTop();
-        var cssValue = (scroll + (top - 5)) + "px";
-
-        if (panel.style.maxHeight){
-            panel.style.maxHeight = null;
-            height = 0;
-            cssValue = scroll + "px";
-        } else {
-            panel.style.maxHeight = "100%";
-        }
-
-        var check = ($(document).height() + height) - (cart.height() + footer.height() + top);
-
-        if (scroll >= check &&
-            cart.hasClass('stsbc-1'))
-        {
-
-            cart.removeClass('cart').removeClass('stsbc-1').addClass("cart-alt");
-            cart.css("top",cssValue);
-        } else if (scroll < check)
-        {
-            cart.removeClass("cart-alt").addClass('cart').addClass('stsbc-1');
-            cart.css("top","");
-        }
-
-      });
-    }
-
-    document.getElementById('deliverySelect').addEventListener("change",function () {
-        deliveryCompleteCheck();
-    });
-
-    // Open delivery options panel
-    var first = acc[0].nextElementSibling;
-    acc[0].classList.toggle("active");
-    first.style.maxHeight = "100%";
-
-    function submitPayPal() {
-
-        var paypal = document.getElementById('paypal');
-
-        paypal.value = "Y";
-
-        // Submit the form
-        form.submit();
-
-    }
-
-</script>
+<script>$(function(){var s=$("#footer-container"),a=$("#cart-container"),c=a.offset().top;$(window).scroll(function(){var t=$(window).scrollTop(),e=$(document).height()-(a.height()+s.height()+c);e<=t&&a.hasClass("stsbc-1")?(a.removeClass("cart").removeClass("stsbc-1").addClass("cart-alt"),a.css("top",t+(c-5)+"px")):t<e&&(a.removeClass("cart-alt").addClass("cart").addClass("stsbc-1"),a.css("top",""))})});var i,acc=document.getElementsByClassName("accordion");for(i=0;i<acc.length;i++)acc[i].addEventListener("click",function(){this.classList.toggle("active");var t=this.nextElementSibling,e=document.getElementById("cart"),s=document.getElementById("spacer"),a=(document.getElementById("checkoutContent"),e.offsetHeight);a<0&&(a=0),s.removeAttribute("style"),s.setAttribute("style","min-height: "+a+"px");var c=$("#footer-container"),l=(e=$("#cart-container")).offset().top,o=$(window).scrollTop(),i=o+(l-5)+"px";t.style.maxHeight?(t.style.maxHeight=null,a=0,i=o+"px"):t.style.maxHeight="100%";var n=$(document).height()+a-(e.height()+c.height()+l);n<=o&&e.hasClass("stsbc-1")?(e.removeClass("cart").removeClass("stsbc-1").addClass("cart-alt"),e.css("top",i)):o<n&&(e.removeClass("cart-alt").addClass("cart").addClass("stsbc-1"),e.css("top",""))});document.getElementById("deliverySelect").addEventListener("change",function(){deliveryCompleteCheck()});var first=acc[0].nextElementSibling;acc[0].classList.toggle("active"),first.style.maxHeight="100%";</script>

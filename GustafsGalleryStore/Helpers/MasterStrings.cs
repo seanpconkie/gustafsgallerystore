@@ -69,5 +69,21 @@ namespace GustafsGalleryStore.Helpers
         public const string AWSAccessKeyId = "";
         public const string AWSSecretAccessKey = "";
         public const string StripeAPIKey = "";
+        public const string FacebookApiId = "";
+        public const string FacebookSecretKey = "";
+        public const string TwitterApiId = "";
+        public const string TwitterSecrectKey = "";
+        public const string GoogleApiId = "";
+        public const string GoogleSecretKey = "";
+        public const string MicrosoftApiId = "";
+        public const string MicrosoftSecretKey = "";
+        public const string InstagramApiId = "";
+        public const string InstagramSecretKey = "";
+        public const string YahooApiId = "";
+        public const string YahooSecretKey = "";
+        public const string LinkedInApiId = "";
+        public const string LinkedInSecretKey = "";
+        public const string GitHubApiId = "";
+        public const string GithubSecretKey = "";
     }
 }

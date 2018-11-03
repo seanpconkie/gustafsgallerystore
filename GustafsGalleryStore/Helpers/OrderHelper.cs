@@ -133,7 +133,7 @@ namespace GustafsGalleryStore.Helpers
                 }
             }
 
-            order.OrderTotalPrice = totalPrice;
+            order.OrderSubTotalPrice = totalPrice;
             order.OrderItems = orderItems;
 
             order.CustomerContact = context.CustomerContacts.
@@ -143,6 +143,17 @@ namespace GustafsGalleryStore.Helpers
             order.DeliveryType = context.DeliveryTypes.
                                     Where(x => x.Id == order.DeliveryTypeId).
                                     SingleOrDefault();
+
+            if (order.DeliveryType != null)
+            {
+                order.OrderTotalPostagePrice = order.DeliveryType.Price;
+            }
+            else
+            {
+                order.OrderTotalPostagePrice = 0;
+            }
+
+            order.OrderTotalPrice = (order.OrderSubTotalPrice + order.OrderTotalPostagePrice);
 
             order.DeliveryType.DeliveryCompany = context.DeliveryCompanies.
                                                     Where(x => x.Id == order.DeliveryType.DeliveryCompanyId).

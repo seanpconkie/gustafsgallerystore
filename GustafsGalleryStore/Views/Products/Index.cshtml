@@ -2,30 +2,24 @@
 @{
     ViewData["Title"] = "Products";
 }
-<style>
-    .filter-block {
-        overflow-y: auto;
-        max-height: 200px
-    }
-</style>
 <div class="w3-row">
     <div class="w3-bar-block w3-light-grey w3-card w3-animate-left w3-quarter" style="display:none" id="filterSidebar">
         <div class="w3-row">
             <button class="w3-button w3-half" onclick="filterClose()">Close</button>
-            <button class="w3-button w3-half" onclick="openModal('spin');updateFilter();">Update</button>
+            <button class="w3-button w3-half" onclick="openModal('spin');updateFilter('/Products?');">Update</button>
         </div>
         <div class="w3-block w3-center w3-dark-grey">Filter Designer</div>
         <div id="brands" class="filter-block">
             @foreach (var brand in Model.Brands)
             {
                 <div class="w3-button w3-block" onclick="filterButtonClick(this)">
-                    @if(Model.FilteredBrands.Contains(brand.Brand))
+                    @if (Model.FilteredBrands.Contains(brand.Brand))
                     {
-                    <input type="checkbox" checked />
+                        <input type="checkbox" checked />
                     }
                     else
                     {
-                    <input type="checkbox" />
+                        <input type="checkbox" />
                     }
                     &nbsp;<label>@brand.Brand</label>
                 </div>
@@ -91,76 +85,4 @@
     </div>
 </div>
 <script>$("#products").DataTable();</script>
-
-<script>
-function filterOpen() {
-  document.getElementById("mainContent").className = "w3-threequarter w3-row-padding";
-  document.getElementById("filterSidebar").style.display = "block";
-  document.getElementById("openNav").style.display = 'none';
-}
-function filterClose() {
-  document.getElementById("mainContent").className = "w3-animate-right";
-  document.getElementById("filterSidebar").style.display = "none";
-  document.getElementById("openNav").style.display = "inline-block";
-}
-</script>
-<script>
-function updateFilter() {
-
-    // check filtered brands
-    var brand = document.getElementById('brands');
-    var brandInputs = brand.children;
-    var brands = [];
-    
-    for(var i = 0;i < brandInputs.length; i++)
-    {
-        for (var j = 0;j < brandInputs[i].children.length; j ++)
-        {
-            if(brandInputs[i].children[j].nodeName == "INPUT" && brandInputs[i].children[j].checked == true)
-            {
-                brands.push(brandInputs[i].children[j + 1].innerHTML.trim());
-            }
-        }
-    }
-
-    // check filtered departments
-    var department = document.getElementById('department');
-    var departmentInputs = department.children;
-    var departments = [];
-    
-    for(var i = 0;i < departmentInputs.length; i++)
-    {
-        for (var j = 0;j < departmentInputs[i].children.length;j ++)
-        {
-           if(departmentInputs[i].children[j].nodeName == "INPUT" && departmentInputs[i].children[j].checked == true)
-            {
-                departments.push(departmentInputs[i].children[j + 1].innerHTML.trim());
-            } 
-        }
-    }
-    var href = "/Products?";
-    debugger;
-    if (brands.length > 0)
-    {
-        href += "filterBrand=" + brands;
-    }
-
-    if (departments.length > 0)
-    {
-        href += "filterDepartment=" + departments
-    }
-
-    window.location.href = href;
-
-}
-function filterButtonClick(b) {
-    debugger;
-    for(var i = 0;i < b.children.length; i ++)
-    {
-        if(b.children[i].nodeName == "INPUT")
-        {
-            b.children[i].checked = !b.children[i].checked;
-        }
-    }
-}
-</script>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/filterProducts.min.js?Authorization"></script>

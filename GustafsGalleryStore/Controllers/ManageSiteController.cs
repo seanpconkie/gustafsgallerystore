@@ -47,9 +47,14 @@ namespace GustafsGalleryStore.Controllers
         public string ReturnUrl { get; set; }
 
         // GET: /<controller>/
-        public IActionResult Index()
+        public IActionResult Index(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
-            return View();
+            var viewModel = new SiteViewModel() { 
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
+            };
+            return View(viewModel);
         }
 
         // GET: /<controller>/

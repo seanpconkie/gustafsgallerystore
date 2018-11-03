@@ -1,144 +1,75 @@
 ﻿@model GustafsGalleryStore.Models.ViewModels.ProductListViewModel
 @{
-    ViewData["Title"] = "Edit Stock";
+    ViewData["Title"] = "Manage Stock";
 }
-        <style>
-            .ht_clone_top{z-index: -1!important}
-        </style>
-        <script src="https://cdn.jsdelivr.net/npm/handsontable@5.0.2/dist/handsontable.full.min.js"></script>
-        <link href="https://cdn.jsdelivr.net/npm/handsontable@5.0.2/dist/handsontable.full.min.css" rel="stylesheet" media="screen">
-        <div class="w3-container">
+<script src="https://cdn.jsdelivr.net/npm/handsontable@5.0.2/dist/handsontable.full.min.js"></script>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/filterProducts.min.js?Authorization"></script>
+<link href="https://cdn.jsdelivr.net/npm/handsontable@5.0.2/dist/handsontable.full.min.css" rel="stylesheet" media="screen">
+<div class="w3-container">
+    <div class="w3-row">
+
+        <div class="w3-bar-block w3-light-grey w3-card w3-animate-left w3-quarter" style="display: none" id="filterSidebar">
+            <div class="w3-row">
+                <button class="w3-button w3-half" onclick="filterClose()">Close</button>
+                <button class="w3-button w3-half" onclick="openModal('spin');updateFilter('/ManageProducts/Stock?');">Update</button>
+            </div>
+            <div class="w3-block w3-center w3-dark-grey">Filter Designer</div>
+            <div id="brands" class="filter-block">
+                @foreach (var brand in Model.Brands)
+                {
+                    <div class="w3-button w3-block" onclick="filterButtonClick(this)">
+                        @if(Model.FilteredBrands.Contains(brand.Brand))
+                        {
+                        <input type="checkbox" checked />
+                        }
+                        else
+                        {
+                        <input type="checkbox" />
+                        }
+                        &nbsp;<label>@brand.Brand</label>
+                    </div>
+                }
+            </div>
+            <div class="w3-block w3-center w3-dark-grey">Filter Department</div>
+            <div id="department" class="filter-block">
+                @foreach (var dept in Model.Departments)
+                {
+                    <div class="w3-button w3-block" onclick="filterButtonClick(this)">
+                        @if (Model.FilteredDepartments.Contains(dept.DepartmentName))
+                        {
+                            <input type="checkbox" checked />
+                        }
+                        else
+                        {
+                            <input type="checkbox" />
+                        }
+                        &nbsp;<label>@dept.DepartmentName</label>
+                    </div>
+                }
+            </div>
+        </div>
+        <div id="mainContent">
             <div class="w3-container">
                 <div class="w3-row w3-margin-bottom">
                     <div class="w3-half">
-                        <div class="w3-half w3-row-padding">
-                            <a href="/ManageProducts/Stock" class="w3-button w3-block w3-light-grey w3-round" onclick="openModal('spin');"><i class="fas fa-sync-alt w3-margin-right"></i>Refresh</a>
-                        </div>
-                        <div class="w3-half w3-row-padding">
-                            <div class="w3-button w3-block w3-dark-grey w3-round" onclick="openModal('spin');saveChanges();"><i class="fas fa-save w3-margin-right"></i>Save</div>
-                        </div>
+                        <button id="openNav" class="w3-button w3-light-grey w3-round" onclick="filterOpen()"><i class="fas fa-filter w3-margin-right"></i>Filter</button>
+                        @if (Model.FilteredBrands.Count > 0 || Model.FilteredDepartments.Count > 0)
+                        {
+                            <a href="/ManageProducts/Stock" class="w3-button w3-light-grey w3-round" onclick="openModal('spin');"><i class="fas fa-sync-alt w3-margin-right"></i>Clear Filter</a>
+                        }
+                        <a href="/ManageProducts/Stock" class="w3-button w3-light-grey w3-round" onclick="openModal('spin');"><i class="fas fa-sync-alt w3-margin-right"></i>Refresh</a>
+                        <div id="submit" class="w3-button w3-dark-grey w3-round" onclick="openModal('spin');"><i class="fas fa-save w3-margin-right"></i>Save</div>
                     </div>
-                </div>
-                <div id="message" style="display: none">
-                    <span onclick="document.getElementById('message').style.display='none'"
-                          class="w3-button w3-right"><i class="fas fa-times"></i></span>
                 </div>
             </div>
             <div id="stock"></div>
         </div>
-
-        <script type="text/javascript">
-
-            var data = [];
-
-            var container = document.getElementById('stock');
-            window.hot = new Handsontable(container, {
-                data: data,
-                colHeaders: ["Id","Title","Brand","Department","Stock","Price (£)"],
-                columns: [
-                    {
-                        data: 'Id',
-                        type: 'numeric',
-                        readOnly: true
-                    },
-                    {
-                        data: 'Title',
-                        type: 'text',
-                        readOnly: true
-                    },
-                    {
-                        data: 'Brand',
-                        type: 'text',
-                        readOnly: true
-                    },
-                    {
-                        data: 'DepartmentName',
-                        type: 'text',
-                        readOnly: true
-                    },
-                    {
-                        data: 'Stock',
-                        type: 'numeric'
-                    },
-                    {
-                        data: 'Price',
-                        type: 'numeric',
-                        numericFormat: {
-                            pattern: '0.00'
-                          }
-                    }
-                ],
-                columnSorting: true,
-                sortIndicator: true,
-                readOnlyCellClassName: 'w3-light-grey',
-                autoColumnSize: {
-                samplingRatio: 23
-                },
-                manualRowResize: true,
-                manualColumnResize: true,
-                manualRowMove: true,
-                contextMenu: ["copy","cut","redo","undo","---------","remove_row","remove_col","clear_column","alignment"],
-                stretchH: 'all',
-                autoWrapRow: true
-            });
-
-           @foreach (var product in Model.Products)
-            {
-                @:data.push({Id:"@product.Id",Title:"@product.Title",DepartmentName:"@product.Department.DepartmentName",Brand:"@product.ProductBrand.Brand",Stock:"@product.Stock",Price:"@product.Price"})
-            }
-
-            hot.updateSettings({data: data});
-
-        </script>
-        <script type="text/javascript">
-
-            function updateMessage(value) {
-
-                var messageContainer = document.getElementById('message');
-
-                messageContainer.innerText = value;
-                messageContainer.style.display = 'block';
-
-            }
-
-
-            function saveChanges() {
-                var hotData = hot.getData();
-
-                if(confirm("Are you sure you want to save changes?")) {
-
-                    openModal('spin');
-
-                    var jsonPacket = {Products: []};
-
-                    hotData.forEach(function(item, index){
-
-                        var jsonData = {};
-                        var columnName = 'Id';
-                        jsonData[columnName] = item[0];
-                        var columnName = 'Stock';
-                        jsonData[columnName] = item[4];
-                        var columnName = 'Price';
-                        jsonData[columnName] = item[5];
-
-                        jsonPacket.Products.push(jsonData);
-
-                    })
-
-                    $.ajax({
-                            url: "@Url.Action("UpdateStock")",
-                            method: "POST",
-                            data: JSON.stringify(jsonPacket),
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            success: function() {
-                                updateMessage("Change saved successfully.");
-                            }
-                        })
-
-                    closeModal('spin');
-
-                }
-
-            }
-        </script>
+    </div>
+</div>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/stockCode.min.js?Authorization"></script>
+<script type="text/javascript">
+   @foreach (var product in Model.Products)
+    {
+        @:data.push({Id:"@product.Id",Title:"@product.Title",DepartmentName:"@product.Department.DepartmentName",Brand:"@product.ProductBrand.Brand",Stock:"@product.Stock",Price:"@product.Price"})
+    }
+</script>

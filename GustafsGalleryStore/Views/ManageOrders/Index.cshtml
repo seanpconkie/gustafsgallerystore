@@ -2,48 +2,7 @@
 @{
     ViewData["Title"] = "Manage Orders";
 }
-<style>
-
-    /* Style the buttons that are used to open and close the accordion panel */
-    .accordion {
-        background-color: #eee;
-        color: #444;
-        cursor: pointer;
-        padding: 18px;
-        width: 100%;
-        text-align: left;
-        border: none;
-        outline: none;
-        transition: 0.4s;
-    }
-
-        /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-        .active, .accordion:hover {
-            background-color: #ccc;
-        }
-
-    /* Style the accordion panel. Note: hidden by default */
-
-    .panel {
-        padding: 0 18px;
-        background-color: white;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.2s ease-out;
-    }
-
-    .accordion:after {
-        content: '\02795'; /* Unicode character for "plus" sign (+) */
-        font-size: 13px;
-        color: #777;
-        float: right;
-        margin-left: 5px;
-    }
-
-    .active:after {
-        content: "\2796"; /* Unicode character for "minus" sign (-) */
-    }
-</style>
+<link type="text/css" rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/accordian.min.css?Authorization" />
 @*New Orders*@
 <button class="accordion">New Orders: <strong>@Model.NewOrders.Count</strong></button>
 <div class="panel">
@@ -56,7 +15,7 @@
                     <tr class="w3-light-grey">
                         <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/Orders/ViewOrder?id=@order.Id">@order.Id</a></th>
                         <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                        <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
+                        <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,35 +50,35 @@
         @foreach (var order in Model.AwaitingStock)
         {
 
-        <table class="w3-table w3-striped w3-bordered">
-            <thead>
-                <tr class="w3-light-grey">
-                    <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
-                    <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                    <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td>
-                        <h5>@order.OrderStatus.Status</h5>
-                        @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
-                        {
-                            <strong>Payment complete.</strong>
-                        }
-                        else
-                        {
-                            <strong>Awaiting payment confirmation.</strong>
-                        }
-                    </td>
-                    <td>
-                        <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>
-                    </td>
-                </tr>
+            <table class="w3-table w3-striped w3-bordered">
+                <thead>
+                    <tr class="w3-light-grey">
+                        <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
+                        <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
+                        <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <h5>@order.OrderStatus.Status</h5>
+                            @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
+                            {
+                                <strong>Payment complete.</strong>
+                            }
+                            else
+                            {
+                                <strong>Awaiting payment confirmation.</strong>
+                            }
+                        </td>
+                        <td>
+                            <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>
+                        </td>
+                    </tr>
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         }
     </div>
 </div>
@@ -131,35 +90,35 @@
         @foreach (var order in Model.OpenReturns)
         {
 
-        <table class="w3-table w3-striped w3-bordered">
-            <thead>
-                <tr class="w3-light-grey">
-                    <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
-                    <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                    <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td>
-                        <h5>@order.OrderStatus.Status</h5>
-                        @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
-                        {
-                            <strong>Payment complete.</strong>
-                        }
-                        else
-                        {
-                            <strong>Awaiting payment confirmation.</strong>
-                        }
-                    </td>
-                    <td>
-                        <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>
-                    </td>
-                </tr>
+            <table class="w3-table w3-striped w3-bordered">
+                <thead>
+                    <tr class="w3-light-grey">
+                        <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
+                        <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
+                        <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <h5>@order.OrderStatus.Status</h5>
+                            @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
+                            {
+                                <strong>Payment complete.</strong>
+                            }
+                            else
+                            {
+                                <strong>Awaiting payment confirmation.</strong>
+                            }
+                        </td>
+                        <td>
+                            <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>
+                        </td>
+                    </tr>
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         }
     </div>
 </div>
@@ -171,37 +130,37 @@
         @foreach (var order in Model.CancelledOrders)
         {
 
-        <table class="w3-table w3-striped w3-bordered">
-            <thead>
-                <tr class="w3-light-grey">
-                    <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
-                    <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                    <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <strong>Cancellation Requested: </strong><br />@order.CancellationRequestedDate.Value.ToString("F")
-                    </td>
-                    <td>
-                        <h5>@order.OrderStatus.Status</h5>
-                        @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
-                        {
-                            <strong>Payment complete.</strong>
-                        }
-                        else
-                        {
-                            <strong>Awaiting payment confirmation.</strong>
-                        }
-                    </td>
-                    <td>
-                        <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>
-                    </td>
-                </tr>
+            <table class="w3-table w3-striped w3-bordered">
+                <thead>
+                    <tr class="w3-light-grey">
+                        <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
+                        <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
+                        <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong>Cancellation Requested: </strong><br />@order.CancellationRequestedDate.Value.ToString("F")
+                        </td>
+                        <td>
+                            <h5>@order.OrderStatus.Status</h5>
+                            @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
+                            {
+                                <strong>Payment complete.</strong>
+                            }
+                            else
+                            {
+                                <strong>Awaiting payment confirmation.</strong>
+                            }
+                        </td>
+                        <td>
+                            <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>
+                        </td>
+                    </tr>
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         }
     </div>
 </div>
@@ -213,71 +172,49 @@
         @foreach (var order in Model.CompletedOrders)
         {
 
-        <table class="w3-table w3-striped w3-bordered">
-            <thead>
-                <tr class="w3-light-grey">
-                    <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
-                    <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
-                    <th style="width: 25%"><strong>Total: </strong><br />£@(order.OrderTotalPrice + order.DeliveryType.Price)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        @if (order.OrderCompleteDate != null)
-                        {
-                            <strong>Order Dispatched: </strong><br />@order.OrderCompleteDate.Value.ToString("F")<br />
-                        }
-                        @if (order.CancellationCompletedDate != null)
-                        {
-                            <strong>Cancellation Requested: </strong><br />@order.CancellationRequestedDate.Value.ToString("F")<br />
-                            <strong>Order Cancelled: </strong><br />@order.CancellationCompletedDate.Value.ToString("F")<br />
-                        }
-                    </td>
-                    <td>
-                        <h5>@order.OrderStatus.Status</h5>
-                        @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
-    {
-                    <strong>Payment complete.</strong>
-}
-else
-{
-                    <strong>Awaiting payment confirmation.</strong>
-}
-                    </td>
-                    <td>
-                        <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>
-                    </td>
-                </tr>
+            <table class="w3-table w3-striped w3-bordered">
+                <thead>
+                    <tr class="w3-light-grey">
+                        <th style="width: 25%"><strong>Order Number: </strong><br /><a href="/ManageOrders/ViewOrder?id=@order.Id">@order.Id</a></th>
+                        <th style="width: 50%"><strong>Order Placed: </strong><br />@order.OrderPlacedDate.Value.ToString("F")</th>
+                        <th style="width: 25%"><strong>Total: </strong><br />£@order.OrderTotalPrice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            @if (order.OrderCompleteDate != null)
+                            {
+                                <strong>Order Dispatched: </strong><br />@order.OrderCompleteDate.Value.ToString("F")<br />
+                            }
+                            @if (order.CancellationCompletedDate != null)
+                            {
+                                <strong>Cancellation Requested: </strong><br />@order.CancellationRequestedDate.Value.ToString("F")<br />
+                                <strong>Order Cancelled: </strong><br />@order.CancellationCompletedDate.Value.ToString("F")<br />
+                            }
+                        </td>
+                        <td>
+                            <h5>@order.OrderStatus.Status</h5>
+                            @if (order.PaymentStatus == "approved_by_network" || order.PaymentStatus == "approved")
+                            {
+                                <strong>Payment complete.</strong>
+                            }
+                            else
+                            {
+                                <strong>Awaiting payment confirmation.</strong>
+                            }
+                        </td>
+                        <td>
+                            <a href="/ManageOrders/ViewOrder?id=@order.Id" class="w3-button w3-block w3-round w3-dark-grey w3-margin-top" onclick="openModal('spin')">Process Order</a>
+                        </td>
+                    </tr>
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
         }
     </div>
 </div>
 
 <script>
-
-    var acc = document.getElementsByClassName("accordion");
-    var i;
-
-    for (i = 0; i < acc.length; i++) {
-      acc[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var panel = this.nextElementSibling;
-
-        if (panel.style.maxHeight){
-          panel.style.maxHeight = null;
-        } else {
-          panel.style.maxHeight = "100%";
-        }
-
-      });
-    }
-
-    // Open new orders panel
-    var first = acc[0].nextElementSibling;
-    acc[0].classList.toggle("active");
-    first.style.maxHeight = "100%";
-
+    var i,acc=document.getElementsByClassName("accordion");for(i=0;i<acc.length;i++)acc[i].addEventListener("click",function(){this.classList.toggle("active");var t=this.nextElementSibling;t.style.maxHeight?t.style.maxHeight=null:t.style.maxHeight="100%"});var first=acc[0].nextElementSibling;acc[0].classList.toggle("active"),first.style.maxHeight="100%";
 </script>

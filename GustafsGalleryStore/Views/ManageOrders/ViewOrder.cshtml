@@ -3,17 +3,7 @@
     ViewData["Title"] = "Process Order";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
-<style>
-
-    .tab-bar {
-        position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-        overflow-x: hidden; /* Disable horizontal scroll */
-    }
-
-    .tab {
-        display: none;
-    }
-</style>
+<link type="text/css" rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/tabs.min.css?Authorization" />
 <div class="w3-padding-64" id="main">
     <div class="w3-bar w3-dark-grey tab-bar">
         <button class="w3-bar-item w3-button testbtn w3-padding-16 gustaf-background-dark" onclick="openTab(event,'Summary')"><i class="fas fa-clipboard-list w3-margin-right"></i>Summary</button>
@@ -44,7 +34,7 @@
                 <p>Order Number: <strong>@Model.Order.Id</strong></p>
                 <p>Order Placed: <strong>@Model.Order.OrderPlacedDate.Value.ToString("F")</strong></p>
                 <p>Order Status: <strong>@Model.Order.OrderStatus.Status</strong></p>
-                <p>Order Total: <strong>£@(Model.Order.OrderTotalPrice + Model.Order.DeliveryType.Price)</strong></p>
+                <p>Order Total: <strong>£@Model.Order.OrderTotalPrice</strong></p>
                 @if (Model.Order.OrderStatus.Status == "Order Dispatched")
                 {
                     @if (Model.Order.OrderCompleteDate != null)
@@ -105,7 +95,7 @@
                         <div class="w3-half w3-row-padding">
                             <div class="from-group">
                                 <label asp-for="Order.PackageReference"></label>
-                                <input asp-for="Order.PackageReference" class="w3-input" onchange="updatePackageRef(this)" />
+                                <input asp-for="Order.PackageReference" class="w3-input" data-order-id="@Model.Order.Id" onchange="updatePackageRef(this)" />
                             </div>
                         </div>
                     </div>
@@ -127,7 +117,7 @@
                         <div class="w3-half w3-row-padding">
                             <div class="from-group">
                                 <label>Refund Amount</label>
-                                <input asp-for="ReturnAmount" class="w3-input" onchange="updateReturnAmount(this)" />
+                                <input asp-for="ReturnAmount" class="w3-input" data-order-id="@Model.Order.Id" onchange="updateReturnAmount(this)" />
                             </div>
                         </div>
                     </div>
@@ -187,7 +177,17 @@
         </div>
         <div class="w3-section w3-light-grey w3-padding-large">
             <div class="w3-bar">
-                <h4 class="w3-right" id="subtotal">Subtotal: £@Model.Order.OrderTotalPrice</h4>
+                <h4 class="w3-right" id="subtotal">Subtotal: £@Model.Order.OrderSubTotalPrice</h4>
+            </div>
+        </div>
+        <div class="w3-section w3-light-grey w3-padding-large">
+            <div class="w3-bar">
+                <h4 class="w3-right" id="subtotal">Delivery Charge: £@Model.Order.OrderTotalPostagePrice</h4>
+            </div>
+        </div>
+        <div class="w3-section w3-light-grey w3-padding-large">
+            <div class="w3-bar">
+                <h4 class="w3-right" id="subtotal">Order Total: £@Model.Order.OrderTotalPrice</h4>
             </div>
         </div>
     </div>
@@ -208,34 +208,36 @@
             <div class="w3-half w3-row-padding">
                 <div class="w3-section w3-padding-large">
                     <h4>Delivery Address</h4>
-                    @if (Model.Order.CustomerContact.BuildingNumber != "")
-                    {
-                        <span>@Model.Order.CustomerContact.BuildingNumber @Model.Order.CustomerContact.AddressLine1</span><br />
-                    }
-                    else
-                    {
-                        <span>@Model.Order.CustomerContact.AddressLine1</span><br />
-                    }
-                    @if (Model.Order.CustomerContact.AddressLine2 != "")
-                    {
-                        <span>@Model.Order.CustomerContact.AddressLine2</span><br />
-                    }
-                    @if (Model.Order.CustomerContact.PostTown != "")
-                    {
-                        <span>@Model.Order.CustomerContact.PostTown</span><br />
-                    }
-                    @if (Model.Order.CustomerContact.County != "")
-                    {
-                        <span>@Model.Order.CustomerContact.County</span><br />
-                    }
-                    @if (Model.Order.CustomerContact.Postcode != "")
-                    {
-                        <span>@Model.Order.CustomerContact.Postcode</span><br />
-                    }
-                    @if (Model.Order.CustomerContact.Country != "")
-                    {
-                        <span>@Model.Order.CustomerContact.Country</span><br />
-                    }
+
+                        @if (Model.Order.CustomerContact.BuildingNumber != "")
+                        {
+                            <p>@Model.Order.CustomerContact.BuildingNumber @Model.Order.CustomerContact.AddressLine1</p>
+                        }
+                        else
+                        {
+                            <p>@Model.Order.CustomerContact.AddressLine1</p>
+                        }
+                        @if (Model.Order.CustomerContact.AddressLine2 != "")
+                        {
+                            <p>@Model.Order.CustomerContact.AddressLine2</p>
+                        }
+                        @if (Model.Order.CustomerContact.PostTown != "")
+                        {
+                            <p>@Model.Order.CustomerContact.PostTown</p>
+                        }
+                        @if (Model.Order.CustomerContact.County != "")
+                        {
+                            <p>@Model.Order.CustomerContact.County</p>
+                        }
+                        @if (Model.Order.CustomerContact.Postcode != "")
+                        {
+                            <p>@Model.Order.CustomerContact.Postcode</p>
+                        }
+                        @if (Model.Order.CustomerContact.Country != "")
+                        {
+                            <p>@Model.Order.CustomerContact.Country</p>
+                        }
+
                 </div>
             </div>
         </div>
@@ -284,7 +286,7 @@
                 <h4>Delivery Details</h4>
                 <p>Delivery Company: <strong>@Model.Order.DeliveryType.DeliveryCompany.Company</strong></p>
                 <p>Delivery Type:  <strong>@Model.Order.DeliveryType.Type</strong></p>
-                <p>Delivery Price:  <strong>£@Model.Order.DeliveryType.Price</strong></p>
+                <p>Delivery Price Paid:  <strong>£@Model.Order.OrderTotalPostagePrice</strong></p>
                 <p>Package Reference:  <strong>@Model.Order.PackageReference</strong></p>
             </div>
         </div>
@@ -404,52 +406,7 @@
     var failure = "@Model.FailureMessage";
     var message = "@Model.StatusMessage";
     var success = "@Model.SuccessMessage";
-
-    if (failure != "")
-    {
-        toastr["warning"](failure, "Warning");
-    }
-
-    if (message != "")
-    {
-        toastr["info"](message, "Info");
-    }
-
-    if (success != "")
-    {
-        toastr["success"](success, "Success");
-    }
-
-// Tabs
-function openTab(evt, tabName) {
-    debugger;
-    var i;
-    var x = document.getElementsByClassName("tab");
-    for (i = 0; i < x.length; i++) {
-       x[i].style.display = "none";
-    }
-    var activebtn = document.getElementsByClassName("testbtn");
-    for (i = 0; i < activebtn.length; i++) {
-        activebtn[i].className = activebtn[i].className.replace(" gustaf-background-dark", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " gustaf-background-dark";
-  }
-
-function updatePackageRef(n) {
-    var alink = document.getElementById('dispatch');
-    var uri = "/ManageOrders/OrderDispatched?id=@Model.Order.Id&&packageReference=" + n.value;
-
-    alink.removeAttribute('href');
-    alink.setAttribute('href',uri);
-}
-    
-function updateReturnAmount(n) {
-    debugger;
-    var alink = document.getElementById('refund');
-    var uri = "/ManageOrders/CompleteReturn?id=@Model.Order.Id&&returnAmount=" + n.value;
-
-    alink.removeAttribute('href');
-    alink.setAttribute('href',uri);
-}
 </script>
+<script type="text/javascript" src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/manageOrdersCode.min.js?Authorization"></script>
+
+    <partial name="_messages" model="Model" />

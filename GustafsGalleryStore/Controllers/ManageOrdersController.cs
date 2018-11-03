@@ -106,15 +106,17 @@ namespace GustafsGalleryStore.Controllers
                                OrderHelper.StatusId(MasterStrings.OrderReturned, _context) + "," + 
                                OrderHelper.StatusId(MasterStrings.CancellationCompleted,_context) + ")";
 
-            var completed = _context.Orders.FromSql(searchTerm).ToList();
+            var completed = _context.Orders.FromSql(searchTerm).
+                                    Include(x => x.DeliveryType).
+                                    ToList();
 
             viewModel.CompletedOrders = completed;
 
             //clear old orders
-            DateTime date = DateTime.Now.AddDays(-30);
+            DateTime date30 = DateTime.Now.AddDays(-30);
 
             List<Order> orders = _context.Orders.
-                                    Where(x => x.OpenedDate < date).
+                                    Where(x => x.OpenedDate < date30).
                                     Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.Basket, _context)).
                                     ToList();
 
@@ -124,6 +126,23 @@ namespace GustafsGalleryStore.Controllers
 
                 _context.Remove(item);
 
+            }
+            // remove order id's from yesterday with no items
+            DateTime date1 = DateTime.Now.AddDays(-1);
+
+            orders = _context.Orders.
+                                    Where(x => x.OpenedDate < date1).
+                                    Where(x => x.OrderStatusId == OrderHelper.StatusId(MasterStrings.Basket, _context)).
+                                    Include(x => x.OrderItems).
+                                    ToList();
+
+            foreach (var item in orders)
+            {
+                if (item.OrderItems.Count == 0 || item.OrderItems == null)
+                {
+                    _context.RemoveRange(_context.OrderItems.Where(x => x.OrderId == item.Id));
+                    _context.Remove(item);
+                }
             }
 
             _context.SaveChanges();

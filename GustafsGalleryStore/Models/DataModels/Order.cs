@@ -9,6 +9,7 @@ namespace GustafsGalleryStore.Models.DataModels
         public long Id { get; set; }
         public decimal OrderTotalPrice { get; set; }
         public decimal OrderTotalPostagePrice { get; set; }
+        public decimal OrderSubTotalPrice { get; set; }
 
         public DateTime? OpenedDate { get; set; }
         [Display(Name = "Order Placed Date")]

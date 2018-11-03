@@ -85,9 +85,32 @@ namespace GustafsGalleryStore.Controllers
         {
             return View();
         }
-        public IActionResult Contact()
+        public IActionResult Contact(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
-            return View();
+            var viewModel = new ContactViewModel() { StatusMessage = statusMessage, SuccessMessage = successMessage, FailureMessage = failureMessage};
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Contact(ContactViewModel model)
+        {
+
+            if (string.IsNullOrWhiteSpace(model.Name) ||
+               string.IsNullOrWhiteSpace(model.Email) ||
+               string.IsNullOrWhiteSpace(model.Subject) ||
+               string.IsNullOrWhiteSpace(model.Message))
+            {
+                model.FailureMessage = "Please complete all fields.";
+
+                return View(model);
+            }
+
+            var messageText = string.Format("Message from {0}\n{1}", model.Email, model.Message);
+            await _emailSender.SendEmailAsync(MasterStrings.AdminEmail, model.Subject, messageText);
+
+            var redirectUrl = string.Format("/Home/Contact?successMessage=Your message '{0}' has been sent.", model.Subject);
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
+
         }
 
         public IActionResult ComingSoon()

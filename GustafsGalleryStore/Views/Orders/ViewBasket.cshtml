@@ -62,64 +62,11 @@
     </div>
     <div class="w3-section w3-light-grey w3-padding-large">
         <div class="w3-bar">
-            <h4 class="w3-right" id="subtotal">Subtotal: £@Model.Basket.OrderTotalPrice</h4>
+            <h4 class="w3-right" id="subtotal">Subtotal: £@Model.Basket.OrderSubTotalPrice</h4>
         </div>
     </div>
     <div class="w3-bar">
         <a href="/Checkout/Index?id=@Model.Basket.Id" class="w3-button w3-round w3-dark-grey" onclick="openModal('spin')">Procced to Checkout</a>
     </div>
 </div>
-<script>
-
-
-
-    function updateBasket(id, productId) {
-
-        var basketCookie = readCookie('gustaf-cookie-basket');
-        var orderId = 0;
-        var input = document.getElementById(productId);
-        var subtotal = document.getElementById('subtotal');
-
-        // do we have a cookie?
-        if (basketCookie != null) {
-            orderId = basketCookie
-        }
-
-        var jsonPacket = {};
-
-        jsonPacket["Id"] = id;
-        jsonPacket["ProductId"] = productId;
-        jsonPacket["OrderId"] = orderId;
-        jsonPacket["Quantity"] = input.value;
-
-        $.ajax({
-                url: "/Orders/UpdateItem",
-                method: "POST",
-                data: JSON.stringify(jsonPacket),
-                contentType: "application/json; charset=utf-8",
-                async: false,
-                success: function(data) {
-                    debugger;
-                    // update subtotal
-                    subtotal.innerHTML = 'Subtotal: £' + data;
-
-                    // update basket counter
-
-                    $.ajax({
-                        type: "GET",
-                        url: '/Orders/GetBasketCount?id=' + orderId,
-                        success: function (data) {
-                            var badge = document.getElementById('badge');
-                            badge.innerHTML = data;
-                        }
-                    });
-
-                    toastr["success"]("Your basket has been updated", "Success");
-                    
-                },
-                error: function(error){
-                }
-            });
-
-    }
-</script>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/updateBasketCode.min.js?Authorization"></script>

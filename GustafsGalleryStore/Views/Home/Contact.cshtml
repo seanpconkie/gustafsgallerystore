@@ -1,20 +1,75 @@
-﻿@{
+﻿@model GustafsGalleryStore.Models.ViewModels.ContactViewModel
+@{
     ViewData["Title"] = "Contact Gustaf";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
-        <br />
-        <div class="w3-container w3-padding-64 animal-fayre-background">
-            <h2>@ViewData["Title"]</h2>
-            <div class="w3-large w3-margin-bottom">
-                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/contact.html"></div>
-            </div>
-            <!-- Add Google Maps -->
-            <div id="map" class="w3-round w3-opacity w3-hover-opacity-off"></div>   
+<style>
 
+    /* Style the input container */
+    .input-container {
+        display: flex;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    /* Style the form icons */
+    .icon {
+        padding: 10px;
+        min-width: 50px;
+        text-align: center;
+    }
+
+    /* Style the input fields */
+    .input-field {
+        width: 100%;
+        outline: none;
+        border: none
+    }
+</style>
+<br />
+<div class="w3-container w3-padding-64">
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+    <div class="w3-large w3-margin-bottom">
+
+        <div class="w3-content">
+            <form action="/Home/Contact" method="post" id="message-form">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="input-container w3-input w3-light-grey">
+                    <i class="fas fa-user icon fa-fw"></i>
+                    <input class="input-field w3-light-grey" asp-for="Name" type="text" placeholder="Your Name">
+                </div>
+                <div class="input-container w3-input w3-light-grey">
+                    <i class="fas fa-at icon fa-fw"></i>
+                    <input class="input-field w3-light-grey" asp-for="Email" type="text" placeholder="Your Email">
+                </div>
+                <div class="input-container w3-input w3-light-grey">
+                    <i class="fas fa-info icon fa-fw"></i>
+                    <input class="input-field w3-light-grey" asp-for="Subject" type="text" placeholder="Subject">
+                </div>
+                <textarea class="w3-input w3-margin-bottom w3-light-grey" asp-for="Message" style="height:150px" placeholder="What's on your mind?"></textarea>
+                <div class="w3-section w3-row w3-half">
+                    <div class="w3-half w3-row-padding">
+                        <button type="reset" class="w3-button w3-dark-grey w3-round w3-block"><i class="fas fa-times w3-margin-right"></i>Cancel</button>
+                    </div>
+                    <div class="w3-half w3-row-padding">
+                        <button type="submit" class="w3-button w3-light-grey w3-round w3-block"><i class="fas fa-paper-plane w3-margin-right"></i>Send</button>
+                    </div>
+
+                </div>
+            </form>
         </div>
-        <!-- google maps key -->
-        <script>
-            function initMap() {
+        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/contact.html"></div>
+
+
+    </div>
+    <!-- Add Google Maps -->
+    <div id="map" class="w3-round w3-opacity w3-hover-opacity-off"></div>
+</div>
+<partial name="_messages" model="Model" />
+<!-- google maps key -->
+<script>
+function initMap() {
                 var uluru = {lat: 55.651784, lng: -3.1902352};
                 var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 10,
@@ -24,6 +79,5 @@
                 position: uluru,
                 map: map
                 });
-            }
-        </script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOfCiFMuWl_6DzM4BsVFPYZ7ZvWmHcKR0&callback=initMap"></script>
+            }</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOfCiFMuWl_6DzM4BsVFPYZ7ZvWmHcKR0&callback=initMap"></script>

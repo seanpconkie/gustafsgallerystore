@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Manage Staff";
 }
-
 <div>
     <div class="w3-bar w3-padding">
         <div asp-validation-summary="All" class="text-danger w3-bar-item"></div>
@@ -30,18 +29,6 @@
         </tbody>
     </table>
 </div>
+<partial name="_messages" model="Model" />
 <script>$("#staff").DataTable();</script>
-<script>
-    $(document).ready(function () {
-        $("#staff").on("click", ".delete", function() {
-            var button = $(this);
-
-            if (confirm ("Are you sure you want to delete this user?")) {
-                window.location.href="/ManageStaff/DeleteStaff/?id=" + button.attr("data-user-id");
-            }
-    
-        })
-    
-    });
-</script>
-
+<script>$(document).ready(function(){$("#staff").on("click",".delete",function(){var e=$(this);confirm("Are you sure you want to delete this user?")&&(window.location.href="/ManageStaff/DeleteStaff/?id="+e.attr("data-user-id"))})});</script>

@@ -129,45 +129,4 @@
     </div>
 </div>
 <partial name="_AddItem" />
-<script>
-    $(document).ready(function () {
-        $("#upload").click(function () {
-            var formData = new FormData();
-            var totalFiles = document.getElementById("filePassport").files.length;
-
-            for (var i = 0; i < totalFiles; i++) {
-                var file = document.getElementById("filePassport").files[i];
-                formData.append("FileUpload", file);
-
-            }
-
-            $.ajax({
-                type: "POST",
-                url: '/api/UploadFile/',
-                data: formData,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    for (var i = 0; i < totalFiles; i++) {
-                            var file = document.getElementById("filePassport").files[i];
-                            var fileList = document.getElementById("fileList");
-                            var newFile = document.createElement("option");
-
-                            newFile.value = file;
-                            newFile.text = file;
-                            newFile.selected;
-
-                            fileList.appendChild(newFile);
-
-                        }
-                },
-
-                error: function (error) {
-                    alert("error");
-                }
-            });
-        });
-    });
-
-</script>
+<script type="text/javascript" src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/pictureUpload.min.js?Authorization"></script>

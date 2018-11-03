@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using GustafsGalleryStore.Areas.Identity.Data;
+using GustafsGalleryStore.Models.ViewModels;
 
 namespace GustafsGalleryStore.Areas.Identity.Pages.Account
 {
@@ -45,6 +46,13 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
+            public string Forename { get; set; }
+
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
+            public string Surname { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -95,7 +103,9 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
                 {
                     Input = new InputModel
                     {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        Forename = info.Principal.FindFirstValue(ClaimTypes.GivenName),
+                        Surname = info.Principal.FindFirstValue(ClaimTypes.Surname)
                     };
                 }
                 return Page();
@@ -115,7 +125,12 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { 
+                    UserName = Input.Email, 
+                    Email = Input.Email, 
+                    Forename = Input.Forename,
+                    Surname = Input.Surname
+                };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

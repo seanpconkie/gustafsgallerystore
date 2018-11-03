@@ -49,7 +49,17 @@
     </div>
     <div class="w3-section w3-light-grey w3-padding-large">
         <div class="w3-bar">
-            <h4 class="w3-right" id="subtotal">Subtotal: £@Model.Basket.OrderTotalPrice</h4>
+            <h4 class="w3-right" id="subtotal">Subtotal: £@Model.Basket.OrderSubTotalPrice</h4>
+        </div>
+    </div>
+    <div class="w3-section w3-light-grey w3-padding-large">
+        <div class="w3-bar">
+            <h4 class="w3-right" id="subtotal">Delivery Charge: £@Model.Basket.OrderTotalPostagePrice</h4>
+        </div>
+    </div>
+    <div class="w3-section w3-light-grey w3-padding-large">
+        <div class="w3-bar">
+            <h4 class="w3-right" id="subtotal">Order Total: £@Model.Basket.OrderTotalPrice</h4>
         </div>
     </div>
 </div>

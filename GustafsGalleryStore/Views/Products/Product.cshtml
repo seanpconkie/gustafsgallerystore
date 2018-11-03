@@ -2,10 +2,11 @@
 @{
     ViewData["Title"] = Model.Product.Title;
 }
-
+<meta name="title" content="@Model.Product.Title"/>
+<meta name="keywords" content="@Model.Product.Title, @Model.Product.ProductBrand.Brand, gustafs gallery, gustafs studio, gustafs, gustaf" />
+<meta name="description" content="@Model.Product.Description">
 <!-- Page content -->
 <div class="w3-padding-large w3-margin-top w3-margin-bottom"> 
-    <div id="alertDiv"></div>
     <div class="w3-content">
         <header>
             <h2>@Model.Product.Title</h2>
@@ -56,78 +57,4 @@
         </div>
     </div>
 </div>
-<script>
-
-    function addToBasket(id) {
-
-        var basketCookie = readCookie('gustaf-cookie-basket');
-        var orderId = 0;
-
-        // do we have a cookie?
-        if (basketCookie != null) {
-            orderId = basketCookie
-        }
-
-        var jsonPacket = {};
-
-        jsonPacket["ProductId"] = id;
-        jsonPacket["OrderId"] = orderId;
-        jsonPacket["Quantity"] = 1;
-
-        var size = document.getElementById('size');
-        var sizeOption = size.options[size.selectedIndex];
-        var sizeValue = sizeOption.text;
-
-        if (sizeValue == "" || sizeValue == "Select Size")
-        {
-            //error message
-            toastr["warning"]("Size must be selected.", "Warning");
-            closeModal('spin');
-            return;
-        }
-    
-        jsonPacket["Size"] = sizeValue;
-
-        var colour = document.getElementById('colour');
-        var colourOption = colour.options[colour.selectedIndex];
-        var colourValue = colourOption.text;
-
-        if (colourValue == "" || colourValue == "Select Colour")
-        {
-            //error message
-            toastr["warning"]("Colour must be selected.", "Warning");
-            closeModal('spin');
-            return;
-        }
-
-        jsonPacket["Colour"] = colourValue;
-
-        $.ajax({
-                url: "/Orders/AddToBasket",
-                method: "POST",
-                data: JSON.stringify(jsonPacket),
-                contentType: "application/json; charset=utf-8",
-                async: false,
-                success: function() {
-
-                    // update basket counter
-
-                    $.ajax({
-                        type: "GET",
-                        url: '/Orders/GetBasketCount?id=' + orderId,
-                        success: function (data) {
-                            var badge = document.getElementById('badge');
-                            badge.innerHTML = data;
-                        }
-                    });
-
-                },
-                error: function(error){
-                }
-            });
-
-        toastr["success"]("Your basket has been updated", "Success");
-
-    }
-
-</script>
+<script src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/addToBasketCode.min.js?Authorization"></script>

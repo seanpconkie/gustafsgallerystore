@@ -121,7 +121,7 @@ namespace GustafsGalleryStore.Controllers
             }
 
             // DeliveryType?
-            if (model.Basket.DeliveryType.Id == 0)
+            if (model.Basket.DeliveryType == null)
             {
                 isValid = false;
                 model.StatusMessage += "Delivery method required.";
@@ -148,6 +148,13 @@ namespace GustafsGalleryStore.Controllers
 
                 inDb.DeliveryType = deliveryType;
 
+                var country = model.Basket.CustomerContact.Country;
+
+                if (country == "Please Select")
+                {
+                    country = "";
+                }
+
                 var contact = new CustomerContact()
                 {
                     BuildingNumber = model.Basket.CustomerContact.BuildingNumber,
@@ -156,7 +163,7 @@ namespace GustafsGalleryStore.Controllers
                     PostTown = model.Basket.CustomerContact.PostTown,
                     County = model.Basket.CustomerContact.County,
                     Postcode = model.Basket.CustomerContact.Postcode,
-                    Country = model.Basket.CustomerContact.Country,
+                    Country = country,
                     MobilePhone = model.Basket.CustomerContact.MobilePhone,
                     WorkPhone = model.Basket.CustomerContact.WorkPhone,
                     OtherPhone = model.Basket.CustomerContact.OtherPhone,
@@ -175,7 +182,9 @@ namespace GustafsGalleryStore.Controllers
                 }
 
                 inDb.CustomerContact = contact;
-                inDb.OrderTotalPrice = orderTotalPrice + inDb.DeliveryType.Price;
+                inDb.OrderTotalPostagePrice = inDb.DeliveryType.Price;
+                inDb.OrderSubTotalPrice = orderTotalPrice;
+                inDb.OrderTotalPrice = inDb.OrderSubTotalPrice + inDb.DeliveryType.Price;
 
                 // create charge
                 if (!string.IsNullOrWhiteSpace(model.StripeToken))
@@ -236,7 +245,7 @@ namespace GustafsGalleryStore.Controllers
                     // process paypal
 
                     // create charge
-                    var createdPayment = PayPalHelper.CreatePayment(model.Basket.Id, inDb.OrderItems, inDb.DeliveryType.Price, _context);
+                    var createdPayment = PayPalHelper.CreatePayment(model.Basket.Id, inDb.OrderItems, inDb.OrderTotalPostagePrice, _context);
                     var redirect = "";
 
                     inDb.PayPalPaymentId = createdPayment.id;
@@ -264,25 +273,14 @@ namespace GustafsGalleryStore.Controllers
 
             }
 
-            model.Basket = OrderHelper.GetOrder(model.Basket.Id, _context);
-
-            model.DeliveryTypes = _context.DeliveryTypes.
-                                Where(x => x.Id > 0).
-                                Include(x => x.DeliveryCompany).
-                                ToList();
-            model.Contacts = _context.CustomerContacts.
-                                Where(x => x.UserId == user.Id).
-                               ToList();
-
-            return View(model);
+            return ControllerHelper.RedirectToLocal(this,string.Format("/Checkout?id={0}&&failureMessage={1}", model.Basket.Id, model.StatusMessage));
 
         }
 
         public IActionResult OrderPlaced (long id)
         {
-            var order = OrderHelper.GetOrder(id, _context);
-
-            return View(order);
+            var viewModel = new CheckoutViewModel() { Basket = OrderHelper.GetOrder(id, _context) };
+            return View(viewModel);
         }
 
         public async Task<IActionResult> ThreeDSecure(string source, bool livemode, string client_secret)

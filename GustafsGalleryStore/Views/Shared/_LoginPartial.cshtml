@@ -43,7 +43,7 @@
     @*small page login*@
     <div class="w3-hide-large w3-hide-medium">
         <a asp-area="Identity" asp-page="/Account/Manage/Index" class="w3-bar-item w3-button" onclick="openModal('spin');"><i class="fa fa-user fa-fw w3-margin-right"></i>Hello&nbsp;@user.Forename!&nbsp;</a>
-        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="w3-bar-block">
+        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="w3-bar-block" onclick="openModal('spin')">
             <button type="submit" class="w3-bar-item w3-button w3-padding-large"><i class="fas fa-sign-out-alt fa-fw w3-margin-right"></i>Not @user.Forename? Logout.</button>
         </form>
         <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="w3-bar-item w3-button w3-padding-large" onclick="openModal('spin')"><i class="fas fa-user fa-fw w3-margin-right"></i>Your Account</a>
@@ -62,13 +62,13 @@
 else
 {
     <div class="w3-hide-small">
-        <form asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="w3-bar-block w3-right">
+        <form asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="get" class="w3-bar-block w3-right" onclick="openModal('spin')">
             <div class="w3-dropdown-hover">
                 <button class="dropbtn" type="submit"><i class="fa fa-sign-in-alt w3-margin-right"></i>Login</button>
             </div>
         </form>
     </div>
     <div class="w3-hide-large w3-hide-medium">
-        <a asp-area="Identity" asp-page="/Account/Login" class="w3-bar-item w3-button"><i class="fa fa-sign-in-alt fa-fw w3-margin-right"></i>Login</a>
+        <a asp-area="Identity" asp-page="/Account/Login" class="w3-bar-item w3-button" onclick="openModal('spin')"><i class="fa fa-sign-in-alt fa-fw w3-margin-right"></i>Login</a>
     </div>
 }

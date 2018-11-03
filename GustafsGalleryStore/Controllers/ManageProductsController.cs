@@ -59,15 +59,20 @@ namespace GustafsGalleryStore.Controllers
         public string StatusMessage { get; set; }
 
         // GET: /<controller>/
-        public IActionResult Index(string statusMessage = null, string successMessage = null, string failureMessage = null)
+        public IActionResult Index(List<string> filterBrand = null,
+                                   List<string> filterDepartment = null,
+                                   string statusMessage = null,
+                                   string successMessage = null,
+                                   string failureMessage = null)
         {
-            var viewModel = new ProductListViewModel
+            var viewModel = GetProducts(filterBrand, filterDepartment);
+
+            if(!string.IsNullOrWhiteSpace(viewModel.FailureMessage))
             {
-                Products = _context.Products.Include(x => x.ProductBrand).Include(x => x.Department).ToList(),
-                StatusMessage = statusMessage,
-                SuccessMessage = successMessage,
-                FailureMessage = failureMessage
-            };
+                viewModel.FailureMessage = failureMessage;
+                viewModel.SuccessMessage = successMessage;
+                viewModel.StatusMessage = statusMessage;
+            }
 
             return View(viewModel);
         }
@@ -191,11 +196,11 @@ namespace GustafsGalleryStore.Controllers
                     //Create Product
                     _context.Add(input.Product);
 
-                    StatusMessage = "Product added";
+                    input.SuccessMessage = "Product added";
 
                     _context.SaveChanges();
 
-                    return ControllerHelper.RedirectToLocal(this,"/ManageProducts");
+                    return ControllerHelper.RedirectToLocal(this,string.Format("/ManageProducts?successMessage={0}",input.SuccessMessage));
                 }
                 catch (System.Exception ex)
                 {
@@ -251,7 +256,6 @@ namespace GustafsGalleryStore.Controllers
 
             bool modelValid = true;
             decimal priceComparison = 0;
-
 
             if (string.IsNullOrWhiteSpace(input.Product.Title) ||
                 input.Product.Price == priceComparison ||
@@ -392,11 +396,11 @@ namespace GustafsGalleryStore.Controllers
                     //update Product
                     _context.Update(inDb);
 
-                    StatusMessage = "Product updated";
+                    input.SuccessMessage = "Product updated";
 
                     _context.SaveChanges();
 
-                    return ControllerHelper.RedirectToLocal(this,"/ManageProducts");
+                    return ControllerHelper.RedirectToLocal(this,string.Format("/ManageProducts?successMessage={0}", input.SuccessMessage));
                 }
                 catch (System.Exception ex)
                 {
@@ -415,21 +419,23 @@ namespace GustafsGalleryStore.Controllers
         }
 
         [HttpGet]
-        public IActionResult Stock(string statusMessage = null, string successMessage = null, string failureMessage = null)
+        public IActionResult Stock(List<string> filterBrand = null,
+                                   List<string> filterDepartment = null,
+                                   string statusMessage = null,
+                                   string successMessage = null,
+                                   string failureMessage = null)
         {
-            var viewModel = new ProductListViewModel()
+            var viewModel = GetProducts(filterBrand, filterDepartment);
+
+            if (!string.IsNullOrWhiteSpace(viewModel.FailureMessage))
             {
-                Products = _context.Products.
-                                Include(p => p.ProductBrand).
-                                Include(p => p.Department).
-                                ToList(),
-                SuccessMessage = successMessage,
-                StatusMessage = statusMessage,
-                FailureMessage = failureMessage
-            };
+                viewModel.FailureMessage = failureMessage;
+                viewModel.SuccessMessage = successMessage;
+                viewModel.StatusMessage = statusMessage;
+            }
+
             return View(viewModel);
         }
-
 
         [HttpGet]
         public IEnumerable<Product> GetStock()
@@ -624,6 +630,138 @@ namespace GustafsGalleryStore.Controllers
             }
 
             return productCode;
+        }
+
+        private ProductListViewModel GetProducts(List<string> filterBrand = null, List<string> filterDepartment = null)
+        {
+            var output = new ProductListViewModel()
+            {
+                Brands = _context.ProductBrands.OrderBy(x => x.Brand).ToList(),
+                Departments = _context.Departments.OrderBy(x => x.DepartmentName).ToList(),
+            };
+            var products = new List<Product>();
+            var where = "";
+            var searchTerm = "select * from products where ";
+
+            if (filterBrand != null && filterBrand.Count > 0)
+            {
+                foreach (var brand in filterBrand)
+                {
+                    if (brand.ToLower().IndexOf("delete", System.StringComparison.CurrentCulture) > -1 ||
+                        brand.ToLower().IndexOf("update", System.StringComparison.CurrentCulture) > -1 ||
+                        brand.ToLower().IndexOf("insert", System.StringComparison.CurrentCulture) > -1 ||
+                        brand.ToLower().IndexOf("create", System.StringComparison.CurrentCulture) > -1 ||
+                        brand.ToLower().IndexOf("drop", System.StringComparison.CurrentCulture) > -1
+                       )
+                    {
+                        output.FailureMessage = "Filter not available.";
+                        return output;
+                    }
+
+                    if (where.Length == 0)
+                    {
+                        where = " productbrandid in ( ";
+                    }
+                    else
+                    {
+                        where += ",";
+                    }
+
+                    var inDb = _context.ProductBrands.Where(x => x.Brand == brand).SingleOrDefault();
+                    if (inDb != null)
+                    {
+                        where += inDb.Id;
+                    }
+                }
+
+                searchTerm += where + ")";
+            }
+
+            if (where.Length > 0 && filterDepartment != null && filterDepartment.Count > 0)
+            {
+                searchTerm += " and ";
+            }
+
+            if (filterDepartment != null && filterDepartment.Count > 0)
+            {
+                foreach (var dept in filterDepartment)
+                {
+                    if (dept.ToLower().IndexOf("delete", System.StringComparison.CurrentCulture) > -1 ||
+                        dept.ToLower().IndexOf("update", System.StringComparison.CurrentCulture) > -1 ||
+                        dept.ToLower().IndexOf("insert", System.StringComparison.CurrentCulture) > -1 ||
+                        dept.ToLower().IndexOf("create", System.StringComparison.CurrentCulture) > -1 ||
+                        dept.ToLower().IndexOf("drop", System.StringComparison.CurrentCulture) > -1
+                       )
+                    {
+                        output.FailureMessage = "Filter not available.";
+                        return output;
+                    }
+
+                    if (where.Length == 0)
+                    {
+                        where = " departmentid in ( ";
+                    }
+                    else
+                    {
+                        where += ",";
+                    }
+
+                    var inDb = _context.Departments.Where(x => x.DepartmentName == dept).SingleOrDefault();
+                    if (inDb != null)
+                    {
+                        where += inDb.Id;
+                    }
+                }
+
+                searchTerm += where + ")";
+            }
+
+            if (where.Length > 0)
+            {
+                products = _context.Products.
+                                   FromSql(searchTerm).
+                                   Include(p => p.Department).
+                                   Include(p => p.ProductBrand).
+                                   Include(p => p.ProductSizes).
+                                   Include(p => p.ProductImages).
+                                   Include(p => p.ProductColours).
+                                   OrderBy(x => x.Stock).
+                                   ToList();
+            }
+            else
+            {
+                products = _context.Products.
+                                   Include(p => p.Department).
+                                   Include(p => p.ProductBrand).
+                                   Include(p => p.ProductSizes).
+                                   Include(p => p.ProductImages).
+                                   Include(p => p.ProductColours).
+                                   OrderBy(x => x.Stock).
+                                   ToList();
+            }
+
+            output.Products = products;
+
+            if (filterBrand != null)
+            {
+                output.FilteredBrands = filterBrand;
+            }
+            else
+            {
+                output.FilteredBrands = new List<string>();
+            }
+
+            if (filterDepartment != null)
+            {
+                output.FilteredDepartments = filterDepartment;
+            }
+            else
+            {
+                output.FilteredDepartments = new List<string>();
+            }
+
+            return output;
+
         }
 
         #endregion

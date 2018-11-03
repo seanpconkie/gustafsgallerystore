@@ -3,8 +3,8 @@ namespace GustafsGalleryStore.Models.ViewModels
 {
     public class SiteViewModel
     {
-        public string Type { get; set; }
-        public string Value { get; set; }
-
+        public string StatusMessage { get; set; }
+        public string FailureMessage { get; set; }
+        public string SuccessMessage { get; set; }
     }
 }
