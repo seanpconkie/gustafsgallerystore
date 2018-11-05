@@ -64,26 +64,27 @@ namespace GustafsGalleryStore.Helpers
         public const string PayPalResultCancelled = "cancelled";
 
         // Keys
-        public const string PayPalClientId = "";
-        public const string PayPalSecretKey = "";
-        public const string AWSAccessKeyId = "";
-        public const string AWSSecretAccessKey = "";
-        public const string StripeAPIKey = "";
-        public const string FacebookApiId = "";
-        public const string FacebookSecretKey = "";
-        public const string TwitterApiId = "";
-        public const string TwitterSecrectKey = "";
-        public const string GoogleApiId = "";
-        public const string GoogleSecretKey = "";
-        public const string MicrosoftApiId = "";
-        public const string MicrosoftSecretKey = "";
+        public const string PayPalClientId = "AXRaNvump6mx3zy8loWWiIw4IUz8OUvrOCJ7Qaty0aTdvUoq__auCnBCWUfNZlmqtUNkbJ-QSqOJDZA4";
+        public const string PayPalSecretKey = "EKqTSqu8MWrUvJZRntlG4Ebjs5zblDHMHrrJjIALBb7RXvYCkvMAfZl_SI9Qrp2TufUVqULeqpTMqNpN";
+        public const string AWSAccessKeyId = "AKIAIEBTYTPTKUC66NJQ";
+        public const string AWSSecretAccessKey = "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";
+        public const string StripeAPIKey = "sk_test_wlYdvSxHRwrZE8iiuKKLRxNf";
+        public const string StripeSecretKey = "sk_live_88Yc7e93OFQ1UMuQxB7iLNgz";
+        public const string FacebookApiId = "189663948589331";
+        public const string FacebookSecretKey = "921207a8f82827ab4f69e1e32a787cf2";
+        public const string TwitterApiId = "7Bw4XbBuRFhAyfg2BbO3d02wV";
+        public const string TwitterSecrectKey = "akgz0ILt78gDCJLexfQL0itqxPwJZtHnHV1pNNlvqokAPRlVvB";
+        public const string GoogleApiId = "49399212014-crc4ddarkc39lrh9tp5h65769v3qqk84.apps.googleusercontent.com";
+        public const string GoogleSecretKey = "Y8SjjlNt0Cj3oIaLXR2VcHvs";
+        public const string MicrosoftApiId = "b15f2127-3ee6-400c-9d6d-b0398248d884";
+        public const string MicrosoftSecretKey = "svjrIK47_ejwCDGME370#_$";
         public const string InstagramApiId = "";
         public const string InstagramSecretKey = "";
         public const string YahooApiId = "";
         public const string YahooSecretKey = "";
-        public const string LinkedInApiId = "";
-        public const string LinkedInSecretKey = "";
-        public const string GitHubApiId = "";
-        public const string GithubSecretKey = "";
+        public const string LinkedInApiId = "77duvjy3qpkz35";
+        public const string LinkedInSecretKey = "JRrRjPCOStS1vj97";
+        public const string GitHubApiId = "bf052c33dd428f904f0b";
+        public const string GithubSecretKey = "b0bf8cdb8160809f24c74d977e13388dd831d1be";
     }
 }
