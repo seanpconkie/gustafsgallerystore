@@ -79,7 +79,10 @@ namespace GustafsGalleryStore.Helpers
             var order = context.Orders.
                             Where(x => x.Id == id).
                             SingleOrDefault();
-
+            if (order == null)
+            {
+                return order;
+            }
             order.OrderItems = context.OrderItems.
                                     Where(x => x.OrderId == id).
                                     ToList();
@@ -196,24 +199,24 @@ namespace GustafsGalleryStore.Helpers
         {
             var newOrder = context.Orders.
                                 Where(x => x.Id == id).
-                                Include(x => x.OrderItems).
                                 SingleOrDefault();
 
             var userOrders = context.Orders.
                                 Where(x => x.UserId == userId).
                                 Where(x => x.Id != id).
                                 Where(x => x.OrderStatusId == StatusId("Basket", context)).
-                                Include(x => x.OrderItems).
                                 ToList();
 
             foreach (var order in userOrders)
             {
+                var orderItems = context.OrderItems.
+                                        Where(x => x.OrderId == order.Id)
+                                        .ToList();
 
-                if (order.OrderItems.Count > 0)
+                if (orderItems.Count > 0)
                 {
-                    foreach (var item in order.OrderItems)
+                    foreach (var item in orderItems)
                     {
-                        order.OrderItems.Add(item);
 
                         context.Remove(item);
                     }

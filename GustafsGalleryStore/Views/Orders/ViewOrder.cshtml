@@ -3,10 +3,10 @@
     ViewData["Title"] = "Order " + Model.Basket.Id;
     Layout = "/Views/Shared/_Layout.cshtml";
 }
-<div class="w3-content w3-container w3-padding-64" id="main">
+<div class="w3-container w3-padding-64">
     <div id="alertDiv"></div>
     <div class="w3-section w3-light-grey w3-padding-large">
-        <table style="width: 100%">
+        <table class="w3-hide-small" style="width: 100%">
             <thead>
                 <tr>
                     <th class="w3-quarter"></th>
@@ -46,6 +46,37 @@
         {
             <h4>Your order is empty.</h4>
         }
+        <div class="w3-hide-medium w3-hide-large">
+            @foreach( var item in Model.Basket.OrderItems)
+            {
+                <div class="w3-row">
+                    <div>
+                        <h3>@item.Product.Title</h3>
+                        @if (item.Product.ProductImages.Count > 0)
+                        {
+                            <img class="w3-hover-opacity-off w3-opacity" style="max-width: 100%;" src="@item.Product.ProductImages[0].Uri" />
+                        }
+                    </div>
+                    <table class="w3-center" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>Size</th>
+                                <th>Quantity</th>
+                                <th>Colour</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><p>@item.Size.Value</p></td>
+                                <td><p><input id="@item.ProductId" class="w3-center" value="@item.Quantity" style="max-width: 40px;" type="number" /></p></td>
+                                <td><p>@item.Colour.Value</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="w3-button w3-round w3-block w3-dark-grey" onclick="updateBasket(@item.Id,@item.ProductId)">Update</button>
+                </div>
+            }
+        </div>
     </div>
     <div class="w3-section w3-light-grey w3-padding-large">
         <div class="w3-bar">
