@@ -14,7 +14,6 @@
             <div class="form-group">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <label asp-for="Input.Title"></label>
-
                 <div class="custom-select" style="width:100%;">
                     @Html.DropDownListFor(m => m.Input.Title, Model.Input.Titles, "Select Title", new { @class = "w3-input", required = "" })
                 </div>
@@ -45,16 +44,20 @@
                 <input asp-for="Input.ConfirmPassword" class="w3-input" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+            <script src='https://www.google.com/recaptcha/api.js?onload=renderRecaptcha&render=explicit"'></script>
+            <p><div id="ReCaptchContainer"></div></p>
+            <input id="recaptchaResponse" asp-for="Input.RecaptchaResponse" type="text" hidden />
             <p>
                 <span>By regitering you are confirming you accept the <a href="/Home/TermsAndConditions" target="_blank">Terms and Conditions</a> and <a href="/Home/Privacy" target="_blank">Privacy Policy</a>.</span>
             </p>
             <p>
-                <button type="submit" class="w3-button w3-round w3-block w3-dark-grey">Register</button>
+                <button type="submit" class="w3-button w3-round w3-block w3-dark-grey" onclick="openModal('spin')">Register</button>
             </p>
         </form>
     </div>
 </div>
 
 @section Scripts {
+    <script type="text/javascript" src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/recaptchCode.min.js?Authorization"></script>
     <partial name="_ValidationScriptsPartial" />
 }

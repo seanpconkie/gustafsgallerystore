@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GustafsGalleryStore.Areas.Identity.Data;
 using GustafsGalleryStore.Models;
 using GustafsGalleryStore.Models.DataModels;
+using GustafsGalleryStore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -75,6 +76,10 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
 
             [Required]
             public string Title { get; set; }
+            public string RecaptchaResponse { get; set; }
+            public string StatusMessage { get; set; }
+            public string FailureMessage { get; set; }
+            public string SuccessMessage { get; set; }
 
             public List<SelectListItem> Titles { get; set; }
         }
@@ -94,6 +99,21 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
+
+                if (string.IsNullOrWhiteSpace(Input.RecaptchaResponse))
+                {
+                    Input.FailureMessage = "Something went wrong, please try again.";
+                    Input.Titles = CustomerTitle.GetTitles(_context.Titles.Where(c => c.Id > 0).OrderBy(x => x.Value).ToList());
+                    return Page();
+                }
+
+                if (!RecaptchaHelper.IsReCaptchValid(Input.RecaptchaResponse))
+                {
+                    Input.FailureMessage = "Something went wrong, please try again.";
+                    Input.Titles = CustomerTitle.GetTitles(_context.Titles.Where(c => c.Id > 0).OrderBy(x => x.Value).ToList());
+                    return Page();
+                }
+
                 var user = new ApplicationUser { 
                     UserName = Input.Email, 
                     Email = Input.Email,
@@ -127,6 +147,8 @@ namespace GustafsGalleryStore.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
+            Input.FailureMessage = "Something went wrong, please try again.";
+            Input.Titles = CustomerTitle.GetTitles(_context.Titles.Where(c => c.Id > 0).OrderBy(x => x.Value).ToList());
             return Page();
         }
     }

@@ -48,10 +48,14 @@
                     <input class="input-field w3-light-grey" asp-for="Subject" type="text" placeholder="Subject">
                 </div>
                 <textarea class="w3-input w3-margin-bottom w3-light-grey" asp-for="Message" style="height:150px" placeholder="What's on your mind?"></textarea>
+                <script src='https://www.google.com/recaptcha/api.js?onload=renderRecaptcha&render=explicit"'></script>
+                <div id="ReCaptchContainer"></div>
+                <input id="recaptchaResponse" asp-for="RecaptchaResponse" type="text" hidden/>
                 <div class="w3-section w3-row w3-half">
                     <div class="w3-half w3-row-padding">
                         <button type="reset" class="w3-button w3-dark-grey w3-round w3-block"><i class="fas fa-times w3-margin-right"></i>Cancel</button>
                     </div>
+
                     <div class="w3-half w3-row-padding">
                         <button type="submit" class="w3-button w3-light-grey w3-round w3-block"><i class="fas fa-paper-plane w3-margin-right"></i>Send</button>
                     </div>
@@ -59,7 +63,9 @@
                 </div>
             </form>
         </div>
-        <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/contact.html"></div>
+        <div class="w3-content">
+            <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/contact.html"></div>
+        </div>
 
 
     </div>
@@ -67,6 +73,8 @@
     <div id="map" class="w3-round w3-opacity w3-hover-opacity-off"></div>
 </div>
 <partial name="_messages" model="Model" />
+
+<script type="text/javascript" src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/recaptchCode.min.js?Authorization"></script>
 <!-- google maps key -->
 <script>
 function initMap() {

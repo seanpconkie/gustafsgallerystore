@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="w3-half w3-row-padding">
-                <p class="w3-section w3-row-padding">@Model.Product.Description</p>
+                <p class="w3-section w3-row-padding">@Html.Raw(Model.Product.Description)</p>
                 <p class="w3-section w3-row-padding">
                     <span class="w3-quarter" style="font-size: large"><b class="gustaf">£@Model.Product.Price</b></span>
                     @if (Model.Product.Stock <= 3)

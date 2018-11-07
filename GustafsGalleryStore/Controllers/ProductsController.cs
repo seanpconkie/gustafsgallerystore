@@ -204,6 +204,8 @@ namespace GustafsGalleryStore.Controllers
             viewModel.Sizes = ProductSize.GetList(viewModel.Product.ProductSizes);
             viewModel.Colours = ProductColour.GetList(viewModel.Product.ProductColours);
 
+            viewModel.Product.Description = viewModel.Product.Description.Replace(System.Environment.NewLine, "<br />");
+
             return View(viewModel);
             //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
         }

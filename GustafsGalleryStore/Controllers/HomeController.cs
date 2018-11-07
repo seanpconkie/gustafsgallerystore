@@ -98,14 +98,29 @@ namespace GustafsGalleryStore.Controllers
             if (string.IsNullOrWhiteSpace(model.Name) ||
                string.IsNullOrWhiteSpace(model.Email) ||
                string.IsNullOrWhiteSpace(model.Subject) ||
-               string.IsNullOrWhiteSpace(model.Message))
+               string.IsNullOrWhiteSpace(model.Message)
+               )
             {
                 model.FailureMessage = "Please complete all fields.";
 
                 return View(model);
             }
 
-            var messageText = string.Format("Message from {0}\n{1}", model.Email, model.Message);
+            if (string.IsNullOrWhiteSpace(model.RecaptchaResponse))
+            {
+                model.FailureMessage = "Something went wrong, please try again.";
+
+                return View(model);
+            }
+
+            if (!RecaptchaHelper.IsReCaptchValid(model.RecaptchaResponse))
+            {
+                model.FailureMessage = "Something went wrong, please try again.";
+
+                return View(model);
+            }
+
+            var messageText = string.Format("Message from {0}{1}{2}", model.Email,System.Environment.NewLine, model.Message);
             await _emailSender.SendEmailAsync(MasterStrings.AdminEmail, model.Subject, messageText);
 
             var redirectUrl = string.Format("/Home/Contact?successMessage=Your message '{0}' has been sent.", model.Subject);
