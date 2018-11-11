@@ -1,13 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using GustafsGalleryStore.Helpers;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
 using GustafsGalleryStore.Areas.Identity.Data;
+using GustafsGalleryStore.Models.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using GustafsGalleryStore.Models.DataModels;
 using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
+using Microsoft.AspNetCore.Authorization;
+using GustafsGalleryStore.Helpers;
+using System.Collections.Generic;
+using System;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -56,7 +60,9 @@ namespace GustafsGalleryStore.Controllers
             string baseUrl = "https://gustafsgallery.co.uk";
 
             // get a list of products
-            var products = _context.Products.ToList();
+            var products = _context.Products.
+                                   Include(x => x.ProductBrand).
+                                   ToList();
 
             // get last modified date of the home page
             var siteMapBuilder = new SitemapBuilder();
@@ -67,7 +73,8 @@ namespace GustafsGalleryStore.Controllers
             // add the blog posts to the sitemap
             foreach (var product in products)
             {
-                siteMapBuilder.AddUrl(string.Format("{0}/Products?id={1}",baseUrl,product.Id), modified: product.CreateDate, changeFrequency: null, priority: 0.9);
+                siteMapBuilder.AddUrl(string.Format("{0}/Products/Product?id={1}",baseUrl,product.Id), modified: product.CreateDate, changeFrequency: null, priority: 0.9);
+                siteMapBuilder.AddUrl(string.Format("{0}/Products/ProductByName?product={1}", baseUrl, product.Title.Replace(' ','_') + "_by_" + product.ProductBrand.Brand.Replace(' ','_')), modified: product.CreateDate, changeFrequency: null, priority: 0.9);
             }
 
             siteMapBuilder.AddUrl(string.Format("{0}/Products", baseUrl), modified: DateTime.Now, changeFrequency: ChangeFrequency.Weekly, priority: 0.9);

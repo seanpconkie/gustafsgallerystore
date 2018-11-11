@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 using GustafsGalleryStore.Helpers;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace GustafsGalleryStore
 {
@@ -82,12 +83,7 @@ namespace GustafsGalleryStore
                     options.AllowAreas = true;
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
-                });
-
-                //.AddJsonOptions(options =>
-                 //{
-                 //    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                 //})
+            });
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -114,12 +110,23 @@ namespace GustafsGalleryStore
             services.AddSingleton<GustafsGalleryStore.Services.IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+            });
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.Use((context, next) =>
+            {
+                context.Request.Scheme = "https";
+                return next();
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -131,6 +138,7 @@ namespace GustafsGalleryStore
                 app.UseHsts();
             }
 
+            app.UseForwardedHeaders();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();

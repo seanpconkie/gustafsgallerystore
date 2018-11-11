@@ -50,7 +50,7 @@
                 <textarea class="w3-input w3-margin-bottom w3-light-grey" asp-for="Message" style="height:150px" placeholder="What's on your mind?"></textarea>
                 <script src='https://www.google.com/recaptcha/api.js?onload=renderRecaptcha&render=explicit"'></script>
                 <div id="ReCaptchContainer"></div>
-                <input id="recaptchaResponse" asp-for="RecaptchaResponse" type="text" hidden/>
+                <input id="recaptchaResponse" asp-for="RecaptchaResponse" type="text" hidden />
                 <div class="w3-section w3-row w3-half">
                     <div class="w3-half w3-row-padding">
                         <button type="reset" class="w3-button w3-dark-grey w3-round w3-block"><i class="fas fa-times w3-margin-right"></i>Cancel</button>
@@ -89,3 +89,5 @@ function initMap() {
                 });
             }</script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOfCiFMuWl_6DzM4BsVFPYZ7ZvWmHcKR0&callback=initMap"></script>
+
+<partial name="_messages" model="Model" />

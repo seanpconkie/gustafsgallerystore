@@ -209,5 +209,43 @@ namespace GustafsGalleryStore.Controllers
             return View(viewModel);
             //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
         }
+
+        // GET: /<controller>/
+        public IActionResult ProductByName(string product, string statusMessage = null, string successMessage = null,
+                                   string failureMessage = null)
+        {
+
+            string[] inputList = product.Split("_by_");
+
+            string name = inputList[0].Replace('_',' ');
+            string brand = inputList[1].Replace('_',' ');
+
+            var brandId = _context.ProductBrands.Where(x => x.Brand == brand).SingleOrDefault().Id;
+
+            var productId = _context.Products.
+                                Where(x => x.ProductBrandId == brandId).
+                                Where(x => x.Title == name).
+                                SingleOrDefault().
+                                Id;
+
+            var redirectUri = string.Format("/Products/Product?id={0}", productId);
+            if (string.IsNullOrWhiteSpace(statusMessage))
+            {
+                redirectUri += string.Format("&&statusMessage={0}", statusMessage);
+            }
+
+            if (string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUri += string.Format("&&successMessage={0}", successMessage);
+            }
+
+            if (string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUri += string.Format("&&failureMessage={0}", failureMessage);
+            }
+
+            return ControllerHelper.RedirectToLocal(this,redirectUri);
+            //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
+        }
     }
 }
