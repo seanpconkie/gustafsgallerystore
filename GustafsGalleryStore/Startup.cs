@@ -121,11 +121,11 @@ namespace GustafsGalleryStore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.Use((context, next) =>
-            {
-                context.Request.Scheme = "https";
-                return next();
-            });
+            //app.Use((context, next) =>
+            //{
+            //    context.Request.Scheme = "https";
+            //    return next();
+            //});
 
             if (env.IsDevelopment())
             {
