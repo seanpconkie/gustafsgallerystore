@@ -26,6 +26,11 @@ namespace GustafsGalleryStore
                         //    //options.Listen(IPAddress.Any, 80);
                         //    options.Listen(IPAddress.Loopback, 5001, listenOptions => listenOptions.UseHttps("localhost.pfx", "Nofear01!"));
                         //})
+                        .ConfigureLogging(logging =>
+                        {
+                            logging.ClearProviders();
+                            logging.AddConsole();
+                        })
                         .UseStartup<Startup>();
         }
     }

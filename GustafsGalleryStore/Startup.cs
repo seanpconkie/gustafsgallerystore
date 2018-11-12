@@ -21,6 +21,8 @@ using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 using GustafsGalleryStore.Helpers;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Logging;
+using ElmahCore.Mvc;
 
 namespace GustafsGalleryStore
 {
@@ -109,12 +111,16 @@ namespace GustafsGalleryStore
              //using Microsoft.AspNetCore.Identity.UI.Services;
             services.AddSingleton<GustafsGalleryStore.Services.IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
-
-            services.Configure<ForwardedHeadersOptions>(options =>
+            services.AddElmah(options =>
             {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+                options.CheckPermissionAction = context => context.User.IsInRole(MasterStrings.StaffRole);
             });
+
+            //services.Configure<ForwardedHeadersOptions>(options =>
+            //{
+            //    options.ForwardedHeaders =
+            //        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+            //});
 
         }
 
@@ -127,6 +133,39 @@ namespace GustafsGalleryStore
             //    return next();
             //});
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto
+            });
+
+            app.Run(async (context) =>
+            {
+                context.Response.ContentType = "text/plain";
+
+                // Request method, scheme, and path
+                await context.Response.WriteAsync(
+                    $"Request Method: {context.Request.Method}{Environment.NewLine}");
+                await context.Response.WriteAsync(
+                    $"Request Scheme: {context.Request.Scheme}{Environment.NewLine}");
+                await context.Response.WriteAsync(
+                    $"Request Path: {context.Request.Path}{Environment.NewLine}");
+
+                // Headers
+                await context.Response.WriteAsync($"Request Headers:{Environment.NewLine}");
+
+                foreach (var header in context.Request.Headers)
+                {
+                    await context.Response.WriteAsync($"{header.Key}: " +
+                        $"{header.Value}{Environment.NewLine}");
+                }
+
+                await context.Response.WriteAsync(Environment.NewLine);
+
+                // Connection: RemoteIp
+                await context.Response.WriteAsync(
+                    $"Request RemoteIp: {context.Connection.RemoteIpAddress}");
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -138,12 +177,13 @@ namespace GustafsGalleryStore
                 app.UseHsts();
             }
 
-            app.UseForwardedHeaders();
+            //app.UseForwardedHeaders();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+            app.UseElmah();
 
             app.UseMvc(routes =>
             {

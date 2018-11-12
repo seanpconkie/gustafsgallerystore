@@ -24,6 +24,8 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="2.0.0" />
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="2.0.0" />
+    <PackageReference Include="ElmahCore" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
