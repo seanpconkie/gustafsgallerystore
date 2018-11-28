@@ -27,7 +27,7 @@ namespace GustafsGalleryStore.Models.DataModels
 
             foreach (var item in resultList)
             {
-                images.Add(new SelectListItem { Value = item.Id.ToString(), Text = item.Uri.Replace("https://s3.amazonaws.com/sbt-solutions.imagestore/", "").Replace("?Authorization", "")});
+                images.Add(new SelectListItem { Value = item.Id.ToString(), Text = item.Uri.Replace("https://d3rlz58riodgu6.cloudfront.net/", "").Replace("?Authorization", "")});
             }
 
             return images;

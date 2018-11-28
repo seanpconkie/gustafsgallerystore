@@ -1,7 +1,45 @@
-﻿@{
+﻿@model GustafsGalleryStore.Models.ViewModels.ProductListViewModel
+@{
     ViewData["Title"] = "Home";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
+<style>
+    div.scrollmenu {
+
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    div.card {
+        flex: 0 0 auto;
+        width: 30%;
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .card {
+            width: 75%!important;
+        }
+
+    }
+
+    .image-container {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+    }
+    .title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .title:hover {
+        white-space: normal;
+        overflow: visible;
+    }
+
+</style>
         <!-- code for embedded FB page -->
         <div id="fb-root"></div>
         <script>
@@ -23,35 +61,52 @@
             <div class="ism-slider" data-play_type="loop" id="header-carousel">
                 <ol>
                     <li>
-                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_home-slider-1.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-1.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
                     </li>
                     <li>
-                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_home-slider-2.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-2.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
                     </li>
                     <li>
-                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_home-slider-3.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-3.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
                     </li>
                     <li>
-                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_home-slider-4.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-4.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
                     </li>
                     <li>
-                        <img src="https://s3.amazonaws.com/sbt-solutions.imagestore/GustafsGalleryStore_home-slider-5.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-5.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
                     </li>
                 </ol>
             </div>            
-            
+
         </div>        
+
+        <div class="w3-container w3-padding-64">
+            <h3 class="w3-center"><b class="gustaf">Gustaf's Studio & Gallery</b></h3>
+            <p class="w3-center"><em>From the heart of the Borders</em></p>
+            <div class="scrollmenu w3-row" style="height: 400px">
+                @foreach (var product in Model.Products)
+                {
+                    <div class="w3-row-padding card" style="height: 100%">
+                        <img class="image-container" src="@product.ProductImages[0].Uri" alt="Denim Jeans" style="width: 100%;overflow: hidden" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        <h3 class="title"><a href="https://gustafsgallery.co.uk/Products/Product?id=@product.Id">@product.Title</a></h3>
+                        <p class="price">£@product.Price</p>
+                        <p><a href="/Products/Product?id=@product.Id" class="w3-button w3-block w3-light-grey">Add to Cart</a></p>
+                    </div>
+                }
+                <div class="w3-quarter w3-row-padding" style="height: 100%;height:300px;line-height:300px">
+                    <a href="/Products" class="w3-button w3-block w3-light-grey" style="height: 100%">See More</a>
+                </div>
+            </div>
+        </div>
 
         <!-- Container (About Section) -->
         <div class="w3-content w3-container w3-padding-64" id="about">
-            <h3 class="w3-center"><b class="gustaf">Gustaf's Studio & Gallery</b></h3>
-            <p class="w3-center"><em>From the heart of the Borders</em></p>
             <div class="w3-row-padding">
                 <div class="w3-half">
-                    <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/home-content-about.html?Authorization"></div>
+                    <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-about.html?Authorization"></div>
                 </div>
                 <div class="w3-half">
-                    <div class="fb-page" data-href="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/" data-tabs="timeline" data-width="500" data-height="500" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/">Gustaf&#039;s Studio and Gallery</a></blockquote></div>
+                    <div class="fb-page" data-href="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/" data-tabs="timeline" data-width="1000" data-height="800" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/">Gustaf&#039;s Studio and Gallery</a></blockquote></div>
                 </div>
             </div>
         </div>
@@ -127,31 +182,31 @@
         </div>
 
         <div class="w3-content w3-container w3-padding-64">
-            <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/home-content-product.html?Authorization"></div>
+            <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-product.html?Authorization"></div>
         </div>
 
         <div class="w3-row-padding">  
             <div class="w3-third">
-                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/home-content-designer1.html?Authorization"></div>
+                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer1.html?Authorization"></div>
             </div>
             <div class="w3-third">
-                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/home-content-designer2.html?Authorization"></div>
+                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer2.html?Authorization"></div>
             </div>
             <div class="w3-third">
-                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/home-content-designer3.html?Authorization"></div>
+                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer3.html?Authorization"></div>
             </div>
         </div>  
         <br>
         <div></div>
         <div class="w3-row-padding">  
             <div class="w3-third">
-                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/home-content-designer4.html?Authorization"></div>
+                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer4.html?Authorization"></div>
             </div>
             <div class="w3-third">
-                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/home-content-designer5.html?Authorization"></div>
+                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer5.html?Authorization"></div>
             </div>
             <div class="w3-third">
-                <div w3-include-html="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/home-content-designer6.html?Authorization"></div>
+                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer6.html?Authorization"></div>
             </div>
         </div>  
 

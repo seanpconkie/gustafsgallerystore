@@ -3,7 +3,7 @@
     ViewData["Title"] = "Process Order";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
-<link type="text/css" rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/tabs.min.css?Authorization" />
+<link type="text/css" rel="stylesheet" href="https://dmm8i98ipy9lm.cloudfront.net/tabs.min.css?Authorization" />
 <div class="w3-padding-64" id="main">
     <div class="w3-bar w3-dark-grey tab-bar">
         <button class="w3-bar-item w3-button testbtn w3-padding-16 gustaf-background-dark" onclick="openTab(event,'Summary')"><i class="fas fa-clipboard-list w3-margin-right"></i>Summary</button>
@@ -407,6 +407,6 @@
     var message = "@Model.StatusMessage";
     var success = "@Model.SuccessMessage";
 </script>
-<script type="text/javascript" src="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/manageOrdersCode.min.js?Authorization"></script>
+<script type="text/javascript" src="https://dmm8i98ipy9lm.cloudfront.net/manageOrdersCode.min.js?Authorization"></script>
 
     <partial name="_messages" model="Model" />

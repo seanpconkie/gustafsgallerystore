@@ -206,6 +206,11 @@ namespace GustafsGalleryStore.Controllers
 
             viewModel.Product.Description = viewModel.Product.Description.Replace(System.Environment.NewLine, "<br />");
 
+            if (viewModel.Product.ProductImages.Count == 0)
+            {
+                viewModel.Product.ProductImages.Add(new ProductImage() { Uri = "https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png" });
+            }
+
             return View(viewModel);
             //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
         }

@@ -21,7 +21,7 @@ namespace GustafsGalleryStore.Services
         private static AmazonS3Client _s3Client = new AmazonS3Client(awsAccessKeyId: MasterStrings.AWSAccessKeyId,
                                                               awsSecretAccessKey: MasterStrings.AWSSecretAccessKey,
                                                               region: Amazon.RegionEndpoint.USEast1);
-        private static readonly string _bucketName = "sbt-solutions.imagestore";//this is my Amazon Bucket name
+        private static readonly string _bucketName = "gustafsgallerystore-images";//this is my Amazon Bucket name
         private static string _bucketSubdirectory = String.Empty;
 
         public S3Helper(IHostingEnvironment environment)
@@ -33,8 +33,7 @@ namespace GustafsGalleryStore.Services
         {
             try
             {
-                TransferUtility fileTransferUtility = new
-                    TransferUtility(_s3Client);
+                TransferUtility fileTransferUtility = new TransferUtility(_s3Client);
 
                 string bucketName;
 
@@ -72,7 +71,7 @@ namespace GustafsGalleryStore.Services
             {
 
                 string bucketName;
-                string fileName = filePath.Replace("https://s3.amazonaws.com/sbt-solutions.imagestore/", "").Replace("?Authorization","");
+                string fileName = filePath.Replace("https://s3.amazonaws.com/gustafsgallerystore-images/", "").Replace("?Authorization","");
 
 
                 if (_bucketSubdirectory == "" || _bucketSubdirectory == null)

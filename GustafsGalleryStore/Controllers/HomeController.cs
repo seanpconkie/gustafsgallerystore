@@ -58,15 +58,45 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Index(string statusMessage = null, string successMessage = null, string failureMessage = null)
         {
             var viewModel = new ProductListViewModel() {
-                Products = _context.Products.
-                                OrderByDescending(p => p.CreateDate).
-                                Include(b => b.ProductBrand).
-                                Include(i => i.ProductImages).
-                                ToList(),
                 StatusMessage = statusMessage,
                 SuccessMessage = successMessage,
                 FailureMessage = failureMessage
             };
+
+            var productList = new List<Product>();
+            int maxId = Convert.ToInt32(_context.Products.Max(x => x.Id));
+
+            for (int i = 0; i < 10; i++)
+            {
+                Random rnd = new Random();
+                long productId = rnd.Next(maxValue: maxId);
+
+                var product = _context.Products.
+                                      Where(x => x.Id == productId).
+                                      Include(x => x.ProductImages).
+                                      SingleOrDefault();
+
+                while (product == null || productList.Contains(product))
+                {
+
+                    productId = rnd.Next(maxValue: maxId);
+
+                    product = _context.Products.
+                                      Where(x => x.Id == productId).
+                                      Include(x => x.ProductImages).
+                                      SingleOrDefault();
+                }
+
+                if (product.ProductImages.Count == 0)
+                {
+                    product.ProductImages.Add(new ProductImage() { Uri = "https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png" });
+                }
+
+                productList.Add(product);
+
+            }
+
+            viewModel.Products = productList;
 
             return View(viewModel);
         }
@@ -147,6 +177,7 @@ namespace GustafsGalleryStore.Controllers
         {
             return View();
         }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

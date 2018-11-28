@@ -180,7 +180,7 @@ namespace GustafsGalleryStore.Controllers
 
                             var image = new ProductImage()
                             {
-                                Uri = "https://s3.amazonaws.com/sbt-solutions.imagestore/" + _storeName + '_' + item.FileName.ToString() + "?Authorization"
+                                Uri = "https://d3rlz58riodgu6.cloudfront.net/" + _storeName + '_' + item.FileName.ToString() + "?Authorization"
                             };
 
                             productImages.Add(image);
@@ -243,6 +243,11 @@ namespace GustafsGalleryStore.Controllers
             viewModel.Sizes = Size.GetList(_context.Sizes.OrderBy(s => s.Value).ToList());
             viewModel.Brand = viewModel.Product.ProductBrand.Brand;
             viewModel.Department = viewModel.Product.Department.DepartmentName;
+
+            if (viewModel.Product.ProductImages.Count == 0)
+            {
+                viewModel.Product.ProductImages.Add(new ProductImage() { Uri = "https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png" });
+            }
 
             return View(viewModel);
         }
@@ -346,7 +351,7 @@ namespace GustafsGalleryStore.Controllers
                         {
                             foreach (var item in input.Image)
                             {
-                                if (image.Uri.Replace("https://s3.amazonaws.com/sbt-solutions.imagestore/", "").Replace("?Authorization", "") == item)
+                                if (image.Uri.Replace("https://d3rlz58riodgu6.cloudfront.net/", "").Replace("?Authorization", "") == item)
                                 {
                                     deleteImage = false;
                                 }
@@ -384,7 +389,7 @@ namespace GustafsGalleryStore.Controllers
 
                             var image = new ProductImage()
                             {
-                                Uri = "https://s3.amazonaws.com/sbt-solutions.imagestore/" + _storeName + '_' + item.FileName.ToString() + "?Authorization"
+                                Uri = "https://d3rlz58riodgu6.cloudfront.net/" + _storeName + '_' + item.FileName.ToString() + "?Authorization"
                             };
 
                             productImages.Add(image);
@@ -413,6 +418,12 @@ namespace GustafsGalleryStore.Controllers
             input.Sizes = Size.GetList(_context.Sizes.OrderBy(s => s.Value).ToList());
             input.Departments = Department.GetList(_context.Departments.OrderBy(d => d.DepartmentName).ToList());
             input.StatusMessage = StatusMessage;
+            input.Product.ProductImages = _context.ProductImages.Where(x => x.ProductId == input.Product.Id).ToList();
+
+            if (input.Product.ProductImages.Count == 0)
+            {
+                input.Product.ProductImages.Add(new ProductImage() { Uri = "https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png" });
+            }
 
             return View(input);
 
