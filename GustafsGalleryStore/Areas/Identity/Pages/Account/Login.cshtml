@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Log in";
 }
-        <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/gustafsgallery.co.uk/login.min.css?Authorization"/>
+        <link rel="stylesheet" href="https://dmm8i98ipy9lm.cloudfront.net/login.min.css?Authorization"/>
         <p></p>
         <div class="w3-content w3-container w3-padding-64">
             <div class="w3-container w3-light-grey w3-round">
@@ -15,11 +15,11 @@
                         </div>
                         <div class="col">
 
-                            <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal" onclick="openModal('spin')">
+                            @*<form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal" onclick="openModal('spin')">
                                 <button type="submit" class="fb btn btn-full" name="provider" value="Facebook" title="Log in using your Facebook account">
                                     <i class="fab fa-facebook fa-fw"></i> <span>Login with Facebook</span>
                                 </button>
-                            </form>
+                            </form>*@
                             <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal" onclick="openModal('spin')">
                                 <button class="twitter btn btn-full" type="submit" name="provider" value="Twitter" title="Log in using your Twitter account">
                                     <i class="fab fa-twitter fa-fw"></i> <span>Login with Twitter</span>

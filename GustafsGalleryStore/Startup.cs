@@ -54,10 +54,10 @@ namespace GustafsGalleryStore
                 .AddDefaultTokenProviders();
 
             services.AddAuthentication()
-                    .AddFacebook(facebookOptions => {
-                        facebookOptions.AppId = MasterStrings.FacebookApiId;
-                        facebookOptions.AppSecret = MasterStrings.FacebookSecretKey;
-                        })
+                    //.AddFacebook(facebookOptions => {
+                        //facebookOptions.AppId = MasterStrings.FacebookApiId;
+                        //facebookOptions.AppSecret = MasterStrings.FacebookSecretKey;
+                        //})
                     .AddTwitter(twitterOptions => {
                         twitterOptions.ConsumerKey = MasterStrings.TwitterApiId;
                         twitterOptions.ConsumerSecret = MasterStrings.TwitterSecrectKey;
