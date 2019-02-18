@@ -51,9 +51,14 @@
                         @Html.DropDownListFor(m => m.Colour, Model.Colours, "Select Colour", new { @id = "colour", @class = "w3-input", required = "" })
                     </div>
                 </div>
-                <p class="w3-padding">
-                    <a href="javascript:void(0);" onclick="openModal('spin');addToBasket(@Model.Product.Id);closeModal('spin')" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
-                </p>
+                <div class="w3-row w3-padding">
+                    <div class="w3-half w3-row-padding">
+                        <a href="javascript:void(0);" onclick="openModal('spin');addToBasket(@Model.Product.Id);closeModal('spin')" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                    </div>
+                    <div>
+                        <span class="w3-button w3-dark-grey w3-round" onclick="createLink()"><i class="fas fa-share-alt"></i></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
