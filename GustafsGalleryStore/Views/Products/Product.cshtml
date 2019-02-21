@@ -13,6 +13,7 @@
             <h2>@Model.Product.Title</h2>
             <h4>by @Model.Product.ProductBrand.Brand</h4>
         </header>
+
         <div class="w3-row">
             <div class="w3-card w3-row-padding w3-padding w3-half w3-light-grey">
                 <div class="xzoom-container" style="width: 100%">
@@ -38,14 +39,13 @@
                 </p>
                 <div class="w3-row">
                     <div class="custom-select w3-half w3-row-padding">
-                        @*@Html.DropDownListFor(m => m.Size, Model.Sizes, "Select Size", new { @id = "size", @class = "w3-input", required = "" })*@
-                                <select asp-for="Size" class="w3-input" id="size" required>
-                                    <option>Select Size</option>
-                                    @foreach (var size in Model.Product.ProductSizes)
-                                    {
-                                        <option>@size.Size</option>
-                                    }
-                                </select>
+                        <select asp-for="Size" class="w3-input" id="size" required>
+                            <option>Select Size</option>
+                            @foreach (var size in Model.Product.ProductSizes)
+                            {
+                                <option>@size.Size</option>
+                            }
+                        </select>
                     </div>
                     <div class="custom-select w3-half w3-row-padding">
                         @Html.DropDownListFor(m => m.Colour, Model.Colours, "Select Colour", new { @id = "colour", @class = "w3-input", required = "" })
@@ -55,12 +55,16 @@
                     <div class="w3-half w3-row-padding">
                         <a href="javascript:void(0);" onclick="openModal('spin');addToBasket(@Model.Product.Id);closeModal('spin')" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
                     </div>
-                    <div>
-                        <span class="w3-button w3-dark-grey w3-round" onclick="createLink()"><i class="fas fa-share-alt"></i></span>
+                </div>
+                <div class="w3-row w3-padding">
+                    <div class="w3-row-padding w3-quarter">
+                        <span class="w3-button w3-dark-grey w3-round w3-block" onclick="createLink()"><i class="fas fa-share-alt fw"></i></span>
                     </div>
+                    <div id="fb-button" class="w3-row-padding w3-quarter"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script src="https://dmm8i98ipy9lm.cloudfront.net/addToBasketCode.min.js?Authorization"></script>
+<script src="https://dmm8i98ipy9lm.cloudfront.net/shareFB.min.js?Authorization"></script>
