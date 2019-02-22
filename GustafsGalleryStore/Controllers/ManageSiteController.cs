@@ -439,9 +439,35 @@ namespace GustafsGalleryStore.Controllers
             return View(viewModel);
         }
 
+        // GET: /<controller>/
+        public IActionResult EditDiscount(long id, string statusMessage = null, string successMessage = null, string failureMessage = null)
+        {
+            var viewModel = new DiscountViewModel()
+            {
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
+            };
+
+            if (id > 0)
+            {
+                var inDb = _context.Discounts.Where(x => x.Id == id).SingleOrDefault();
+
+                viewModel.Code = inDb.Code;
+                viewModel.EndDate = inDb.EndDate;
+                viewModel.Id = inDb.Id;
+                viewModel.IsLive = inDb.IsLive;
+                viewModel.Percentage = inDb.Percentage;
+                viewModel.StartDate = inDb.StartDate;
+                viewModel.Value = inDb.Value;
+            }
+
+            return View(viewModel);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Discount(DiscountViewModel model)
+        public IActionResult EditDiscount(DiscountViewModel model)
         {
 
             string failureMessage = null;
@@ -458,6 +484,16 @@ namespace GustafsGalleryStore.Controllers
             {
                 isModelValid = false;
                 failureMessage = "Discount Code couldn't be updated.  Please check the fields and try again.";
+            }
+
+            List<Discount> discounts = new List<Discount>();
+
+            discounts = _context.Discounts.Where(x => x.Code == model.Code).ToList();
+
+            if (discounts.Count > 0 && model.Id == 0)
+            {
+                isModelValid = false;
+                failureMessage = "Discount Code couldn't be updated.  Code already exists.";
             }
 
             if (!model.IsLive)
@@ -488,15 +524,15 @@ namespace GustafsGalleryStore.Controllers
 
             if (!string.IsNullOrWhiteSpace(failureMessage))
             {
-                redirectUrl += string.Format("?failureMessage={0}", failureMessage);
+                redirectUrl += string.Format("?failureMessage={0}&", failureMessage);
             }
             if (!string.IsNullOrWhiteSpace(statusMessage))
             {
-                redirectUrl += string.Format("?statusMessage={0}", statusMessage);
+                redirectUrl += string.Format("?statusMessage={0}&", statusMessage);
             }
             if (!string.IsNullOrWhiteSpace(successMessage))
             {
-                redirectUrl += string.Format("?successMessage={0}", successMessage);
+                redirectUrl += string.Format("?successMessage={0}&", successMessage);
             }
 
             return ControllerHelper.RedirectToLocal(this, redirectUrl);

@@ -41,26 +41,3 @@
         </div>
     </form>
 </div>
-
-<script>
-
-    var failure = "@Model.FailureMessage";
-    var message = "@Model.StatusMessage";
-    var success = "@Model.SuccessMessage";
-
-    if (failure != "")
-    {
-        toastr["warning"](failure, "Warning");
-    }
-
-    if (message != "")
-    {
-        toastr["info"](message, "Info");
-    }
-
-    if (success != "")
-    {
-        toastr["success"](success, "Success");
-    }
-
-</script>

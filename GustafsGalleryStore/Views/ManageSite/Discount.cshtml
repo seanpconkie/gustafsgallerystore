@@ -1,0 +1,48 @@
+﻿@model GustafsGalleryStore.Models.ViewModels.DiscountViewModel
+@{
+    ViewData["Title"] = "Discount Codes";
+}
+
+<div>
+    <div class="w3-bar w3-padding">
+        <div asp-validation-summary="All" class="text-danger w3-bar-item"></div>
+        <a href="/ManageSite/EditDiscount?id=0" class="w3-bar-item w3-button w3-light-grey w3-right"><i class="fas fa-plus fa-fw"></i></a>
+    </div>
+    <table id="discountCodes">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Value</th>
+                <th>Percentage</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var type in Model.Discounts)
+            {
+            <tr>
+                <td class="w3-center">@type.Code</td>
+                <td class="w3-center">@type.StartDate</td>
+                <td class="w3-center">@type.EndDate</td>
+                <td class="w3-center">£@type.Value</td>
+                <td class="w3-center">@type.Percentage%</td>
+                @if(type.IsLive)
+                {
+                    <td class="w3-center"><i class="far fa-check-square fa-fw w3-large"></i></td>
+                }
+                else
+                {
+                    <td class="w3-center"><i class="far fa-square fa-fw w3-large"></i></td>
+                }
+                <td class="w3-center w3-hide-small" style="width: 100px">
+                    <a class="w3-bar-item w3-button w3-round w3-light-grey" href="/ManageSite/EditDiscount?id=@type.Id" onclick="openModal('spin')"><i class="fas fa-edit w3-margin-right"></i>Edit</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>$("#discountCodes").DataTable();</script>
