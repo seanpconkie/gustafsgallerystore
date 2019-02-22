@@ -468,7 +468,7 @@ namespace GustafsGalleryStore.Controllers
             if (isModelValid)
             {
 
-                var result = ManageSiteHelper.AddDepartment(model, _context);
+                var result = ManageSiteHelper.AddDiscount(model, _context);
 
 
                 if (result == UpdateResult.Error)
