@@ -30,6 +30,7 @@ namespace GustafsGalleryStore.Areas.Identity.Data
         public DbSet<DeliveryCompany> DeliveryCompanies { get; set; }
         public DbSet<Return> Returns { get; set; }
         public DbSet<ReturnItem> ReturnItems { get; set; }
+        public DbSet<Discount> Discounts { get; set; }
 
         public GustafsGalleryStoreContext(DbContextOptions<GustafsGalleryStoreContext> options)
             : base(options)

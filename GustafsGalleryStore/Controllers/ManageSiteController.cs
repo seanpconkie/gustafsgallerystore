@@ -220,7 +220,6 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult DeliveryType(DeliveryViewModel model)
         {
 
-            var viewModel = new DeliveryViewModel() { };
             string failureMessage = null;
             string successMessage = null;
             var redirectUrl = "/ManageSite/DeliveryType";
@@ -278,7 +277,6 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult DeliveryCompany(DeliveryViewModel model)
         {
 
-            var viewModel = new DeliveryViewModel() { };
             string failureMessage = null;
             string successMessage = null;
             var redirectUrl = "/ManageSite/DeliveryCompany";
@@ -334,7 +332,6 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Department(DepartmentViewModel model)
         {
 
-            var viewModel = new DeliveryViewModel() { };
             string failureMessage = null;
             string successMessage = null;
             var redirectUrl = "/ManageSite/Department";
@@ -389,7 +386,6 @@ namespace GustafsGalleryStore.Controllers
         public IActionResult Size(SizeViewModel model)
         {
 
-            var viewModel = new DeliveryViewModel() { };
             string failureMessage = null;
             string successMessage = null;
             var redirectUrl = "/ManageSite/Size";
@@ -419,6 +415,84 @@ namespace GustafsGalleryStore.Controllers
             if (!string.IsNullOrWhiteSpace(failureMessage))
             {
                 redirectUrl += string.Format("?failureMessage={0}", failureMessage);
+            }
+            if (!string.IsNullOrWhiteSpace(successMessage))
+            {
+                redirectUrl += string.Format("?successMessage={0}", successMessage);
+            }
+
+            return ControllerHelper.RedirectToLocal(this, redirectUrl);
+
+        }
+
+        // GET: /<controller>/
+        public IActionResult Discount(string statusMessage = null, string successMessage = null, string failureMessage = null)
+        {
+            var viewModel = new DiscountViewModel()
+            {
+                Discounts = _context.Discounts.OrderBy(x => x.Value).ToList(),
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Discount(DiscountViewModel model)
+        {
+
+            string failureMessage = null;
+            string statusMessage = null;
+            string successMessage = null;
+            var redirectUrl = "/ManageSite/Discount";
+            var isModelValid = true;
+
+            if ((model.Value == 0 && model.Percentage == 0) ||
+                (model.StartDate != null && model.EndDate == null) ||
+                (model.StartDate == null && model.EndDate != null) ||
+                (string.IsNullOrWhiteSpace(model.Code))
+                )
+            {
+                isModelValid = false;
+                failureMessage = "Discount Code couldn't be updated.  Please check the fields and try again.";
+            }
+
+            if (!model.IsLive)
+            {
+                statusMessage = "Discount Code is not live so cannot be used.";
+            }
+
+            if (isModelValid)
+            {
+
+                var result = ManageSiteHelper.AddDepartment(model, _context);
+
+
+                if (result == UpdateResult.Error)
+                {
+                    failureMessage = "Discount Code couldn't be updated.";
+                }
+                else if (result == UpdateResult.Success)
+                {
+                    successMessage = "Discount Code updated.";
+                }
+                else if (result == UpdateResult.Duplicate)
+                {
+                    failureMessage = "Discount Code already exists.";
+                }
+
+            }
+
+            if (!string.IsNullOrWhiteSpace(failureMessage))
+            {
+                redirectUrl += string.Format("?failureMessage={0}", failureMessage);
+            }
+            if (!string.IsNullOrWhiteSpace(statusMessage))
+            {
+                redirectUrl += string.Format("?statusMessage={0}", statusMessage);
             }
             if (!string.IsNullOrWhiteSpace(successMessage))
             {

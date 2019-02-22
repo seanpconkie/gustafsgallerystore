@@ -10,6 +10,7 @@ namespace GustafsGalleryStore.Models.DataModels
         public decimal OrderTotalPrice { get; set; }
         public decimal OrderTotalPostagePrice { get; set; }
         public decimal OrderSubTotalPrice { get; set; }
+        public decimal OrderDiscountSubTotalPrice { get; set; }
 
         public DateTime? OpenedDate { get; set; }
         [Display(Name = "Order Placed Date")]
@@ -31,6 +32,7 @@ namespace GustafsGalleryStore.Models.DataModels
         public DateTime? CancellationCompletedDate { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
+        public List<Discount> Discounts { get; set; }
 
         public OrderStatus OrderStatus { get; set; }
         [Display(Name = "Order Status")]

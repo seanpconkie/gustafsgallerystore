@@ -279,5 +279,58 @@ namespace GustafsGalleryStore.Helpers
                 return UpdateResult.Error;
             }
         }
+
+        public static UpdateResult AddDiscount(DiscountViewModel model, GustafsGalleryStoreContext context)
+        {
+            try
+            {
+                if (model.Id == 0)
+                {
+                    var discount = new Discount()
+                    {
+                        Code = model.Code,
+                        IsLive = model.IsLive,
+                        StartDate = model.StartDate,
+                        EndDate = model.EndDate,
+                        Value = model.Value,
+                        Percentage = model.Percentage
+
+                    };
+
+                    List<Discount> discounts = new List<Discount>();
+
+                    discounts = context.Discounts.Where(x => x.Code == model.Code).ToList();
+                    if (discounts.Count > 0)
+                    {
+                        return UpdateResult.Duplicate;
+                    }
+
+                    context.Add(discount);
+                }
+                else
+                {
+                    var inDb = context.Discounts.Where(x => x.Id == model.Id).SingleOrDefault();
+
+                    inDb.Code = model.Code;
+                    inDb.IsLive = model.IsLive;
+                    inDb.StartDate = model.StartDate;
+                    inDb.EndDate = model.EndDate;
+                    inDb.Value = model.Value;
+                    inDb.Percentage = model.Percentage;
+
+                    context.Update(inDb);
+                }
+
+                context.SaveChanges();
+
+                return UpdateResult.Success;
+
+            }
+            catch
+            {
+                return UpdateResult.Error;
+            }
+        }
+
     }
 }
