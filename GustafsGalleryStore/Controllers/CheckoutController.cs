@@ -72,6 +72,7 @@ namespace GustafsGalleryStore.Controllers
                                 Where(x => x.Id == id).
                                 Where(x => x.OrderStatusId == StatusId(MasterStrings.Basket)).
                                 SingleOrDefault();
+            var isNonGiftCard = false;
 
             if (order == null)
             {
@@ -90,10 +91,6 @@ namespace GustafsGalleryStore.Controllers
             var viewModel = new CheckoutViewModel()
             {
                 Basket = OrderHelper.GetOrder(order.Id,_context),
-                DeliveryTypes = _context.DeliveryTypes.
-                                    Where(x => x.Id > 0).
-                                    Include(x => x.DeliveryCompany).
-                                    ToList(),
                 Contacts = _context.CustomerContacts.
                                     Where(x => x.UserId == userId).
                                     ToList(),
@@ -101,6 +98,30 @@ namespace GustafsGalleryStore.Controllers
                 FailureMessage = failureMessage,
                 SuccessMessage = successMessage
             };
+
+            foreach (var item in viewModel.Basket.OrderItems)
+            {
+                if (item.Product.DepartmentId != 13)
+                {
+                    isNonGiftCard = true;
+                }
+            }
+
+            if (isNonGiftCard)
+            {
+                viewModel.DeliveryTypes = _context.DeliveryTypes.
+                                    Where(x => x.Id > 0).
+                                    Where(x => x.Id < 999).
+                                    Include(x => x.DeliveryCompany).
+                                    ToList();
+            }
+            else
+            {
+                viewModel.DeliveryTypes = _context.DeliveryTypes.
+                                    Where(x => x.Id == 999).
+                                    Include(x => x.DeliveryCompany).
+                                    ToList();
+            }
 
             return View(viewModel);
 
