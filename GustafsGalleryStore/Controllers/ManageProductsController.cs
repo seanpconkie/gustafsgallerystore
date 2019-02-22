@@ -190,15 +190,21 @@ namespace GustafsGalleryStore.Controllers
                     input.Product.ProductImages = productImages;
 
                     //Create product code
-                    var producCode = string.Concat(input.Product.ProductBrand.BrandCode.ToUpper(), '_', input.Product.Department.DepartmentCode, '_', input.Product.Title.Substring(0, 3).ToUpper());
-                    input.Product.ProductCode = GenerateProductCode(producCode);
+                    //var producCode = string.Concat(input.Product.ProductBrand.BrandCode.ToUpper(), '_', input.Product.Department.DepartmentCode, '_', input.Product.Title.Substring(0, 3).ToUpper());
+                    //input.Product.ProductCode = GenerateProductCode(producCode);
 
                     //Create Product
                     _context.Add(input.Product);
 
-                    input.SuccessMessage = "Product added";
+                    _context.SaveChanges();
+
+                    input.Product.ProductCode = string.Concat(input.Product.ProductBrand.Id, '-', input.Product.Department.Id, '-', input.Product.Id);
+
+                    _context.Update(input);
 
                     _context.SaveChanges();
+
+                    input.SuccessMessage = "Product added";
 
                     return ControllerHelper.RedirectToLocal(this,string.Format("/ManageProducts?successMessage={0}",input.SuccessMessage));
                 }
