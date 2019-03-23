@@ -5,7 +5,6 @@
 }
 <style>
     div.scrollmenu {
-
         display: flex;
         flex-wrap: nowrap;
         overflow-x: auto;
@@ -19,9 +18,8 @@
 
     @@media only screen and (max-width: 600px) {
         .card {
-            width: 75%!important;
+            width: 75% !important;
         }
-
     }
 
     .image-container {
@@ -29,185 +27,188 @@
         width: 100%;
         object-fit: cover;
     }
+
     .title {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    .title:hover {
-        white-space: normal;
-        overflow: visible;
-    }
 
+        .title:hover {
+            white-space: normal;
+            overflow: visible;
+        }
 </style>
-        <!-- code for embedded FB page -->
-        <div id="fb-root"></div>
-        <script>
-            (function(d, s, id) {
+<!-- code for embedded FB page -->
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) return;
                 js = d.createElement(s); js.id = id;
                 js.src = 'https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v3.0';
                 fjs.parentNode.insertBefore(js, fjs);
-            }(document, 'script', 'facebook-jssdk'));
-        </script>
+            }(document, 'script', 'facebook-jssdk'));</script>
 
-        <div class="header-spacer w3-hide-small w3-hide-medium" style="height: 60px" ></div>
-        <div class="header-spacer w3-hide-small w3-hide-large" style="height: 50px" ></div>
-        <div class="header-spacer w3-hide-large w3-hide-medium" style="height: 35px"></div>
-        <!-- Slideshow container -->
-        <div class="slideshow-container"id="home">
-            
-            <div class="ism-slider" data-play_type="loop" id="header-carousel">
-                <ol>
-                    <li>
-                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-1.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
-                    </li>
-                    <li>
-                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-2.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
-                    </li>
-                    <li>
-                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-3.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
-                    </li>
-                    <li>
-                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-4.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
-                    </li>
-                    <li>
-                        <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-5.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
-                    </li>
-                </ol>
-            </div>            
+<div class="header-spacer w3-hide-small w3-hide-medium" style="height: 60px"></div>
+<div class="header-spacer w3-hide-small w3-hide-large" style="height: 50px"></div>
+<div class="header-spacer w3-hide-large w3-hide-medium" style="height: 35px"></div>
+<!-- Slideshow container -->
+<div class="slideshow-container" id="home">
 
-        </div>        
+    <div class="ism-slider" data-play_type="loop" id="header-carousel">
+        <ol>
+            <li>
+                <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-1.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+            </li>
+            <li>
+                <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-2.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+            </li>
+            <li>
+                <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-3.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+            </li>
+            <li>
+                <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-4.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+            </li>
+            <li>
+                <img src="https://d3rlz58riodgu6.cloudfront.net/GustafsGalleryStore_home-slider-5.jpg?Authorization" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+            </li>
+        </ol>
+    </div>
 
-        <div class="w3-container w3-padding-64">
-            <h3 class="w3-center"><b class="gustaf">Gustaf's Studio & Gallery</b></h3>
-            <p class="w3-center"><em>From the heart of the Borders</em></p>
-            <div class="scrollmenu w3-row" style="height: 400px">
-                @foreach (var product in Model.Products)
-                {
-                    <div class="w3-row-padding card" style="height: 100%">
-                        <img class="image-container" src="@product.ProductImages[0].Uri" alt="Denim Jeans" style="width: 100%;overflow: hidden" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
-                        <h3 class="title"><a href="https://gustafsgallery.co.uk/Products/Product?id=@product.Id">@product.Title</a></h3>
-                        <p class="price">£@product.Price</p>
-                        <p><a href="/Products/Product?id=@product.Id" class="w3-button w3-block w3-light-grey">Add to Cart</a></p>
-                    </div>
-                }
-                <div class="w3-quarter w3-row-padding" style="height: 100%;height:300px;line-height:300px">
-                    <a href="/Products" class="w3-button w3-block w3-light-grey" style="height: 100%">See More</a>
-                </div>
+</div>
+
+<div class="w3-container w3-padding-64">
+    <h3 class="w3-center"><b class="gustaf">Gustaf's Studio & Gallery</b></h3>
+    <p class="w3-center"><em>From the heart of the Borders</em></p>
+    <div class="scrollmenu w3-row" style="height: 400px">
+        @foreach (var product in Model.Products)
+        {
+            <div class="w3-row-padding card" style="height: 100%">
+                <a href="https://gustafsgallery.co.uk/Products/Product?id=@product.Id">
+                    <img class="image-container" src="@product.ProductImages[0].Uri" alt="Denim Jeans" style="width: 100%;overflow: hidden" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                    <h3 class="title">
+                        @product.Title
+                    </h3>
+                </a>
+                <p class="price">£@product.Price</p>
+                <p><a href="/Products/Product?id=@product.Id" class="w3-button w3-block w3-light-grey">Add to Cart</a></p>
             </div>
+        }
+        <div class="w3-quarter w3-row-padding" style="height: 100%;height:300px;line-height:300px">
+            <a href="/Products" class="w3-button w3-block w3-light-grey" style="height: 100%">See More</a>
         </div>
+    </div>
+</div>
 
-        <!-- Container (About Section) -->
-        <div class="w3-content w3-container w3-padding-64" id="about">
-            <div class="w3-row-padding">
-                <div class="w3-half">
-                    <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-about.html?Authorization"></div>
-                </div>
-                <div class="w3-half">
-                    <div class="fb-page" data-href="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/" data-tabs="timeline" data-width="1000" data-height="800" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/">Gustaf&#039;s Studio and Gallery</a></blockquote></div>
-                </div>
-            </div>
+<!-- Container (About Section) -->
+<div class="w3-content w3-container w3-padding-64" id="about">
+    <div class="w3-row-padding">
+        <div class="w3-half">
+            <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-about.html?Authorization"></div>
         </div>
-
-        <div class="bg-img-1 w3-display-container w3-opacity-min" id="designers">
-            <div class="w3-display-middle" style="white-space:nowrap;">
-                <span class="w3-center w3-padding-large animal-fayre-background w3-xlarge w3-wide w3-animate-opacity">
-                    <span>Designers</span>
-                </span>
-            </div>
+        <div class="w3-half">
+            <div class="fb-page" data-href="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/" data-tabs="timeline" data-width="1000" data-height="800" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/Gustafs-Studio-and-Gallery-226671854797896/">Gustaf&#039;s Studio and Gallery</a></blockquote></div>
         </div>
+    </div>
+</div>
 
-        <div class="w3-content w3-container w3-padding-64" >             
-            <div class="w3-center w3-margin-top">
-                <p>At <b class="gustaf">Gustaf's Studio & Gallery</b> we work with the best local designers to ensure we select only the finest quality pieces.</p>
-                <p>You can meet some of our designers in store or find more information on their pages.</p>
-                <br>
-                <div class="w3-row">
-                    <div class="w3-third w3-row-padding">
-                        <div class="w3-card w3-container" style="min-height:460px">
-                            <h3 class="animal-fayre-background">Animal Fayre Designs</h3><br>
-                            <a href="/Home/AnimalFayreDesigns">
-                                <img class="w3-circle w3-opacity w3-hover-opacity-off w3-hide-medium" src="https://farm5.staticflickr.com/4745/40292955842_473f588295_o.png" width="240" height="240" alt="GustafsStudio_logo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
-                                <i class="fas fa-user-ninja w3-hide-large w3-hide-small" style="font-size: 180px"></i>
-                            </a>
-                            <p>Carol Anne Long</p>
-                            <p>
-                                <a class="animal-fayre-hover-a" href="http://www.instagram.com/animalfayredesigns/"><i class="fab fa-instagram w3-hover-opacity" style="font-size:24px;"></i></a>
-                                <a class="animal-fayre-hover-a" href="https://www.etsy.com/shop/animalfayredesigns"><i class="fa fa-cart-plus w3-hover-opacity" style="font-size:24px;"></i></a>
-                            </p>
-                        </div>
-                    </div>
+<div class="bg-img-1 w3-display-container w3-opacity-min" id="designers">
+    <div class="w3-display-middle" style="white-space:nowrap;">
+        <span class="w3-center w3-padding-large animal-fayre-background w3-xlarge w3-wide w3-animate-opacity">
+            <span>Designers</span>
+        </span>
+    </div>
+</div>
 
-                    <div class="w3-third w3-row-padding">
-                        <div class="w3-card w3-container" style="min-height:460px">
-                            <h3 class="jackalope-background">Jack Conkie Illustration</h3><br>
-                            <a href="/Home/JackConkieIllustrations">
-                                <img class="w3-circle w3-opacity w3-hover-opacity-of w3-hide-medium" src="https://img.etsystatic.com/iusa/d01bcf/58209284/iusa_75x75.58209284_1pcj.jpg?version=0" width="240" height="240" alt="GustafsStudio_logo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
-                                <i class="fas fa-user-secret w3-hide-large w3-hide-small" style="font-size: 180px"></i>
-                            </a>
-                            <p>Jack Conkie</p>
-                            <p>
-                                <a class="jackalope-hover-a" href="https://www.instagram.com/jackalopeart/"><i class="fab fa-instagram w3-hover-opacity" style="font-size:24px;"></i></a>
-                                <a class="jackalope-hover-a" href="https://www.etsy.com/uk/shop/RightVillainousCo"><i class="fa fa-cart-plus w3-hover-opacity" style="font-size:24px;"></i></a>
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="w3-third w3-row-padding">
-                        <div class="w3-card w3-container" style="min-height:460px">
-                            <h3 class="silver-bough-background">Silver Bough Jewellery</h3><br>
-                            <a href="/Home/SilverBoughJewellery">
-                                <img class="w3-circle w3-opacity w3-hover-opacity-off w3-hide-medium" src="https://farm5.staticflickr.com/4610/40088936742_6471cfd099_o.jpg" width="240" height="240" alt="GustafsStudio_logo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
-                                <i class="fas fa-user-astronaut w3-hide-large w3-hide-small" style="font-size: 180px"></i>
-                            </a>
-                            <p>Patrick Hoye</p>
-                            <p>
-                                <a class="silver-bough-hover-a" href="https://www.instagram.com/silverboughjewellery/"><i class="fab fa-instagram w3-hover-opacity" style="font-size:24px;"> </i></a>
-                                <a class="silver-bough-hover-a" href="https://www.etsy.com/uk/shop/SilverBoughJewellery?ref=profile_shopname"><i class="fa fa-cart-plus w3-hover-opacity" style="font-size:24px;"> </i></a>
-                            </p>
-                        </div>
-                    </div>  
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-img-1 w3-display-container w3-opacity-min" id="products">
-            <div class="w3-display-middle" style="white-space:nowrap;">
-                <span class="w3-center w3-padding-large animal-fayre-background w3-xlarge w3-wide w3-animate-opacity">
-                    <span>Products</span>
-                </span>
-            </div>
-        </div>
-
-        <div class="w3-content w3-container w3-padding-64">
-            <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-product.html?Authorization"></div>
-        </div>
-
-        <div class="w3-row-padding">  
-            <div class="w3-third">
-                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer1.html?Authorization"></div>
-            </div>
-            <div class="w3-third">
-                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer2.html?Authorization"></div>
-            </div>
-            <div class="w3-third">
-                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer3.html?Authorization"></div>
-            </div>
-        </div>  
+<div class="w3-content w3-container w3-padding-64">
+    <div class="w3-center w3-margin-top">
+        <p>At <b class="gustaf">Gustaf's Studio & Gallery</b> we work with the best local designers to ensure we select only the finest quality pieces.</p>
+        <p>You can meet some of our designers in store or find more information on their pages.</p>
         <br>
-        <div></div>
-        <div class="w3-row-padding">  
-            <div class="w3-third">
-                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer4.html?Authorization"></div>
+        <div class="w3-row">
+            <div class="w3-third w3-row-padding">
+                <div class="w3-card w3-container" style="min-height:460px">
+                    <h3 class="animal-fayre-background">Animal Fayre Designs</h3><br>
+                    <a href="/Home/AnimalFayreDesigns">
+                        <img class="w3-circle w3-opacity w3-hover-opacity-off w3-hide-medium" src="https://farm5.staticflickr.com/4745/40292955842_473f588295_o.png" width="240" height="240" alt="GustafsStudio_logo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        <i class="fas fa-user-ninja w3-hide-large w3-hide-small" style="font-size: 180px"></i>
+                    </a>
+                    <p>Carol Anne Long</p>
+                    <p>
+                        <a class="animal-fayre-hover-a" href="http://www.instagram.com/animalfayredesigns/"><i class="fab fa-instagram w3-hover-opacity" style="font-size:24px;"></i></a>
+                        <a class="animal-fayre-hover-a" href="https://www.etsy.com/shop/animalfayredesigns"><i class="fa fa-cart-plus w3-hover-opacity" style="font-size:24px;"></i></a>
+                    </p>
+                </div>
             </div>
-            <div class="w3-third">
-                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer5.html?Authorization"></div>
-            </div>
-            <div class="w3-third">
-                <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer6.html?Authorization"></div>
-            </div>
-        </div>  
 
-        <br>
+            <div class="w3-third w3-row-padding">
+                <div class="w3-card w3-container" style="min-height:460px">
+                    <h3 class="jackalope-background">Jack Conkie Illustration</h3><br>
+                    <a href="/Home/JackConkieIllustrations">
+                        <img class="w3-circle w3-opacity w3-hover-opacity-of w3-hide-medium" src="https://img.etsystatic.com/iusa/d01bcf/58209284/iusa_75x75.58209284_1pcj.jpg?version=0" width="240" height="240" alt="GustafsStudio_logo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        <i class="fas fa-user-secret w3-hide-large w3-hide-small" style="font-size: 180px"></i>
+                    </a>
+                    <p>Jack Conkie</p>
+                    <p>
+                        <a class="jackalope-hover-a" href="https://www.instagram.com/jackalopeart/"><i class="fab fa-instagram w3-hover-opacity" style="font-size:24px;"></i></a>
+                        <a class="jackalope-hover-a" href="https://www.etsy.com/uk/shop/RightVillainousCo"><i class="fa fa-cart-plus w3-hover-opacity" style="font-size:24px;"></i></a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="w3-third w3-row-padding">
+                <div class="w3-card w3-container" style="min-height:460px">
+                    <h3 class="silver-bough-background">Silver Bough Jewellery</h3><br>
+                    <a href="/Home/SilverBoughJewellery">
+                        <img class="w3-circle w3-opacity w3-hover-opacity-off w3-hide-medium" src="https://farm5.staticflickr.com/4610/40088936742_6471cfd099_o.jpg" width="240" height="240" alt="GustafsStudio_logo" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                        <i class="fas fa-user-astronaut w3-hide-large w3-hide-small" style="font-size: 180px"></i>
+                    </a>
+                    <p>Patrick Hoye</p>
+                    <p>
+                        <a class="silver-bough-hover-a" href="https://www.instagram.com/silverboughjewellery/"><i class="fab fa-instagram w3-hover-opacity" style="font-size:24px;"> </i></a>
+                        <a class="silver-bough-hover-a" href="https://www.etsy.com/uk/shop/SilverBoughJewellery?ref=profile_shopname"><i class="fa fa-cart-plus w3-hover-opacity" style="font-size:24px;"> </i></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-img-1 w3-display-container w3-opacity-min" id="products">
+    <div class="w3-display-middle" style="white-space:nowrap;">
+        <span class="w3-center w3-padding-large animal-fayre-background w3-xlarge w3-wide w3-animate-opacity">
+            <span>Products</span>
+        </span>
+    </div>
+</div>
+
+<div class="w3-content w3-container w3-padding-64">
+    <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-product.html?Authorization"></div>
+</div>
+
+<div class="w3-row-padding">
+    <div class="w3-third">
+        <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer1.html?Authorization"></div>
+    </div>
+    <div class="w3-third">
+        <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer2.html?Authorization"></div>
+    </div>
+    <div class="w3-third">
+        <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer3.html?Authorization"></div>
+    </div>
+</div>
+<br>
+<div></div>
+<div class="w3-row-padding">
+    <div class="w3-third">
+        <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer4.html?Authorization"></div>
+    </div>
+    <div class="w3-third">
+        <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer5.html?Authorization"></div>
+    </div>
+    <div class="w3-third">
+        <div w3-include-html="https://dmm8i98ipy9lm.cloudfront.net/home-content-designer6.html?Authorization"></div>
+    </div>
+</div>
+
+<br>

@@ -83,6 +83,7 @@ namespace GustafsGalleryStore.Helpers
             {
                 return order;
             }
+
             order.OrderItems = context.OrderItems.
                                     Where(x => x.OrderId == id).
                                     ToList();
@@ -156,7 +157,29 @@ namespace GustafsGalleryStore.Helpers
                 order.OrderTotalPostagePrice = 0;
             }
 
-            order.OrderTotalPrice = (order.OrderSubTotalPrice + order.OrderTotalPostagePrice);
+            List<DiscountItem> discountItems = context.DiscountItems.
+                                Where(x => x.OrderId == order.Id).
+                                ToList();
+
+            List<Discount> discounts = new List<Discount>();
+            decimal discountTotal = 0;
+
+            foreach (var discountItem in discountItems)
+            {
+                Discount inDb = context.Discounts.Where(x => x.Id == discountItem.DiscountId).SingleOrDefault();
+                if (inDb.Percentage > 0)
+                {
+                    inDb.Value = order.OrderSubTotalPrice * (inDb.Percentage / 100);
+                }
+                discounts.Add(inDb);
+                discountTotal += inDb.Value;
+            }
+
+            order.OrderDiscountSubTotalPrice = discountTotal;
+
+            order.Discounts = discounts;
+
+            order.OrderTotalPrice = (order.OrderSubTotalPrice + order.OrderTotalPostagePrice - order.OrderDiscountSubTotalPrice);
 
             order.DeliveryType.DeliveryCompany = context.DeliveryCompanies.
                                                     Where(x => x.Id == order.DeliveryType.DeliveryCompanyId).

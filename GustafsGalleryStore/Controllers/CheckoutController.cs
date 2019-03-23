@@ -68,11 +68,12 @@ namespace GustafsGalleryStore.Controllers
             //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
 
             var userId = _userManager.GetUserId(User);
-            var order = _context.Orders.
-                                Where(x => x.Id == id).
-                                Where(x => x.OrderStatusId == StatusId(MasterStrings.Basket)).
-                                SingleOrDefault();
-            var isNonGiftCard = false;
+            //var order = _context.Orders.
+            //Where(x => x.Id == id).
+            //Where(x => x.OrderStatusId == StatusId(MasterStrings.Basket)).
+            //SingleOrDefault();
+            var order = OrderHelper.GetOrder(id, _context);
+            var isNonGiftCard = true;
 
             if (order == null)
             {
@@ -101,10 +102,15 @@ namespace GustafsGalleryStore.Controllers
 
             foreach (var item in viewModel.Basket.OrderItems)
             {
-                if (item.Product.DepartmentId != 13)
+                if (item.Product.DepartmentId == 13)
                 {
-                    isNonGiftCard = true;
+                    isNonGiftCard = false;
                 }
+            }
+
+            if (viewModel.Basket.OrderItems.Count > 2)
+            {
+                isNonGiftCard = true;
             }
 
             if (isNonGiftCard)

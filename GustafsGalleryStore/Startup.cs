@@ -127,44 +127,11 @@ namespace GustafsGalleryStore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //app.Use((context, next) =>
-            //{
-            //    context.Request.Scheme = "https";
-            //    return next();
-            //});
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedProto
             });
-
-            //app.Run(async (context) =>
-            //{
-            //    context.Response.ContentType = "text/plain";
-
-            //    // Request method, scheme, and path
-            //    await context.Response.WriteAsync(
-            //        $"Request Method: {context.Request.Method}{Environment.NewLine}");
-            //    await context.Response.WriteAsync(
-            //        $"Request Scheme: {context.Request.Scheme}{Environment.NewLine}");
-            //    await context.Response.WriteAsync(
-            //        $"Request Path: {context.Request.Path}{Environment.NewLine}");
-
-            //    // Headers
-            //    await context.Response.WriteAsync($"Request Headers:{Environment.NewLine}");
-
-            //    foreach (var header in context.Request.Headers)
-            //    {
-            //        await context.Response.WriteAsync($"{header.Key}: " +
-            //            $"{header.Value}{Environment.NewLine}");
-            //    }
-
-            //    await context.Response.WriteAsync(Environment.NewLine);
-
-            //    // Connection: RemoteIp
-            //    await context.Response.WriteAsync(
-            //        $"Request RemoteIp: {context.Connection.RemoteIpAddress}");
-            //});
 
             if (env.IsDevelopment())
             {

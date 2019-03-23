@@ -4,14 +4,16 @@ using GustafsGalleryStore.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GustafsGalleryStore.Migrations
 {
     [DbContext(typeof(GustafsGalleryStoreContext))]
-    partial class GustafsGalleryStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20190319215030_UpdateDiscountDataModel")]
+    partial class UpdateDiscountDataModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,8 +203,6 @@ namespace GustafsGalleryStore.Migrations
 
                     b.Property<bool>("IsLive");
 
-                    b.Property<long?>("OrderId");
-
                     b.Property<decimal>("Percentage");
 
                     b.Property<DateTime?>("StartDate");
@@ -210,8 +210,6 @@ namespace GustafsGalleryStore.Migrations
                     b.Property<decimal>("Value");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("Discounts");
                 });
@@ -227,6 +225,8 @@ namespace GustafsGalleryStore.Migrations
                     b.Property<long>("OrderId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("DiscountItems");
                 });
@@ -645,11 +645,12 @@ namespace GustafsGalleryStore.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.Discount", b =>
+            modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.DiscountItem", b =>
                 {
                     b.HasOne("GustafsGalleryStore.Models.DataModels.Order")
                         .WithMany("Discounts")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("GustafsGalleryStore.Models.DataModels.Order", b =>

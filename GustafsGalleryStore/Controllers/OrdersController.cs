@@ -233,6 +233,32 @@ namespace GustafsGalleryStore.Controllers
             return new BadRequestResult();
         }
 
+        [AllowAnonymous]
+        public IActionResult Discount (long basketId, string discountCode)
+        {
+            if (basketId == 0)
+            {
+                return ControllerHelper.RedirectToLocal(this, "/Home/Error?failureMessage=Something went wrong.");
+            }
+
+            if (string.IsNullOrWhiteSpace(discountCode))
+            {
+                return ControllerHelper.RedirectToLocal(this, string.Format("/Orders/ViewBasket?id={0}&failureMessage=No discount code provided.",basketId));
+            }
+
+            if (!DiscountCodeHelper.ValidateDiscountCode(discountCode,_context))
+            {
+                return ControllerHelper.RedirectToLocal(this, string.Format("/Orders/ViewBasket?id={0}&failureMessage=Discount code provided is invalid.", basketId));
+            }
+
+            if (!DiscountCodeHelper.AddDiscountItem(basketId,discountCode,_context))
+            {
+                return ControllerHelper.RedirectToLocal(this, string.Format("/Orders/ViewBasket?id={0}&failureMessage=Discount code has already been added.", basketId));
+            }
+
+            return ControllerHelper.RedirectToLocal(this, string.Format("/Orders/ViewBasket?id={0}&SuccessMessage=Discount code has been added.", basketId));
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public IActionResult UpdateItem([FromBody]OrderItemDTO itemDTO)
@@ -299,11 +325,15 @@ namespace GustafsGalleryStore.Controllers
 
 
         [AllowAnonymous]
-        public IActionResult ViewBasket(long id)
+        public IActionResult ViewBasket(long id, string statusMessage = null, string successMessage = null,
+                                   string failureMessage = null)
         {
             var viewModel = new BasketViewModel()
             {
-                Basket = OrderHelper.GetOrder(id, _context)
+                Basket = OrderHelper.GetOrder(id, _context),
+                SuccessMessage = successMessage,
+                StatusMessage = statusMessage,
+                FailureMessage = failureMessage
             };
 
             if(_signInManager.IsSignedIn(User))

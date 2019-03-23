@@ -26,7 +26,7 @@
                                 <img class="w3-hover-opacity-off w3-opacity" style="max-width: 100%;" src="@item.Product.ProductImages[0].Uri" />
                             }
                         </td>
-                        <td class="w3-half">
+                        <td class="w3-half w3-padding">
                             <a href="/Products/Product?id=@item.Product.Id"><h4>@item.Product.Title</h4></a>
 
                             @if (item.Product.Stock > 5)
@@ -96,11 +96,75 @@
             <h4 class="w3-right" id="subtotal">Subtotal: £@Model.Basket.OrderSubTotalPrice</h4>
         </div>
     </div>
+    @if (Model.Basket.Discounts.Count > 0) {
+        <div class="w3-section w3-light-grey w3-padding-large">
+            <h3>Discounts</h3>
+            <div class="w3-bar">
+                <span class="w3-left"><strong>Discount Code</strong></span>
+                <span class="w3-right"><strong>Amount</strong></span>
+            </div>
+            <table style="width: 100%">
+                <thead>
+                </thead>
+                <tbody>
+                    @foreach (var discount in Model.Basket.Discounts) {
+                        <tr>
+                            <td>@discount.Code</td>
+                            <td class="w3-right">£@discount.Value</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="w3-section w3-light-grey w3-padding-large">
+            <div class="w3-bar">
+                <h4 class="w3-right" id="subtotal">Discount Total: £@Model.Basket.OrderDiscountSubTotalPrice</h4>
+            </div>
+        </div>
+        <div class="w3-section w3-light-grey w3-padding-large">
+            <div class="w3-bar">
+                <h4 class="w3-right" id="subtotal">Order Total: £@Model.Basket.OrderTotalPrice</h4>
+            </div>
+        </div>
+    }
     <div class="w3-bar">
         @if (Model.Basket.OrderItems.Count > 0)
         {
             <a href="/Checkout/Index?id=@Model.Basket.Id" class="w3-button w3-round w3-dark-grey" onclick="openModal('spin')">Procced to Checkout</a>
+            <button class="w3-button w3-round w3-light-grey w3-right" onclick="openModal('discount-code-modal')"><i class="fas fa-plus w3-margin-right"></i>Add Discount Code</button>
         }
     </div>
 </div>
+<div id="discount-code-modal" class="w3-modal" style="z-index:4">
+    <span class="w3-button w3-large w3-display-topright" title="Close Image" onclick="closeModal('discount-code-modal')"><i class="fa fa-times w3-text-white"></i></span>
+    <div class="w3-modal-content w3-animate-zoom">
+        <div class="w3-container w3-padding">
+            <div class="w3-container w3-padding-large">
+                <div class="form-group">
+                    <h3 class="w3-padding">Discount Code</h3>
+                    <hr />
+                    <input class="w3-input" id="discount-code" />
+                    <input hidden value="@Model.Basket.Id" id="id" />
+                </div>
+                <p>
+                    <button class="w3-button w3-round w3-light-grey" onclick="submitDiscount()"><i class="fas fa-plus w3-margin-right"></i>Add Discount Code</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+     function submitDiscount() {
+
+            var id = document.getElementById("id");
+            var discountCode = document.getElementById("discount-code");
+            debugger;
+            var url = "/Orders/Discount?basketId=" + id.getAttribute("value") + "&discountCode=" + discountCode.value;
+
+            window.location.href = url;
+
+        }
+</script>
+<partial name="_messages" model="Model" />
 <script src="https://dmm8i98ipy9lm.cloudfront.net/updateBasketCode.min.js?Authorization"></script>
