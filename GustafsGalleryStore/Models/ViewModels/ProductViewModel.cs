@@ -18,5 +18,7 @@ namespace GustafsGalleryStore.Models.ViewModels
         public List<SelectListItem> Colours { get; set; }
         public List<SelectListItem> Sizes { get; set; }
 
+        public List<Product> RelatedProducts { get; set; }
+
     }
 }

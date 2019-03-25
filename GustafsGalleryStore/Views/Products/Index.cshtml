@@ -67,11 +67,11 @@
                     <tr>
                         <td class="w3-center" style="max-width: 200px;">
                             @*<p class="" style="width: 200px;"><a href="/Products/Product?id=@member.Id" class="edit" data-message-id="@member.Id">@member.Title</a></p>
-                            @if (member.ProductImages.Count > 0)
-                            {
-                                <a href="/Products/Product?id=@member.Id" class="edit" data-message-id="@member.Id"><img class="w3-hover-opacity-off w3-opacity" style="max-width: 200px;" src="@member.ProductImages[0].Uri" /></a>
-                            }*@
-                            
+                                @if (member.ProductImages.Count > 0)
+                                {
+                                    <a href="/Products/Product?id=@member.Id" class="edit" data-message-id="@member.Id"><img class="w3-hover-opacity-off w3-opacity" style="max-width: 200px;" src="@member.ProductImages[0].Uri" /></a>
+                                }*@
+
                             <a href="/Products/Product?id=@member.Id" class="edit" data-message-id="@member.Id">
                                 @if (member.ProductImages.Count > 0)
                                 {
@@ -84,7 +84,20 @@
                         <td class="w3-center w3-hide-small">@member.Department.DepartmentName</td>
                         <td class="w3-center w3-hide-small" style="width: 100px">
                             <b>£@member.Price</b>
-                            <a class="w3-bar-item w3-button w3-round w3-light-grey" href="/Products/Product?id=@member.Id" onclick="openModal('spin');"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                            <p>
+                                <a class="w3-bar-item w3-button w3-round w3-light-grey w3-block" href="/Products/Product?id=@member.Id" onclick="openModal('spin');"><i class="fas fa-eye w3-margin-right"></i>More Detail</a>
+                            </p>
+                            <p>
+                                @if (member.ProductSizes.Count == 1 && member.ProductColours.Count == 1)
+                                {
+
+                                    <button class="w3-bar-item w3-button w3-round w3-light-grey w3-block" onclick="addToBasket(@member.Id,'@member.ProductSizes[0].Size','@member.ProductColours[0].Colour')"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</button>
+                                }
+                                else
+                                {
+                                    <a class="w3-bar-item w3-button w3-round w3-light-grey w3-block" href="/Products/Product?id=@member.Id" onclick="openModal('spin');"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                                }
+                            </p>
                         </td>
                     </tr>
                 }
@@ -92,5 +105,19 @@
         </table>
     </div>
 </div>
+
+<div id="basket-modal" class="w3-modal" style="z-index:4">
+    <span class="w3-button w3-large w3-display-topright" title="Close Image" onclick="closeModal('discount-code-modal')"><i class="fa fa-times w3-text-white"></i></span>
+    <div class="w3-modal-content w3-animate-zoom">
+        <div class="w3-container w3-padding">
+            <div class="w3-container w3-padding-large">
+                <h2 id="title"></h2>
+                <h4 id="brand"></h4>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>$("#products").DataTable();</script>
+<script src="https://dmm8i98ipy9lm.cloudfront.net/addToBasketCodev2.min.js?Authorization"></script>
 <script src="https://dmm8i98ipy9lm.cloudfront.net/filterProducts.min.js?Authorization"></script>

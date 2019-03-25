@@ -21,34 +21,29 @@ namespace GustafsGalleryStore.Services
         private static AmazonS3Client _s3Client = new AmazonS3Client(awsAccessKeyId: MasterStrings.AWSAccessKeyId,
                                                               awsSecretAccessKey: MasterStrings.AWSSecretAccessKey,
                                                               region: Amazon.RegionEndpoint.USEast1);
-        private static readonly string _bucketName = "gustafsgallerystore-images";//this is my Amazon Bucket name
-        private static string _bucketSubdirectory = String.Empty;
+        public static readonly string bucketName = "gustafsgallerystore-images";//this is my Amazon Bucket name
+        public static readonly string tempBucketName = "gustafsgallerystore-tempimages";//this is my Amazon Bucket name
+
 
         public S3Helper(IHostingEnvironment environment)
         {
             _hostingEnvironment = environment;
         }
 
-        public static void UploadToS3(string filePath)
+        public static void UploadToS3(string filePath, string bucketName, string bucketSubdirectory = null)
         {
             try
             {
                 TransferUtility fileTransferUtility = new TransferUtility(_s3Client);
 
-                string bucketName;
-
-                if (_bucketSubdirectory == "" || _bucketSubdirectory == null)
-                {
-                    bucketName = _bucketName; //no subdirectory just bucket name  
-                }
-                else
+                if (!string.IsNullOrWhiteSpace(bucketSubdirectory))
                 {   // subdirectory and bucket name  
-                    bucketName = _bucketName + @"/" + _bucketSubdirectory;
+                    bucketName = bucketName + @"/" + bucketSubdirectory;
                 }
 
                 // 1. Upload a file, file name is used as the object key name.
 
-                fileTransferUtility.Upload(filePath, _bucketName);
+                fileTransferUtility.Upload(filePath, bucketName);
 
                  //2. Make file public
                 _s3Client.PutACLAsync(new PutACLRequest
@@ -65,22 +60,16 @@ namespace GustafsGalleryStore.Services
             }
         }
 
-        public static async void DeleteFromS3Async(string filePath)
+        public static async void DeleteFromS3Async(string filePath, string bucketName, string bucketSubdirectory = null)
         {
             try
             {
 
-                string bucketName;
                 string fileName = filePath.Replace("https://s3.amazonaws.com/gustafsgallerystore-images/", "").Replace("?Authorization","");
 
-
-                if (_bucketSubdirectory == "" || _bucketSubdirectory == null)
-                {
-                    bucketName = _bucketName; //no subdirectory just bucket name  
-                }
-                else
+                if (!string.IsNullOrWhiteSpace(bucketSubdirectory))
                 {   // subdirectory and bucket name  
-                    bucketName = _bucketName + @"/" + _bucketSubdirectory;
+                    bucketName = bucketName + @"/" + bucketSubdirectory;
                 }
 
                 var deleteRequest = new DeleteObjectRequest

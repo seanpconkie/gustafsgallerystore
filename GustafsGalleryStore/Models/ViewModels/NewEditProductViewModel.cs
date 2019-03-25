@@ -41,5 +41,9 @@ namespace GustafsGalleryStore.Models.ViewModels
         public List<SelectListItem> ProductSizes { get; set; }
         public List<SelectListItem> ProductImages { get; set; }
 
+        // used for preview
+        public List<Product> RelatedProducts { get; set; }
+        public List<ProductImage> ProductImagePreview { get; set; }
+
     }
 }

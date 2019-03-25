@@ -5,15 +5,15 @@
 <!-- Page content -->
 <div class="w3-padding-large w3-margin-top w3-margin-bottom">
     <div class="w3-content">
-        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" enctype="multipart/form-data">
+        <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" enctype="multipart/form-data" id="edit-form">
             <header>
                 <div w3-bar><a href="/ManageProducts" class="w3-button"><i class="fas fa-arrow-left w3-margin-right"></i>Back</a></div>
-                <h2><input asp-for="Product.Title" class="w3-input" /></h2>
+                <h2><input asp-for="Product.Title" class="w3-input" id="title"/></h2>
                 <div class="w3-row">
                     <h4 class="w3-col s1">by</h4>
                     <div class="w3-half">
                         <div class="custom-select w3-half w3-row-padding">
-                            <select asp-for="Brand">
+                            <select asp-for="Brand" id="brand">
                                 @foreach (var brand in Model.Brands)
                                 {
                                     if (brand.Text == Model.Brand)
@@ -33,7 +33,7 @@
                     <div class="w3-col s2 w3-row-padding">Department:&nbsp;</div>
                     <div class="w3-half w3-row-padding">
                         <div class="custom-select w3-half w3-row-padding">
-                            <select asp-for="Department">
+                            <select asp-for="Department" id="department">
                                 @foreach (var dept in Model.Departments)
                                 {
                                     if (dept.Text == Model.Department)
@@ -86,7 +86,7 @@
 
                 </div>
                 <div class="w3-half w3-row-padding">
-                    <div class="w3-section w3-row-padding"><textarea class="w3-input" style="min-height: 200px" asp-for="@Model.Product.Description"></textarea></div>
+                    <div class="w3-section w3-row-padding"><textarea class="w3-input" style="min-height: 200px" asp-for="@Model.Product.Description" id="description"></textarea></div>
                     <p class="w3-section w3-row-padding">
                         <span class="w3-half" style="font-size: large"><b class="gustaf">£<input asp-for="@Model.Product.Price" style="max-width: 80px;" type="number" min="0.01" step="0.01" /></b></span>
                         <span class="w3-half"><input asp-for="@Model.Product.Stock" style="max-width: 40px;" type="number" />  in Stock</span>
@@ -158,12 +158,34 @@
                         </div>
                     </div>
                     <input asp-for="Product.Id" hidden />
-                    <p class="w3-padding">
-                        <button type="submit" class="w3-button w3-dark-grey w3-round" onclick="openModal('spin')"><i class="fas fa-save w3-margin-right"></i>Save Changes</button>
-                    </p>
+                    <div class="w3-row">
+                        <div class="w3-half w3-row-padding">
+                            <button class="w3-button w3-dark-grey w3-round" onclick="openModal('spin');submitEdit()"><i class="fas fa-save w3-margin-right"></i>Save Changes</button>
+                        </div>
+                        <div class="w3-half w3-row-padding">
+                            <button class="w3-button w3-light-grey w3-round" onclick="loadPreview()"><i class="fas fa-eye w3-margin-right"></i>Preview Changes</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
 </div>
+<script>
+function loadPreview() {
+
+    var form = document.getElementById("edit-form");
+    form.action = "/ManageProducts/PreviewProduct";
+    form.target = "_blank";
+    form.submit();
+}
+
+function submitEdit() {
+
+    var form = document.getElementById("edit-form");
+    form.action = "/ManageProducts/EditProduct";
+    form.target = null;
+    form.submit();
+}
+</script>
 <partial name="_AddItem" /> 

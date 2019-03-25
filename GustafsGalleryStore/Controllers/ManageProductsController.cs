@@ -176,7 +176,7 @@ namespace GustafsGalleryStore.Controllers
                                 await item.CopyToAsync(stream);
                             }
 
-                            S3Helper.UploadToS3(filename);
+                            S3Helper.UploadToS3(filename, S3Helper.bucketName);
 
                             var image = new ProductImage()
                             {
@@ -331,7 +331,7 @@ namespace GustafsGalleryStore.Controllers
 
                     inDb.ProductSizes = productSizes;
 
-                    //add sizes
+                    //add colour
                     List<ProductColour> productColours = new List<ProductColour>();
                     foreach (var item in input.Colour)
                     {
@@ -366,7 +366,7 @@ namespace GustafsGalleryStore.Controllers
 
                         if (deleteImage)
                         {
-                            S3Helper.DeleteFromS3Async(image.Uri);
+                            S3Helper.DeleteFromS3Async(image.Uri, S3Helper.bucketName);
                             _context.Remove(image);
                         }
                         else
@@ -391,7 +391,7 @@ namespace GustafsGalleryStore.Controllers
                                 await item.CopyToAsync(stream);
                             }
 
-                            S3Helper.UploadToS3(filename);
+                            S3Helper.UploadToS3(filename, S3Helper.bucketName);
 
                             var image = new ProductImage()
                             {
@@ -433,6 +433,99 @@ namespace GustafsGalleryStore.Controllers
 
             return View(input);
 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PreviewProduct(NewEditProductViewModel viewModel)
+        {
+
+            // create product images
+            var inDb = _context.Products.
+                Where(x => x.Id == viewModel.Product.Id).
+                Include(x => x.ProductImages).SingleOrDefault();
+            List<ProductImage> productImages = new List<ProductImage>();
+            foreach (var image in inDb.ProductImages)
+            {
+                if (viewModel.Image != null)
+                {
+                    foreach (var item in viewModel.Image)
+                    {
+                        if (image.Uri.Replace("https://d3rlz58riodgu6.cloudfront.net/", "").Replace("?Authorization", "") == item)
+                        {
+                            productImages.Add(new ProductImage() { Uri = image.Uri });
+                        }
+                    }
+                }
+            }
+
+            //add new images
+            if (viewModel.ImageFiles != null)
+            {
+                foreach (var item in viewModel.ImageFiles)
+                {
+
+                    var filePath = Path.GetTempPath();
+
+                    var filename = filePath + _storeName + '_' + Guid.NewGuid();
+
+                    using (var stream = new FileStream(filename, FileMode.Create))
+                    {
+                        await item.CopyToAsync(stream);
+                    }
+
+                    S3Helper.UploadToS3(filename, S3Helper.tempBucketName);
+
+                    var image = new ProductImage()
+                    {
+                        Uri = "https://s3.amazonaws.com/gustafgallerystore-tempimages/" + _storeName + '_' + item.FileName.ToString() + "?Authorization"
+                    };
+
+                    productImages.Add(image);
+                }
+            }
+
+            viewModel.ProductImagePreview = productImages;
+
+            //add sizes
+            List<ProductSize> productSizes = new List<ProductSize>();
+            foreach (var item in viewModel.Size)
+            {
+                var size = new ProductSize()
+                {
+                    Size = item.ToString()
+                };
+
+                productSizes.Add(size);
+
+            }
+
+            viewModel.Product.ProductSizes = productSizes;
+
+            //add colour
+            List<ProductColour> productColours = new List<ProductColour>();
+            foreach (var item in viewModel.Colour)
+            {
+                var colour = new ProductColour()
+                {
+                    Colour = item.ToString()
+                };
+
+                productColours.Add(colour);
+
+            }
+
+            // get related products
+            viewModel.RelatedProducts = _context.Products.
+                                      Where(x => x.ProductBrandId == _context.ProductBrands.
+                                                                            Where(y => y.Brand == viewModel.Brand).SingleOrDefault().Id
+                                      ).
+                                      Include(x => x.ProductImages).
+                                      ToList();
+
+            viewModel.Product.ProductColours = productColours;
+
+            return View(viewModel);
         }
 
         [HttpGet]

@@ -211,6 +211,12 @@ namespace GustafsGalleryStore.Controllers
                 viewModel.Product.ProductImages.Add(new ProductImage() { Uri = "https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png" });
             }
 
+            // get related products
+            viewModel.RelatedProducts = _context.Products.
+                                      Where(x => x.ProductBrandId == viewModel.Product.ProductBrandId).
+                                      Include(x => x.ProductImages).
+                                      ToList();
+
             return View(viewModel);
             //return ControllerHelper.RedirectToLocal(this, "/Home/ComingSoon");
         }
