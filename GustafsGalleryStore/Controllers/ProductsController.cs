@@ -214,7 +214,11 @@ namespace GustafsGalleryStore.Controllers
             // get related products
             viewModel.RelatedProducts = _context.Products.
                                       Where(x => x.ProductBrandId == viewModel.Product.ProductBrandId).
-                                      Include(x => x.ProductImages).
+                                      Include(p => p.Department).
+                                      Include(p => p.ProductBrand).
+                                      Include(p => p.ProductSizes).
+                                      Include(p => p.ProductImages).
+                                      Include(p => p.ProductColours).
                                       ToList();
 
             return View(viewModel);

@@ -34,14 +34,15 @@
         text-overflow: ellipsis;
     }
 
-    .title:hover {
-        white-space: normal;
-        overflow: visible;
-    }
+        .title:hover {
+            white-space: normal;
+            overflow: visible;
+        }
 </style>
 <!-- code for embedded FB page -->
 <div id="fb-root"></div>
-<script>(function(d, s, id) {
+<script>
+(function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) return;
                 js = d.createElement(s); js.id = id;
@@ -91,7 +92,16 @@
                     </h3>
                 </a>
                 <p class="price">£@product.Price</p>
-                <p><a href="/Products/Product?id=@product.Id" class="w3-button w3-block w3-light-grey">Add to Cart</a></p>
+                @*<p><a href="/Products/Product?id=@product.Id" class="w3-button w3-block w3-light-grey">Add to Cart</a></p>*@
+                @if (product.ProductSizes.Count == 1 && product.ProductColours.Count == 1)
+                {
+
+                    <button class="w3-bar-item w3-button w3-round w3-light-grey w3-block" onclick="addToBasket(@product.Id,'@product.ProductSizes[0].Size','@product.ProductColours[0].Colour')"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</button>
+                }
+                else
+                {
+                    <a class="w3-bar-item w3-button w3-round w3-light-grey w3-block" href="/Products/Product?id=@product.Id" onclick="openModal('spin');"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                }
             </div>
         }
         <div class="w3-quarter w3-row-padding" style="height: 100%;height:300px;line-height:300px">
@@ -211,4 +221,5 @@
     </div>
 </div>
 
+<script src="https://dmm8i98ipy9lm.cloudfront.net/addToBasketCodev2.min.js?Authorization"></script>
 <br>

@@ -5,30 +5,39 @@
 }
 <div class="w3-container w3-padding-64">
     <div class="w3-section w3-light-grey w3-padding-large">
-        <table class="w3-hide-small" style="width: 100%">
-            <thead>
-                <tr>
-                    <th class="w3-quarter"></th>
-                    <th class="w3-half"></th>
-                    <th style="width: 6.25%;">Price</th>
-                    <th style="width: 6.25%;">Quantity</th>
-                    <th style="width: 6.25%;">Size</th>
-                    <th style="width: 6.25%;">Colour</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Basket.OrderItems)
-                {
-                    <tr>
-                        <td class="w3-quarter">
-                            @if (item.Product.ProductImages.Count > 0)
-                            {
-                                <img class="w3-hover-opacity-off w3-opacity" style="max-width: 100%;" src="@item.Product.ProductImages[0].Uri" />
-                            }
-                        </td>
-                        <td class="w3-half w3-padding">
-                            <a href="/Products/Product?id=@item.Product.Id"><h4>@item.Product.Title</h4></a>
 
+            @foreach (var item in Model.Basket.OrderItems)
+            {
+            <div class="w3-row" style="width: 100%">
+                <h3><a href="/Products/Product?id=@item.Product.Id"><h3>@item.Product.Title</h3></a></h3>
+                <div class="w3-quarter">
+                    @if (item.Product.ProductImages.Count > 0)
+                    {
+                        <img class="w3-hover-opacity-off w3-opacity" style="max-width: 100%;" src="@item.Product.ProductImages[0].Uri" />
+                    }
+                </div>
+                <div class="w3-threequarter">
+                    <table class="w3-center" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th class="w3-hide-smaill">Price</th>
+                                <th>Size</th>
+                                <th>Quantity</th>
+                                <th>Colour</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="w3-hide-smaill"><p>£@item.Product.Price</p></td>
+                                <td><p>@item.Size.Value</p></td>
+                                <td><p><input id="@item.ProductId" class="w3-center" value="@item.Quantity" style="max-width: 40px;" type="number" /></p></td>
+                                <td><p>@item.Colour.Value</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="w3-row">
+                        <div class="w3-quarter w3-center">
+                            
                             @if (item.Product.Stock > 5)
                             {
                                 <p>In Stock</p>
@@ -41,55 +50,22 @@
                             {
                                 <p>Low Stock</p>
                             }
-                            <p><a href="javascript:void(0);" onclick="updateBasket(@item.Id,@item.ProductId)">Update</a></p>
-                        </td>
-                        <td class="w3-center" style="width: 6.25%;">
-                            <p>£@item.Product.Price</p>
-                        </td>
-                        <td class="w3-center" style="width: 6.25%;">
-                            <p><input id="@item.ProductId" class="w3-center" value="@item.Quantity" style="max-width: 40px;" type="number" /></p>
-                        </td>
-                        <td class="w3-center" style="width: 6.25%;"><p>@item.Size.Value</p></td>
-                        <td class="w3-center" style="width: 6.25%;"><p>@item.Colour.Value</p></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        @if (Model.Basket.OrderItems.Count == 0)
-        {
-            <h4>Your basket is empty.</h4>
-        }
-        <div class="w3-hide-medium w3-hide-large">
-            @foreach( var item in Model.Basket.OrderItems)
-            {
-                <div class="w3-row">
-                    <div>
-                        <h3>@item.Product.Title</h3>
-                        @if (item.Product.ProductImages.Count > 0)
-                        {
-                            <img class="w3-hover-opacity-off w3-opacity" style="max-width: 100%;" src="@item.Product.ProductImages[0].Uri" />
-                        }
+                        </div>
+                        <div class="w3-third w3-right">
+                            <button class="w3-button w3-round w3-dark-grey w3-block" onclick="updateBasket(@item.Id,@item.ProductId)">Update</button>
+                            <p><a href="/Orders/RemoveItem?=@item.Id">Remove Item</a></p>
+                        </div>
+                        @*<div class="w3-third"><br /></div>*@
                     </div>
-                    <table class="w3-center" style="width: 100%">
-                        <thead>
-                            <tr>
-                                <th>Size</th>
-                                <th>Quantity</th>
-                                <th>Colour</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><p>@item.Size.Value</p></td>
-                                <td><p><input id="@item.ProductId" class="w3-center" value="@item.Quantity" style="max-width: 40px;" type="number" /></p></td>
-                                <td><p>@item.Colour.Value</p></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button class="w3-button w3-round w3-block w3-dark-grey" onclick="updateBasket(@item.Id,@item.ProductId)">Update</button>
                 </div>
+                
+            </div>
             }
-        </div>
+            @if (Model.Basket.OrderItems.Count == 0)
+            {
+                <h4>Your basket is empty.</h4>
+            }
+
     </div>
     <div class="w3-section w3-light-grey w3-padding-large">
         <div class="w3-bar">

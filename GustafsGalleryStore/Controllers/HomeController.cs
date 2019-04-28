@@ -74,6 +74,10 @@ namespace GustafsGalleryStore.Controllers
                 var product = _context.Products.
                                       Where(x => x.Id == productId).
                                       Include(x => x.ProductImages).
+                                      Include(p => p.Department).
+                                      Include(p => p.ProductBrand).
+                                      Include(p => p.ProductSizes).
+                                      Include(p => p.ProductColours).
                                       SingleOrDefault();
 
                 while (product == null || productList.Contains(product))
@@ -84,6 +88,10 @@ namespace GustafsGalleryStore.Controllers
                     product = _context.Products.
                                       Where(x => x.Id == productId).
                                       Include(x => x.ProductImages).
+                                      Include(p => p.Department).
+                                      Include(p => p.ProductBrand).
+                                      Include(p => p.ProductSizes).
+                                      Include(p => p.ProductColours).
                                       SingleOrDefault();
                 }
 

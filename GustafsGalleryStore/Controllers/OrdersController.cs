@@ -323,6 +323,17 @@ namespace GustafsGalleryStore.Controllers
             return new BadRequestResult();
         }
 
+        [AllowAnonymous]
+        public IActionResult RemoveItem(long id)
+        {
+            var itemInDb = _context.OrderItems.Where(x => x.Id == id).SingleOrDefault();
+            var basketId = itemInDb.OrderId;
+
+            _context.Remove(itemInDb);
+            _context.SaveChanges();
+
+            return ControllerHelper.RedirectToLocal(this, string.Format("/Orders/ViewBasket?id={0}&SuccessMessage=Item Removed.", basketId));
+        }
 
         [AllowAnonymous]
         public IActionResult ViewBasket(long id, string statusMessage = null, string successMessage = null,

@@ -78,23 +78,36 @@
                         <span class="w3-threequarter gustaf w3-center"><b>@Model.Product.Stock in stock</b></span>
                     }
                 </p>
-                <div class="w3-row">
-                    <div class="custom-select w3-half w3-row-padding">
-                        <select asp-for="Size" class="w3-input" id="size" required>
-                            <option>Select Size</option>
-                            @foreach (var size in Model.Product.ProductSizes)
-                            {
-                                <option>@size.Size</option>
-                            }
-                        </select>
+                @if (Model.Product.ProductSizes.Count > 1 || Model.Product.ProductColours.Count > 1)
+                {
+                    <div class="w3-row">
+                        <div class="custom-select w3-half w3-row-padding">
+                            <select asp-for="Size" class="w3-input" id="size" required>
+                                <option>Select Size</option>
+                                @foreach (var size in Model.Product.ProductSizes)
+                                {
+                                    <option>@size.Size</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="custom-select w3-half w3-row-padding">
+                            @Html.DropDownListFor(m => m.Colour, Model.Colours, "Select Colour", new { @id = "colour", @class = "w3-input", required = "" })
+                        </div>
                     </div>
-                    <div class="custom-select w3-half w3-row-padding">
-                        @Html.DropDownListFor(m => m.Colour, Model.Colours, "Select Colour", new { @id = "colour", @class = "w3-input", required = "" })
-                    </div>
-                </div>
+                }
                 <div class="w3-row w3-padding">
                     <div class="w3-half w3-row-padding">
-                        <a href="javascript:void(0);" onclick="openModal('spin');addToBasket(@Model.Product.Id,getSizeValue(),getColourValue());closeModal('spin')" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                        @*<a href="javascript:void(0);" onclick="openModal('spin');addToBasket(@Model.Product.Id,getSizeValue(),getColourValue());closeModal('spin')" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>*@
+                        
+                        @if (Model.Product.ProductSizes.Count == 1 && Model.Product.ProductColours.Count == 1)
+                        {
+
+                            <button class="w3-bar-item w3-button w3-round w3-light-grey w3-block" onclick="addToBasket(@Model.Product.Id,'@Model.Product.ProductSizes[0].Size','@Model.Product.ProductColours[0].Colour')"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</button>
+                        }
+                        else
+                        {
+                            <a href="javascript:void(0);" onclick="openModal('spin');addToBasket(@Model.Product.Id,getSizeValue(),getColourValue());closeModal('spin')" class="w3-button w3-dark-grey w3-round"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                        }
                     </div>
                 </div>
                 <div class="w3-row w3-padding">
@@ -120,7 +133,16 @@
                             </h3>
                         </a>
                         <p class="price">£@product.Price</p>
-                        <p><a href="/Products/Product?id=@product.Id" class="w3-button w3-block w3-light-grey">Add to Cart</a></p>
+                        @*<p><a href="/Products/Product?id=@product.Id" class="w3-button w3-block w3-light-grey">Add to Cart</a></p>*@
+                        @if (product.ProductSizes.Count == 1 && product.ProductColours.Count == 1)
+                        {
+
+                            <button class="w3-bar-item w3-button w3-round w3-light-grey w3-block" onclick="addToBasket(@product.Id,'@product.ProductSizes[0].Size','@product.ProductColours[0].Colour')"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</button>
+                        }
+                        else
+                        {
+                            <a class="w3-bar-item w3-button w3-round w3-light-grey w3-block" href="/Products/Product?id=@product.Id" onclick="openModal('spin');"><i class="fas fa-cart-plus w3-margin-right"></i>Add To Basket</a>
+                        }
                     </div>
                 }
                 <div class="w3-quarter w3-row-padding" style="height: 100%;height:300px;line-height:300px">
