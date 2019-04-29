@@ -8,11 +8,11 @@
     <form action="/Checkout/Index" method="post" id="payment-form">
         <span id="err-message"></span>
         <div class="w3-row">
-            <div class="w3-quarter w3-row-padding cart stsbc-1 w3-hide-small" id="cart-container">
+            <div class="w3-quarter w3-row-padding" id="cart-container">
                 <div class="w3-content w3-light-grey w3-row-padding w3-border-bottom w3-border-top w3-border-right w3-border-left" id="cart">
                     <div class="w3-row">
                         <h4 class="w3-threequarter">Cart</h4>
-                        <h4 class="w3-quarter"><i class="fa fa-shopping-cart "></i></h4>
+                        <h4 class="w3-quarter w3-hide-small"><i class="fa fa-shopping-cart "></i></h4>
                     </div>
                     <div class="w3-row">
                         @foreach (var item in Model.Basket.OrderItems)
@@ -36,9 +36,11 @@
                         <span class="w3-twothird">Total: </span>
                         <span class="w3-third" style="color: black"><b id="orderTotal">£@Model.Basket.OrderTotalPrice</b></span>
                     </p>
+
                 </div>
+                <br />
             </div>
-            <div class="checkout">
+            <div class="w3-threequarter" style="float:right; height:100%; overflow:auto;">
                 @*Delivery Options*@
                 <button class="accordion">Delivery Options <span id="delivery" class="w3-hide"><i class="fas fa-check w3-margin-left w3-large w3-text-green"></i></span></button>
                 <div class="panel">
@@ -142,21 +144,6 @@
                 <button class="accordion">Payment Details<span id="card" class="w3-hide"><i class="fas fa-check w3-margin-left w3-large w3-text-green"></i></span></button>
                 <div class="panel w3-content">
                     <div class="w3-content w3-container w3-padding-large">
-                        <div class="w3-row w3-hide-medium w3-hide-large">
-                            <h4>Basket Summary</h4>
-                            <p>
-                                <span class="">Subtotal: </span>
-                                <span id="subTotal-smallScreen" class="">£@Model.Basket.OrderSubTotalPrice</span>
-                            </p>
-                            <p>
-                                <span class="">Delivery: </span>
-                                <span id="deliveryCost-smallScreen" class="">£0.00</span>
-                            </p>
-                            <p>
-                                <span class="">Total: </span>
-                                <span class="" style="color: black"><b id="orderTotal-smallScreen">£@Model.Basket.OrderSubTotalPrice</b></span>
-                            </p>
-                        </div>
                         <label for="card-element">
                             Credit or debit card
                         </label>
@@ -203,4 +190,12 @@
 <script src="https://dmm8i98ipy9lm.cloudfront.net/payPal.min.js?Authorization"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOfCiFMuWl_6DzM4BsVFPYZ7ZvWmHcKR0&libraries=places&callback=initAutocomplete" async="" defer="defer"></script>
 
-<script>$(function(){var s=$("#footer-container"),a=$("#cart-container"),c=a.offset().top;$(window).scroll(function(){var t=$(window).scrollTop(),e=$(document).height()-(a.height()+s.height()+c);e<=t&&a.hasClass("stsbc-1")?(a.removeClass("cart").removeClass("stsbc-1").addClass("cart-alt"),a.css("top",t+(c-5)+"px")):t<e&&(a.removeClass("cart-alt").addClass("cart").addClass("stsbc-1"),a.css("top",""))})});var i,acc=document.getElementsByClassName("accordion");for(i=0;i<acc.length;i++)acc[i].addEventListener("click",function(){this.classList.toggle("active");var t=this.nextElementSibling,e=document.getElementById("cart"),s=document.getElementById("spacer"),a=(document.getElementById("checkoutContent"),e.offsetHeight);a<0&&(a=0),s.removeAttribute("style"),s.setAttribute("style","min-height: "+a+"px");var c=$("#footer-container"),n=(e=$("#cart-container")).offset().top,o=$(window).scrollTop(),r=o+(n-5)+"px";t.style.maxHeight?(t.style.maxHeight=null,a=0,r=o+"px"):t.style.maxHeight="100%";var i=$(document).height()+a-(e.height()+c.height()+n);i<=o&&e.hasClass("stsbc-1")?(e.removeClass("cart").removeClass("stsbc-1").addClass("cart-alt"),e.css("top",r)):o<i&&(e.removeClass("cart-alt").addClass("cart").addClass("stsbc-1"),e.css("top",""))});document.getElementById("deliverySelect").addEventListener("change",function(){deliveryCompleteCheck()});var first=acc[0].nextElementSibling;acc[0].classList.toggle("active"),first.style.maxHeight="100%";var countries=[],select=document.getElementById("country");$.ajax({url:"https://restcountries.eu/rest/v2/all",method:"GET",success:function(t){countries=t;for(var e=0;e<countries.length;e++){var s=document.createElement("option");s.innerHTML=countries[e].name,select.appendChild(s)}},error:function(t){toastr.warning("Something went wrong, please try again.","Warning")}});</script>
+<script>
+    var deliveryData = [];
+    @foreach (var type in Model.DeliveryTypes)
+    {
+        @:deliveryData.push({Id:"@type.Id",Type:"@type.Type",Company:"@type.DeliveryCompany.Company",Price:"@type.Price",Time:"@type.Time"})
+    }
+
+var i,acc=document.getElementsByClassName("accordion");for(i=0;i<acc.length;i++)acc[i].addEventListener("click",function(){this.classList.toggle("active");var e=this.nextElementSibling,t=document.getElementById("cart"),n=document.getElementById("spacer"),i=(document.getElementById("checkoutContent"),t.offsetHeight);n.removeAttribute("style"),n.setAttribute("style","min-height: "+i+"px");var c=$("#footer-container"),o=(t=$("#cart-container")).offset().top,r=$(window).scrollTop();e.style.maxHeight?(e.style.maxHeight=null,i=0):e.style.maxHeight="100%";$(document).height(),t.height(),c.height()});document.getElementById("deliverySelect").addEventListener("change",function(){deliveryCompleteCheck()});var first=acc[0].nextElementSibling;acc[0].classList.toggle("active"),first.style.maxHeight="100%";var countries=[],select=document.getElementById("country");$.ajax({url:"https://restcountries.eu/rest/v2/all",method:"GET",success:function(e){countries=e;for(var t=0;t<countries.length;t++){var n=document.createElement("option");n.innerHTML=countries[t].name,select.appendChild(n)}},error:function(e){toastr.warning("Something went wrong, please try again.","Warning")}});
+</script>
