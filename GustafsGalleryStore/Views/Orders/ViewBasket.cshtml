@@ -53,7 +53,7 @@
                         </div>
                         <div class="w3-third w3-right">
                             <button class="w3-button w3-round w3-dark-grey w3-block" onclick="updateBasket(@item.Id,@item.ProductId)">Update</button>
-                            <p><a href="/Orders/RemoveItem?=@item.Id">Remove Item</a></p>
+                            <p><a href="/Orders/RemoveItem?=@item.Id" onclick="openModal('spin')">Remove Item</a></p>
                         </div>
                         @*<div class="w3-third"><br /></div>*@
                     </div>

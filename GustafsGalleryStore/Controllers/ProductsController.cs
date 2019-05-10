@@ -11,6 +11,7 @@ using IEmailSender = GustafsGalleryStore.Services.IEmailSender;
 using Microsoft.AspNetCore.Authorization;
 using GustafsGalleryStore.Helpers;
 using System.Collections.Generic;
+using System;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -49,119 +50,209 @@ namespace GustafsGalleryStore.Controllers
 
         // GET: /<controller>/
         public IActionResult Index(List<string> filterBrand = null, List<string> filterDepartment = null, 
-                                   string statusMessage = null, string successMessage = null, 
-                                   string failureMessage = null)
+                                    int pageItems = 20, int pageNumber = 1,
+                                    string search = null, string orderBy = "createdate", string orderByModifier = "desc",
+                                    string statusMessage = null, string successMessage = null, 
+                                    string failureMessage = null)
         {
             var products = new List<Product>();
+            var pageProducts = new List<Product>();
             var where = "";
-            var searchTerm = "select * from products where ";
+            string searchTerm = null;
+            var maxPages = 1;
+            var pageStart = 1;
+            var pageEnd = 1;
 
+            //checked filter for brand and ensure no SQL injection
             if (filterBrand != null && filterBrand.Count > 0)
             {
+                if (searchTerm == null)
+                {
+                    searchTerm = "select * from products where ";
+                }
+
                 foreach (var brand in filterBrand)
                 {
-                    if (brand.ToLower().IndexOf("delete", System.StringComparison.CurrentCulture) > -1 ||
-                        brand.ToLower().IndexOf("update", System.StringComparison.CurrentCulture) > -1 ||
-                        brand.ToLower().IndexOf("insert", System.StringComparison.CurrentCulture) > -1 ||
-                        brand.ToLower().IndexOf("create", System.StringComparison.CurrentCulture) > -1 ||
-                        brand.ToLower().IndexOf("drop", System.StringComparison.CurrentCulture) > -1
-                       )
+                    if (!ProductHelper.CheckSQL(brand))
                     {
                         return ControllerHelper.RedirectToLocal(this, "/Products?failureMessage=Filter not available.");
                     }
-
-                    if (where.Length == 0)
-                    {
-                        where = " productbrandid in ( ";
-                    }
-                    else
-                    {
-                        where += ",";
-                    }
-
-                    var inDb = _context.ProductBrands.Where(x => x.Brand == brand).SingleOrDefault();
-                    if (inDb != null)
-                    {
-                        where += inDb.Id;
-                    }
                 }
-
-                searchTerm += where + ")";
+                where = ProductHelper.CreateFilterSQL("productbrandid", filterBrand, _context);
+                searchTerm += where;
             }
 
+            //if both brand and department filtered then add 'and' to where
             if (where.Length > 0 && filterDepartment != null && filterDepartment.Count > 0)
             {
                 searchTerm += " and ";
             }
 
+            //checked department filter and ensure no SQL injection
             if (filterDepartment != null && filterDepartment.Count > 0)
             {
+                if (searchTerm == null)
+                {
+                    searchTerm = "select * from products where ";
+                }
+
                 foreach (var dept in filterDepartment)
                 {
-                    if (dept.ToLower().IndexOf("delete", System.StringComparison.CurrentCulture) > -1 ||
-                        dept.ToLower().IndexOf("update", System.StringComparison.CurrentCulture) > -1 ||
-                        dept.ToLower().IndexOf("insert", System.StringComparison.CurrentCulture) > -1 ||
-                        dept.ToLower().IndexOf("create", System.StringComparison.CurrentCulture) > -1 ||
-                        dept.ToLower().IndexOf("drop", System.StringComparison.CurrentCulture) > -1
-                       )
+                    if (!ProductHelper.CheckSQL(dept))
                     {
                         return ControllerHelper.RedirectToLocal(this, "/Products?failureMessage=Filter not available.");
                     }
-
-                    if (where.Length == 0)
-                    {
-                        where = " departmentid in ( ";
-                    }
-                    else
-                    {
-                        where += ",";
-                    }
-
-                    var inDb = _context.Departments.Where(x => x.DepartmentName == dept).SingleOrDefault();
-                    if (inDb != null)
-                    {
-                        where += inDb.Id;
-                    }
                 }
-
-                searchTerm += where + ")";
+                where = ProductHelper.CreateFilterSQL("departmentid", filterDepartment, _context);
+                searchTerm += where;
             }
 
-            if(where.Length > 0)
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                products = _context.Products.
-                                   FromSql(searchTerm).
-                                   Include(p => p.Department).
-                                   Include(p => p.ProductBrand).
-                                   Include(p => p.ProductSizes).
-                                   Include(p => p.ProductImages).
-                                   Include(p => p.ProductColours).
-                                   Where(x => x.Stock > 0).
-                                   ToList();
+                if (where.Length > 0 && (filterDepartment != null || filterDepartment.Count > 0))
+                {
+                    searchTerm += " and ";
+                }
+                else
+                {
+                    searchTerm = "select * from products where ";
+                }
+
+                searchTerm += ProductHelper.CreateSearchSQL(search);
+
+            }
+
+            products = ProductHelper.GetProducts(_context, searchTerm, orderBy, orderByModifier);
+
+            //select just the products relevant to selected page
+            if (pageItems == 1)
+            {
+                maxPages = 1;
             }
             else
             {
-                products = _context.Products.
-                                   Include(p => p.Department).
-                                   Include(p => p.ProductBrand).
-                                   Include(p => p.ProductSizes).
-                                   Include(p => p.ProductImages).
-                                   Include(p => p.ProductColours).
-                                   Where(x => x.Stock > 0).
-                                   ToList();
+                double pages = Convert.ToDouble(products.Count) / Convert.ToDouble(pageItems);
+                maxPages = Convert.ToInt32(Math.Ceiling(pages));
+            }
+
+            if (pageNumber > 1)
+            {
+                pageStart = ((pageNumber - 1) * pageItems) + 1;
+            }
+
+            if (pageItems == 1 || products.Count < pageItems)
+            {
+                pageEnd = products.Count;
+            }
+            else
+            {
+                pageEnd = pageNumber * pageItems;
+            }
+
+            if (pageItems == 1)
+            {
+                pageProducts = products;
+            }
+            else
+            {
+                var i = 0;
+                foreach (var product in products)
+                {
+                    i++;
+                    if (i >= pageStart && i <= pageEnd)
+                    {
+                        pageProducts.Add(product);
+                    }
+                }
+            }
+
+            var previousUrl = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                        pageItems,pageNumber - 1,orderBy,orderByModifier,search);
+            var nextUrl = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                        pageItems, pageNumber + 1, orderBy, orderByModifier,search);
+            var page1Url = "";
+            var page2Url = "";
+            var page3Url = "";
+            var page4Url = "";
+            var page5Url = "";
+
+            if (pageNumber == 1)
+            {
+                page1Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber, orderBy, orderByModifier,search);
+                page2Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber + 1, orderBy, orderByModifier,search);
+                page3Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber + 2, orderBy, orderByModifier,search);
+                page4Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber + 3, orderBy, orderByModifier,search);
+                page5Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber + 4, orderBy, orderByModifier,search);
+            }
+            else if (pageNumber == 2)
+            {
+                page1Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber - 1, orderBy, orderByModifier,search);
+                page2Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber, orderBy, orderByModifier,search);
+                page3Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber + 1, orderBy, orderByModifier,search);
+                page4Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber + 2, orderBy, orderByModifier,search);
+                page5Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber + 3, orderBy, orderByModifier,search);
+            }
+            else 
+            {
+                page1Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber - 2, orderBy, orderByModifier,search);
+                page2Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber - 1, orderBy, orderByModifier,search);
+                page3Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber, orderBy, orderByModifier,search);
+                page4Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber + 1, orderBy, orderByModifier,search);
+                page5Url = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber + 2, orderBy, orderByModifier,search);
             }
 
             var viewModel = new ProductListViewModel
             {
-                Products = products,
+                Products = pageProducts,
                 Brands = _context.ProductBrands.OrderBy(x => x.Brand).ToList(),
                 Departments = _context.Departments.OrderBy(x => x.DepartmentName).ToList(),
+                PageItems = pageItems,
+                PageNumber = pageNumber,
+                MaxPages = maxPages,
+                OrderBy = orderBy,
+                PreviousUrl = previousUrl,
+                NextUrl = nextUrl,
+                PageURLs = new List<string> { page1Url, page2Url, page3Url, page4Url, page5Url },
+                ItemCountUrl1 = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                        20, 1, orderBy, orderByModifier,search),
+                ItemCountUrl2 = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                        40, 1, orderBy, orderByModifier,search),
+                ItemCountUrl3 = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                        1, 1, orderBy, orderByModifier,search),
+                CreateDateUrl = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, 1, "createDate", "desc", search),
+                BrandUrl = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, 1, "brand", "asc", search),
+                DepartmentUrl = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, 1, "department", "asc", search),
+                PriceUrl = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, 1, "price", "asc", search),
+                TitleUrl = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, 1, "title", "asc", search),
+                ReturnUrl = string.Format("/Products?pageItems={0}&&pageNumber={1}&&orderBy={2}&&orderByModifier={3}&&search={4}",
+                                            pageItems, pageNumber, orderBy, orderByModifier, search),
+                OrderByModifier = orderByModifier,
                 SuccessMessage = successMessage,
                 FailureMessage = failureMessage,
                 StatusMessage = statusMessage
             };
 
-            if(filterBrand != null)
+            if (filterBrand != null)
             {
                 viewModel.FilteredBrands = filterBrand;
             }
@@ -185,7 +276,7 @@ namespace GustafsGalleryStore.Controllers
 
         // GET: /<controller>/
         public IActionResult Product(long id, string statusMessage = null, string successMessage = null,
-                                   string failureMessage = null)
+                                   string failureMessage = null, string returnUrl = null)
         {
             var viewModel = new ProductViewModel()
             {
@@ -197,9 +288,17 @@ namespace GustafsGalleryStore.Controllers
                                   SingleOrDefault(),
                 StatusMessage = statusMessage,
                 SuccessMessage = successMessage,
-                FailureMessage = failureMessage,
-                ReturnUrl = "~/Products"
+                FailureMessage = failureMessage
             };
+
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                viewModel.ReturnUrl = "~/Products";
+            }
+            else
+            {
+                viewModel.ReturnUrl = returnUrl.Replace(";amp;","&");
+            }
 
             viewModel.Sizes = ProductSize.GetList(viewModel.Product.ProductSizes);
             viewModel.Colours = ProductColour.GetList(viewModel.Product.ProductColours);
