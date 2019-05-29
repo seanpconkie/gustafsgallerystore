@@ -200,7 +200,7 @@ namespace GustafsGalleryStore.Controllers
 
                     input.Product.ProductCode = string.Concat(input.Product.ProductBrand.Id, '-', input.Product.Department.Id, '-', input.Product.Id);
 
-                    _context.Update(input);
+                    _context.Update(input.Product);
 
                     _context.SaveChanges();
 

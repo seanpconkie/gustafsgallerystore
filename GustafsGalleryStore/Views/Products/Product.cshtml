@@ -54,7 +54,14 @@
         <div class="w3-row">
             <div class="w3-card w3-row-padding w3-padding w3-half w3-light-grey">
                 <div class="xzoom-container" style="width: 100%">
-                    <img class="xzoom4" id="xzoom-fancy" src="@Model.Product.ProductImages[0].Uri" xoriginal="@Model.Product.ProductImages[0].Uri" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" />
+                    @if (Model.Product.ProductImages.Count > 0 && Model.Product.ProductImages != null)
+                    {
+                        <img class="xzoom4" id="xzoom-fancy" src="@Model.Product.ProductImages[0].Uri" xoriginal="@Model.Product.ProductImages[0].Uri" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" />
+                    }
+                    else
+                    {
+                        <img class="xzoom4" id="xzoom-fancy" src="https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png" xoriginal="@Model.Product.ProductImages[0].Uri" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'" />
+                    }
                     <div class="xzoom-thumbs w3-padding">
                         <a href="@Model.Product.ProductImages[0].Uri"><img class="xzoom-gallery4" width="80" src="@Model.Product.ProductImages[0].Uri" xpreview="@Model.Product.ProductImages[0].Uri" title="@Model.Product.Title" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'"></a>
                         @for (int i = 1; i < Model.Product.ProductImages.Count; i++)
@@ -127,7 +134,14 @@
                 {
                     <div class="w3-row-padding card" style="height: 100%">
                         <a href="https://gustafsgallery.co.uk/Products/Product?id=@product.Id">
-                            <img class="image-container" src="@product.ProductImages[0].Uri" alt="Denim Jeans" style="width: 100%;overflow: hidden" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                            @if (product.ProductImages.Count > 0)
+                            {
+                                <img class="image-container" src="@product.ProductImages[0].Uri" alt="Card Picture" style="width: 100%;overflow: hidden" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                            }
+                            else
+                            {
+                                <img class="image-container" src="https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png" alt="Card Picture" style="width: 100%; overflow: hidden" onerror="this.src='https://farm5.staticflickr.com/4705/40336899591_bdc86eddb2_o.png'">
+                            }
                             <h3 class="title">
                                 @product.Title
                             </h3>

@@ -318,6 +318,7 @@ namespace GustafsGalleryStore.Controllers
                                       Include(p => p.ProductSizes).
                                       Include(p => p.ProductImages).
                                       Include(p => p.ProductColours).
+                                      Where(x => x.Stock > 0).
                                       ToList();
 
             return View(viewModel);

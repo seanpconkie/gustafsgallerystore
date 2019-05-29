@@ -78,6 +78,7 @@ namespace GustafsGalleryStore.Controllers
                                       Include(p => p.ProductBrand).
                                       Include(p => p.ProductSizes).
                                       Include(p => p.ProductColours).
+                                      Where(x => x.Stock > 0).
                                       SingleOrDefault();
 
                 while (product == null || productList.Contains(product))
