@@ -161,7 +161,6 @@ namespace GustafsGalleryStore.Helpers
                                 Where(x => x.OrderId == order.Id).
                                 ToList();
 
-            List<Discount> discounts = new List<Discount>();
             decimal discountTotal = 0;
 
             foreach (var discountItem in discountItems)
@@ -171,13 +170,13 @@ namespace GustafsGalleryStore.Helpers
                 {
                     inDb.Value = order.OrderSubTotalPrice * (inDb.Percentage / 100);
                 }
-                discounts.Add(inDb);
+                discountItem.Discount = inDb;
                 discountTotal += inDb.Value;
             }
 
             order.OrderDiscountSubTotalPrice = discountTotal;
 
-            order.Discounts = discounts;
+            order.Discounts = discountItems;
 
             order.OrderTotalPrice = (order.OrderSubTotalPrice + order.OrderTotalPostagePrice - order.OrderDiscountSubTotalPrice);
 

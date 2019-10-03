@@ -85,8 +85,8 @@
                 <tbody>
                     @foreach (var discount in Model.Basket.Discounts) {
                         <tr>
-                            <td>@discount.Code</td>
-                            <td class="w3-right">£@discount.Value</td>
+                            <td>@discount.Discount.Code</td>
+                            <td class="w3-right">£@discount.Discount.Value</td>
                         </tr>
                     }
                 </tbody>

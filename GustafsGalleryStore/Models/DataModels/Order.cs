@@ -32,7 +32,7 @@ namespace GustafsGalleryStore.Models.DataModels
         public DateTime? CancellationCompletedDate { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
-        public List<Discount> Discounts { get; set; }
+        public List<DiscountItem> Discounts { get; set; }
 
         public OrderStatus OrderStatus { get; set; }
         [Display(Name = "Order Status")]

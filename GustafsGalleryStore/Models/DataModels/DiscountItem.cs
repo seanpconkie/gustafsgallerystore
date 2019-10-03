@@ -6,5 +6,7 @@ namespace GustafsGalleryStore.Models.DataModels
         public long Id { get; set; }
         public long DiscountId { get; set; }
         public long OrderId { get; set; }
+
+        public Discount Discount { get; set; }
     }
 }

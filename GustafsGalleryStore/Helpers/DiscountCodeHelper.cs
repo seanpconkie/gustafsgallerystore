@@ -56,7 +56,7 @@ namespace GustafsGalleryStore.Helpers
             Discount discount = DiscountCodeHelper.GetDiscount(discountCode, context);
             DiscountItem discountItem = new DiscountItem() { OrderId = order.Id, DiscountId = discount.Id };
 
-            if (!order.Discounts.Contains(discount))
+            if (!order.Discounts.Contains(discountItem))
             {
                 context.Add(discountItem);
                 context.SaveChanges();
