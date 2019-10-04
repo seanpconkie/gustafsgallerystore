@@ -7,7 +7,7 @@ namespace GustafsGalleryStore.Helpers
 {
     public static class DiscountCodeHelper
     {
-        public static bool ValidateDiscountCode(string discountCode, GustafsGalleryStoreContext context)
+        public static string ValidateDiscountCode(string discountCode, GustafsGalleryStoreContext context)
         {
             // check is code valid
             Discount discount = context.Discounts.Where(x => x.Code == discountCode).SingleOrDefault();
@@ -15,28 +15,27 @@ namespace GustafsGalleryStore.Helpers
 
             if (discount == null)
             {
-                return false;
+                return string.Format("Discount code ({0}) does not exist.",discountCode);
             }
 
             // check is live
-            if (!discount.IsLive)
-            {
-                return false;
-            }
-
+            if (!discount.IsLive ||
             // check has started
-            if (discount.StartDate > now)
+                discount.StartDate > now ||
+            // check if it has been used too often
+                discount.UsageCount >= discount.MaxUsage
+                )
             {
-                return false;
+                return string.Format("Discount code ({0}) is not valid.", discountCode);
             }
 
             // check has ended
             if (discount.EndDate < now)
             {
-                return false;
+                return string.Format("Discount code ({0}) is expired.", discountCode);
             }
 
-            return true;
+            return "";
         }
 
         public static Discount GetDiscount(string discountCode, GustafsGalleryStoreContext context)
@@ -47,6 +46,16 @@ namespace GustafsGalleryStore.Helpers
         public static Discount GetDiscount(long id, GustafsGalleryStoreContext context)
         {
             return context.Discounts.Where(x => x.Id == id).SingleOrDefault();
+        }
+
+        public static decimal GetMinSpend(string discountCode, GustafsGalleryStoreContext context)
+        {
+            return context.Discounts.Where(x => x.Code == discountCode).SingleOrDefault().MinSpend;
+        }
+
+        public static decimal GetMinSpend(long id, GustafsGalleryStoreContext context)
+        {
+            return context.Discounts.Where(x => x.Id == id).SingleOrDefault().MinSpend;
         }
 
         public static bool AddDiscountItem (long basketId, string discountCode, GustafsGalleryStoreContext context)
@@ -65,6 +74,32 @@ namespace GustafsGalleryStore.Helpers
 
             return false;
 
+        }
+
+        public static bool IncreaseUsageCount(long orderId, GustafsGalleryStoreContext context)
+        {
+            // get order and increase usage of each discount
+            Order order = OrderHelper.GetOrder(orderId, context);
+            try
+            {
+
+                foreach (var discount in order.Discounts)
+                {
+                    var inDb = context.Discounts.Where(x => x.Id == discount.Discount.Id).SingleOrDefault();
+
+                    inDb.UsageCount++;
+
+                    context.Update(inDb);
+                    context.SaveChanges();
+
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

@@ -23,6 +23,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Logging;
 using ElmahCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
 
 namespace GustafsGalleryStore
 {
@@ -116,6 +118,16 @@ namespace GustafsGalleryStore
                 options.CheckPermissionAction = context => context.User.IsInRole(MasterStrings.StaffRole);
             });
 
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
+
             //services.Configure<ForwardedHeadersOptions>(options =>
             //{
             //    options.ForwardedHeaders =
@@ -151,6 +163,8 @@ namespace GustafsGalleryStore
 
             app.UseAuthentication();
             app.UseElmah();
+
+            app.UseResponseCompression();
 
             app.UseMvc(routes =>
             {

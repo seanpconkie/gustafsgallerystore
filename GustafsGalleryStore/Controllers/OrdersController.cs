@@ -236,6 +236,8 @@ namespace GustafsGalleryStore.Controllers
         [AllowAnonymous]
         public IActionResult Discount (long basketId, string discountCode)
         {
+            string validation;
+
             if (basketId == 0)
             {
                 return ControllerHelper.RedirectToLocal(this, "/Home/Error?failureMessage=Something went wrong.");
@@ -246,9 +248,11 @@ namespace GustafsGalleryStore.Controllers
                 return ControllerHelper.RedirectToLocal(this, string.Format("/Orders/ViewBasket?id={0}&failureMessage=No discount code provided.",basketId));
             }
 
-            if (!DiscountCodeHelper.ValidateDiscountCode(discountCode,_context))
+            validation = DiscountCodeHelper.ValidateDiscountCode(discountCode, _context);
+
+            if (!string.IsNullOrWhiteSpace(validation))
             {
-                return ControllerHelper.RedirectToLocal(this, string.Format("/Orders/ViewBasket?id={0}&failureMessage=Discount code provided is invalid.", basketId));
+                return ControllerHelper.RedirectToLocal(this, string.Format("/Orders/ViewBasket?id={0}&failureMessage={1}.", basketId, validation));
             }
 
             if (!DiscountCodeHelper.AddDiscountItem(basketId,discountCode,_context))

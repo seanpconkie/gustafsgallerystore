@@ -460,6 +460,11 @@ namespace GustafsGalleryStore.Controllers
                 viewModel.Percentage = inDb.Percentage;
                 viewModel.StartDate = inDb.StartDate;
                 viewModel.Value = inDb.Value;
+                viewModel.MaxUsage = inDb.MaxUsage;
+                viewModel.HasMaxUse = inDb.HasMaxUse;
+                viewModel.HasMinValue = inDb.HasMinValue;
+                viewModel.MinSpend = inDb.MinSpend;
+                viewModel.UsageCount = inDb.UsageCount;
             }
 
             return View(viewModel);
@@ -496,6 +501,18 @@ namespace GustafsGalleryStore.Controllers
                 failureMessage = "Discount Code couldn't be updated.  Code already exists.";
             }
 
+            if (model.HasMaxUse && model.MaxUsage == 0)
+            {
+                isModelValid = false;
+                failureMessage = "Max usage of discount code cannot be 0.";
+            }
+
+            if (model.HasMinValue && model.MinSpend == 0)
+            {
+                isModelValid = false;
+                failureMessage = "Minimun spend of discount code cannot be 0.";
+            }
+
             if (!model.IsLive)
             {
                 statusMessage = "Discount Code is not live so cannot be used.";
@@ -520,6 +537,13 @@ namespace GustafsGalleryStore.Controllers
                     failureMessage = "Discount Code already exists.";
                 }
 
+            }
+            else
+            {
+                model.FailureMessage = failureMessage;
+                model.StatusMessage = statusMessage;
+                model.SuccessMessage = successMessage;
+                return View(model);
             }
 
             if (!string.IsNullOrWhiteSpace(failureMessage))

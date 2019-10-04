@@ -4,14 +4,16 @@ using GustafsGalleryStore.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GustafsGalleryStore.Migrations
 {
     [DbContext(typeof(GustafsGalleryStoreContext))]
-    partial class GustafsGalleryStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20191003145320_UpdateDiscountDataModel3")]
+    partial class UpdateDiscountDataModel3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,15 +207,11 @@ namespace GustafsGalleryStore.Migrations
 
                     b.Property<bool>("IsLive");
 
-                    b.Property<int>("MaxUsage");
-
                     b.Property<decimal>("MinSpend");
 
                     b.Property<decimal>("Percentage");
 
                     b.Property<DateTime?>("StartDate");
-
-                    b.Property<int>("UsageCount");
 
                     b.Property<decimal>("Value");
 

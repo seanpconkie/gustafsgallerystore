@@ -4,43 +4,73 @@
 }
 <div>
     <form asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
-        <div class="w3-half">
-            <div class="form-group">
-                <label asp-for="Code"></label>
-                <input asp-for="Code" class="w3-input" id="code" />
-                <a href="javascript:void(0);" class="w3-small" onclick="generateCode()">Generate Code</a>
+        <div class="w3-row">
+            <div class="w3-half w3-row-padding">
+                <h4>Discount Details</h4>
+                <div class="form-group">
+                    <label asp-for="Code"></label>
+                    <input asp-for="Code" class="w3-input" id="code" required/>
+                    <a href="javascript:void(0);" class="w3-small" onclick="generateCode()">Generate Code</a>
+                </div>
+                <div class="form-group">
+                    <label asp-for="StartDate"></label>
+                    <input asp-for="StartDate" class="w3-input" type="date" required/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndDate"></label>
+                    <input asp-for="EndDate" class="w3-input" type="date" required/>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="StartDate">Start Date</label>
-                <input asp-for="StartDate" class="w3-input" type="date" />
+            <div class="w3-half w3-row-padding">
+                <h4>Discount Type</h4>
+                <div class="w3-bar">
+                    <span id="value-btn" class="w3-button tablink w3-light-grey" onclick="openTab(this,'value')">Value</span>
+                    <span id="percent-btn" class="w3-button tablink" onclick="openTab(this,'percent')">Percentage</span>
+                </div>
+                <div id="value" class="discountType">
+                    <div class="form-group">
+                        <label asp-for="Value"></label>
+                        <input asp-for="Value" class="w3-input" type="number" min="0.00" step="0.01" />
+                    </div>
+                </div>
+                <div id="percent" class="discountType" style="display:none">
+                    <div class="form-group">
+                        <label asp-for="Percentage"></label>
+                        <input asp-for="Percentage" class="w3-input" type="number" min="0.00" max="100.00" step="0.01" />
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="w3-padding">
+            <h4>Using the Discount Code</h4>
             <div class="form-group">
-                <label asp-for="EndDate">End Date</label>
-                <input asp-for="EndDate" class="w3-input" type="date" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Value">Value (£)</label>
-                <input asp-for="Value" class="w3-input" type="number" min="0.00" step="0.01" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Percentage"></label>
-                <input asp-for="Percentage" class="w3-input" type="number" min="0.00" max="100.00" step="0.01" />
-            </div>
-            <div class="form-group">
-                <label asp-for="IsLive"></label>
-                <input asp-for="IsLive" class="w3-input" type="checkbox"/>
+                <div class="w3-row">
+                    <div class="w3-half"><label asp-for="IsLive"></label></div>
+                    <div class="w3-quarter"><input type="checkbox" asp-for="IsLive" /></div>
+                </div>
+                <div class="w3-row">
+                    <div class="w3-half"><label asp-for="HasMaxUse"></label></div>
+                    <div class="w3-quarter"><input id="max-usage-checkbox" type="checkbox" asp-for="HasMaxUse" onclick="maxUsage()"/></div>
+                    <div class="w3-quarter"><input id="max-usage" type="number"asp-for="MaxUsage" min="1" step="1" defaultValue="10" style="display:none"/></div>
+                </div>
+
+                <div class="w3-row">
+                    <div class="w3-half"><label asp-for="HasMinValue"></label></div>
+                    <div class="w3-quarter"><input id="min-spend-checkbox" type="checkbox" asp-for="HasMinValue" onclick="minSpend()"/></div>
+                    <div class="w3-quarter"><input id="min-spend" type="number" asp-for="MinSpend" min="0.01" step="0.01" defaultValue="10.00" style="display:none"/></div>
+                </div>
+
             </div>
             <div class="hidden-group">
                 <input hidden asp-for="Id" />
             </div>
-            <button type="submit" class="w3-button w3-round w3-light-grey w3-block w3-margin-top" onclick="openModal('spin')"><i class="fas fa-save w3-margin-right"></i>Save</button>
+            <button type="submit" class="w3-button w3-round w3-light-grey w3-block w3-margin-top w3-half" onclick="openModal('spin')"><i class="fas fa-save w3-margin-right"></i>Save</button>
 
         </div>
     </form>
 </div>
 
-<script>
-    function generateCode() {
+<script>function generateCode() {
 
         var code = document.getElementById("code");
         code.value = uuidv4();
@@ -48,9 +78,47 @@
     }
 
     function uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
     }
-</script>
+
+    function openTab(evt, tabName) {
+        var x = document.getElementsByClassName("discountType");
+        for (var i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        document.getElementById(tabName).style.display = "block";
+
+        var tablinks = document.getElementsByClassName("tablink");
+        for (var i = 0; i < x.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" w3-light-grey", "");
+        }
+        document.getElementById(evt.id).className += " w3-light-grey";
+    }
+
+    function minSpend() {
+        var t = document.getElementById("min-spend-checkbox");
+        var i = document.getElementById("min-spend");
+        if (t.checked) {
+            i.style = "display:block"
+        }
+        else {
+            i.style = "display:none"
+        }
+
+        i.value = i.defaultValue;
+    }
+    function maxUsage() {
+        var t = document.getElementById("max-usage-checkbox");
+        var i = document.getElementById("max-usage");
+        if (t.checked) {
+            i.style = "display:block";
+        }
+        else {
+            i.style = "display:none";
+        }
+
+        i.value = i.defaultValue;
+    }</script>
